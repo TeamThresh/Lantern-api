@@ -5,7 +5,6 @@
 var credentials = require('../credentials');
 var mysqlSetting = require('../models/mysqlSetting');
 var VersionModel = require('../models/versionModel');
-var CrashModel = require('../models/crashModel');
 
 /**
  *
@@ -15,7 +14,7 @@ var CrashModel = require('../models/crashModel');
  */
 module.exports = {
 
-    getCrash : function (req, res, next) {
+    getNetwork : function (req, res, next) {
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
@@ -32,23 +31,23 @@ module.exports = {
                 return VersionModel.getActivityIdByVersionWithName(context, data);
             })
             .then(function(context) {
-                return CrashModel.getCrashList(context, data)
+            	//return VersionModel.getPackageList(context, data.access_token)
             })
             .then(function(context) {
                 return new Promise(function(resolved) {
-                    context.result = data.crashList;
+                    context.result = context.nameList;
                     return resolved(context);
                 });
             })
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
-                res.statusCode = 200;
-                return res.json({
-                    crash: data
-                });
+		        res.statusCode = 200;
+		        return res.json({
+		            packageNames: data
+		        });
             })
             .catch(function(err) {
-                var error = new Error("Failed get package list");
+            	var error = new Error("Failed get package list");
                 error.status = 500;
                 console.error(err);
                 context.connection.rollback();

@@ -1,17 +1,23 @@
 /**
  * Created by YS on 2017-02-07.
  */
-//var users = require('./users');
-var users = require('./usersController');
-var devstats = require('./deviceController');
+
+var package = require('./packageController');
+var link = require('./linkController');
 var crash = require('./crashController');
-var res = require('./resController');
+var render = require('./renderController');
+var cpu = require('./cpuController');
+var memory = require('./memoryController');
+var network = require('./networkController');
 
 var api = {
-	users : users,
-	devstats : devstats,
+	package : package,
+	link : link,
 	crash : crash,
-	res : res
+	render : render,
+	cpu : cpu,
+	memory : memory,
+	network : network
 };
 
 module.exports = api;

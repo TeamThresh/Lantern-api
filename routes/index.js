@@ -7,31 +7,15 @@ var router = express.Router();
 
 module.exports = function(){
 
-  // 사용자 카테고리
-  router.get('/users/userflow', api.users.getUserflow);
-  router.get('/users/summary', api.users.getSummary);
-  router.get('/users/detail', api.users.getDetail);
-  
-  // 기기정보 카테고리
-  router.get('/devstats/location', api.devstats.getLocation);
-  router.get('/devstats/list', api.devstats.getList);
-  router.get('/devstats/list/:uuid', api.devstats.selectListItem);
-  router.get('/devstats/ver/:version', api.devstats.getVersion);
-  
-  // 크래시 카테고리
-  router.get('/crash/summary', api.crash.getSummary);
-  router.get('/crash/list', api.crash.getList);
-  router.get('/crash/decrease', api.crash.getDecrease);
-  router.get('/crash/eclipse', api.crash.getEclipse);
-  
-  // 성능 카테고리
-  router.get('/res/dashboard', api.res.getDashboard);
-  router.get('/res/dashboard/zview', api.res.getZview);
-  router.get('/res/network/summary', api.res.getNetworkSummary);
-  router.get('/res/network/speed', api.res.getNetworkSummary);
-  router.get('/res/rendering/distribution', api.res.getRendering);
-  router.get('/res/perf/summary', api.res.getPerformance);
-  router.get('/res/perf/list', api.res.getPerformanceList);
+  // api
+  router.get('/packageNames', api.package.getPackageNames);
+  router.get('/nodesAndLinks/:packageName', api.link.getNodesAndLinks);
+  router.get('/one-depth-userflow/:packageName/:activityName', api.link.getUserflow);
+  router.get('/crash/:packageName/:activityName', api.crash.getCrash);
+  router.get('/rendering/:packageName/:activityName', api.render.getRendering);
+  router.get('/cpu/:packageName/:activityName', api.cpu.getCPU);
+  router.get('/memory/:packageName/:activityName', api.memory.getMemory);
+  router.get('/network/:packageName/:activityName', api.network.getNetwork);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {

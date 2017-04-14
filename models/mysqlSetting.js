@@ -1,7 +1,7 @@
 /**
  * Created by YS on 2016-11-02.
  */
-var credentials = require('../../credentials');
+var credentials = require('../credentials');
 var mysql = require('mysql');
 var pool = mysql.createPool({
     connectTimeout: 60 * 60 * 1000,
