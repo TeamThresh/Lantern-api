@@ -5,6 +5,7 @@
 var credentials = require('../credentials');
 var mysqlSetting = require('../models/mysqlSetting');
 var VersionModel = require('../models/versionModel');
+var NetworkModel = require('../models/networkModel');
 
 /**
  *
@@ -31,20 +32,18 @@ module.exports = {
                 return VersionModel.getActivityIdByVersionWithName(context, data);
             })
             .then(function(context) {
-            	//return VersionModel.getPackageList(context, data.access_token)
+            	return NetworkModel.getHostList(context, data);
             })
             .then(function(context) {
                 return new Promise(function(resolved) {
-                    context.result = context.nameList;
+                    context.result = data.hostList;
                     return resolved(context);
                 });
             })
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
 		        res.statusCode = 200;
-		        return res.json({
-		            packageNames: data
-		        });
+		        return res.json(data);
             })
             .catch(function(err) {
             	var error = new Error("Failed get package list");
