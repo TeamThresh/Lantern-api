@@ -43,7 +43,9 @@ module.exports = {
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
 		        res.statusCode = 200;
-		        return res.json(data);
+		        return res.json({
+                    network : data
+                });
             })
             .catch(function(err) {
             	var error = new Error("Failed get package list");
