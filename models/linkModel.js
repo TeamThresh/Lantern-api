@@ -54,6 +54,35 @@ var linkModel = {
             	return resolved(context);
             });
         });
+    },
+
+    getActivityCount : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [];
+            var sql = "SELECT SUM(user_count) AS user_count " +
+            	"FROM activity_table " +
+        		"WHERE `act_ver_id` IN (";
+            	
+            data.ver_key.forEach(function(ver_id, index) {
+            	sql += ver_id;
+            	if (index < data.ver_key.length - 1) {
+            		sql += ",";
+            	}
+            });
+            sql += ")";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    return rejected(err);
+                } else if (rows.length == 0) {
+                	// TODO 아무것도 없는 경우
+	            }
+	            
+	            data.activity_count = rows[0].user_count;
+	            
+            	return resolved(context);
+            });
+        });
     }
 };
 
