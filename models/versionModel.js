@@ -174,7 +174,8 @@ var versionModel = {
                         name : row.activity_name,
                         usageCount : row.user_count
                     };
-                    if (row.crashCount != null) {
+
+                    if (row.crash_count != null) {
                         temp.crashCount = row.crash_count
                     } else {
                         temp.crashCount = 0
