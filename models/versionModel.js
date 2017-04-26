@@ -147,7 +147,7 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             var select = [];
             var sql = "SELECT act_t.activity_name, SUM(user_count) as user_count, " + 
-                "SUM(crash_count) as crash_count" +
+                "SUM(crash_count) as crash_count " +
                 "FROM activity_table as act_t " +
                 "LEFT JOIN crash_table as crash_t " +
                 "ON `act_t`.`act_id` = `crash_t`.`crash_act_id` " +
@@ -170,11 +170,17 @@ var versionModel = {
                 
                 data.act_name_list = []
                 rows.forEach(function(row) {
-                    data.act_name_list.push({
+                    let temp = {
                         name : row.activity_name,
-                        usageCount : row.user_count,
-                        crashCount : row.crash_count
-                    });
+                        usageCount : row.user_count
+                    };
+                    if (row.crashCount != null) {
+                        temp.crashCount = row.crash_count
+                    } else {
+                        temp.crashCount = 0
+                    }
+
+                    data.act_name_list.push(temp);
                 });
                 return resolved(context);
             });
