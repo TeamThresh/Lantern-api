@@ -29,7 +29,7 @@ var versionModel = {
     getVersionId : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
-            var sql = "SELECT ver_id " +
+            var sql = "SELECT DISTINCT ver_id " +
             	"FROM version_table " +
             	"WHERE `package_name` = ? ";
 
@@ -52,7 +52,7 @@ var versionModel = {
     getActivityIdByVersion : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [];
-            var sql = "SELECT act_id " +
+            var sql = "SELECT DISTINCT act_id " +
             	"FROM activity_table " +
             	"WHERE `act_ver_id` IN (";
         	
@@ -83,7 +83,7 @@ var versionModel = {
     getActivityIdByVersionWithName : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [data.activity_name];
-            var sql = "SELECT act_id " +
+            var sql = "SELECT DISTINCT act_id " +
             	"FROM activity_table " +
             	"WHERE `activity_name` = ? "+
             	"AND `act_ver_id` IN (";
@@ -115,7 +115,7 @@ var versionModel = {
     getActivityNameByVersion : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [];
-            var sql = "SELECT activity_name " +
+            var sql = "SELECT DISTINCT activity_name " +
             	"FROM activity_table " +
             	"WHERE `act_ver_id` IN (";
         	
