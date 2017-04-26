@@ -32,7 +32,7 @@ module.exports = {
                 return VersionModel.getActivityIdByVersion(context, data);
             })
             .then(function(context) {
-                return VersionModel.getActivityNameByVersion(context, data);
+                return VersionModel.getActNameCrashByVersion(context, data);
             })
             .then(function(context) {
             	return LinkModel.getLinkList(context, data);
