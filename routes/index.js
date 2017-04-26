@@ -19,6 +19,7 @@ module.exports = function(){
 
   router.get('/deviceByOS/:packageName', api.package.getDeviceStatus);
   router.get('/location/:packageName', api.network.getLocation);
+  router.get('/topError/:packageName', api.crash.getTopCrash);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {

@@ -68,6 +68,31 @@ var crashModel = {
             	return resolved(context);
             });
         });
+    },
+
+    getCrashNameWithCount : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.package_name];
+            var sql = "SELECT SUM(crash_count) AS count, crash_name " +
+                "FROM crash_table " +
+                "INNER JOIN activity_table ON crash_act_id = act_id " +
+                "INNER JOIN version_table ON act_ver_id = ver_id " +
+                "WHERE package_name = ? " +
+                "GROUP BY crash_name " +
+                "ORDER BY count";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    return rejected(err);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                }
+                
+                data.crashList = rows;
+                
+                return resolved(context);
+            });
+        });
     }
 };
 

@@ -55,6 +55,41 @@ module.exports = {
                 mysqlSetting.releaseConnection(context);
                 return next(error);
             });
+    },
+
+    getTopCrash : function (req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return CrashModel.getCrashNameWithCount(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = data.crashList;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    error_rank: data
+                });
+            })
+            .catch(function(err) {
+                var error = new Error("Failed get package list");
+                error.status = 500;
+                console.error(err);
+                context.connection.rollback();
+                mysqlSetting.releaseConnection(context);
+                return next(error);
+            });
     }
     
 };

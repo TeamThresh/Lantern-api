@@ -54,6 +54,8 @@ var networkModel = {
 		            	};
 		            	if (row.host_status.toString().substring(0,1) == 2)
 		            		hostData.success = row.host_count;
+		            	else 
+		            		hostData.success = 0;
 		            	
 		            	data.hostList.push(hostData);
 		            }
