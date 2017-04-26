@@ -197,7 +197,8 @@ var versionModel = {
                     "INNER JOIN activity_table " +
                     "ON version_table.ver_id = activity_table.act_ver_id " +
                     "WHERE version_table.package_name = ? " +
-                    "GROUP BY version_table.os_ver, version_table.device_name ";
+                    "GROUP BY version_table.os_ver, version_table.device_name " +
+                    "ORDER BY os_ver ASC ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -209,7 +210,7 @@ var versionModel = {
                 data.device_list = [];
                 rows.forEach(function(row, index) {
                     if (data.device_list.length == 0 
-                        || rows[index].os_ver != row.os_ver) {
+                        || rows[index-1].os_ver != row.os_ver) {
                         data.device_list.push({
                             ver : row.os_ver,
                             device : [{
@@ -218,7 +219,7 @@ var versionModel = {
                             }]
                         });
                     } else {
-                        data.device_list[data.device_list.length].device.push({
+                        data.device_list[data.device_list.length-1].device.push({
                             name : row.device_name,
                             count : row.user_count
                         })
