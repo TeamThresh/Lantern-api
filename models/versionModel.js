@@ -6,7 +6,7 @@ var versionModel = {
     getPackageList : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [];
-            var sql = "SELECT package_name " +
+            var sql = "SELECT DISTINCT package_name " +
             	"FROM version_table ";
 
             context.connection.query(sql, select, function (err, rows) {
