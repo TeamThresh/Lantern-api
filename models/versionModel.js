@@ -186,8 +186,49 @@ var versionModel = {
                 return resolved(context);
             });
         });
-    }
+    },
 
+    getDeviceByOs : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.package_name];
+            var sql = "SELECT version_table.os_ver, version_table.device_name, " +
+                    "SUM(activity_table.user_count) AS user_count "+
+                    "FROM version_table " +
+                    "INNER JOIN activity_table " +
+                    "ON version_table.ver_id = activity_table.act_ver_id " +
+                    "WHERE version_table.package_name = ? " +
+                    "GROUP BY version_table.os_ver, version_table.device_name ";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    return rejected(err);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                }
+                
+                data.device_list = [];
+                rows.forEach(function(row, index) {
+                    if (data.device_list.length == 0 
+                        || rows[index].os_ver != row.os_ver) {
+                        data.device_list.push({
+                            ver : row.os_ver,
+                            device : [{
+                                name : row.device_name,
+                                count : row.user_count
+                            }]
+                        });
+                    } else {
+                        data.device_list[data.device_list.length].device.push({
+                            name : row.device_name,
+                            count : row.user_count
+                        })
+                    }
+                });
+
+                return resolved(context);
+            });
+        });
+    }
 };
 
 module.exports = versionModel;

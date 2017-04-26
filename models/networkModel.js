@@ -67,6 +67,46 @@ var networkModel = {
             	return resolved(context);
             });
         });
+    }, 
+
+    getLocationList : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.package_name];
+            var sql = "SELECT location_name, location_code, " +
+				"SUM(user_count) AS usage_count, SUM(crash_count) as crash_count " +
+				"FROM version_table " +
+				"INNER JOIN activity_table ON version_table.ver_id = activity_table.act_ver_id " +
+				"LEFT JOIN crash_table ON activity_table.act_id = crash_table.crash_act_id " +
+				"WHERE version_table.package_name = ? " +
+				"GROUP BY version_table.location_name, version_table.location_code ";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    return rejected(err);
+                } else if (rows.length == 0) {
+                	// TODO 아무것도 없는 경우
+	            }
+	            
+	            data.locationList = [];
+	            rows.forEach(function(arr) {
+	            	let temp = {
+	            		country_code : arr.location_code,
+	            		country_name : arr.location_name,
+	            		usage_count : arr.usage_count
+	            	};
+
+	            	if (arr.crash_count != null) {
+	            		temp.crash_count = arr.crash_count;
+	            	} else {
+	            		temp.crash_count = 0;
+	            	}
+
+	            	data.locationList.push(temp);
+	            });
+	            
+            	return resolved(context);
+            });
+        });
     }
 };
 
