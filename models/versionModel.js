@@ -147,10 +147,18 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             var select = [];
             var sql = "SELECT act_t.activity_name, SUM(user_count) as user_count, " + 
-                "SUM(crash_count) as crash_count " +
+                "SUM(crash_count) as crash_count, SUM(obc_t.host_status > 300) as status_count, " +
+                "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
+                "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM activity_table as act_t " +
+                "INNER JOIN cpu_table as c_t " +
+                "ON act_t.act_id = c_t.cpu_act_id " +
+                "INNER JOIN memory_table as m_t " +
+                "ON act_t.act_id = m_t.mem_act_id " +
                 "LEFT JOIN crash_table as crash_t " +
                 "ON `act_t`.`act_id` = `crash_t`.`crash_act_id` " +
+                "LEFT JOIN obc_table as obc_t " +
+                "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `act_ver_id` IN (";
             
             data.ver_key.forEach(function(ver_id, index) {
@@ -172,13 +180,21 @@ var versionModel = {
                 rows.forEach(function(row) {
                     let temp = {
                         name : row.activity_name,
-                        usageCount : row.user_count
+                        usageCount : row.user_count,
+                        cpuUsage : row.cpu_count,
+                        memoryUsage : row.mem_count
                     };
 
                     if (row.crash_count != null) {
-                        temp.crashCount = row.crash_count
+                        temp.crashCount = row.crash_count;
                     } else {
-                        temp.crashCount = 0
+                        temp.crashCount = 0;
+                    }
+
+                    if (row.status_count != null) {
+                        temp.networkCount = row.status_count;
+                    } else {
+                        temp.networkCount = 0
                     }
 
                     data.act_name_list.push(temp);
