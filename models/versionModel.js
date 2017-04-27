@@ -151,9 +151,9 @@ var versionModel = {
                 "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
                 "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM activity_table as act_t " +
-                "INNER JOIN cpu_table as c_t " +
+                "LEFT JOIN cpu_table as c_t " +
                 "ON act_t.act_id = c_t.cpu_act_id " +
-                "INNER JOIN memory_table as m_t " +
+                "LEFT JOIN memory_table as m_t " +
                 "ON act_t.act_id = m_t.mem_act_id " +
                 "LEFT JOIN crash_table as crash_t " +
                 "ON `act_t`.`act_id` = `crash_t`.`crash_act_id` " +
