@@ -91,8 +91,38 @@ var crashModel = {
                 "FROM crash_table " +
                 "INNER JOIN activity_table ON crash_act_id = act_id " +
                 "INNER JOIN version_table ON act_ver_id = ver_id " +
-                "WHERE package_name = ? " +
-                "GROUP BY crash_name " +
+                "WHERE package_name = ? ";
+                
+            if (data.filter != undefined) {
+                if (data.filter.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.filter.location);
+                }
+                if (data.filter.device != undefined) {
+                    console.log("디바이스")
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.filter.device);
+                }
+                if (data.filter.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.filter.os);
+                    console.log(data.filter);
+                }
+
+                if (data.filter.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.filter.nlocation);
+                }
+                if (data.filter.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.filter.ndevice);
+                }
+                if (data.filter.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.filter.nos);
+                }
+            }
+            sql += "GROUP BY crash_name " +
                 "ORDER BY count";
 
             context.connection.query(sql, select, function (err, rows) {

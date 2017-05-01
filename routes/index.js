@@ -22,6 +22,7 @@ module.exports = function(){
   router.get('/topError/:packageName', api.crash.getTopCrash);
 
   router.get('/allVersions/:packageName', api.package.getAllVersionStatus);
+  // TODO /location 과 똑같은데..?
   router.get('/statusOfLocation/:packageName', api.package.getStatusOfLocation);
   router.get('/statusOfDevice/:packageName', api.package.getStatusOfDevice);
   router.get('/statusOfOs/:packageName', api.package.getStatusOfOs);

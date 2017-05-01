@@ -370,7 +370,8 @@ console.log(sql);
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
                 "WHERE `package_name` = ? " +
-                "GROUP BY location_code";
+                "GROUP BY location_code " +
+                "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -414,7 +415,8 @@ console.log(sql);
                 "ON crash_act_id = act_id " +
                 "WHERE `package_name` = ? " +
                 "AND `location_code` IN (?) " +
-                "GROUP BY device_name";
+                "GROUP BY device_name" +
+                "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -460,7 +462,8 @@ console.log(sql);
                 "WHERE `package_name` = ? " +
                 "AND `location_code` IN (?) " +
                 "AND `device_name` IN (?) " +
-                "GROUP BY os_ver";
+                "GROUP BY os_ver" +
+                "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -507,7 +510,8 @@ console.log(sql);
                 "AND `location_code` IN (?) " +
                 "AND `device_name` IN (?) " +
                 "AND `os_ver` IN (?) " +
-                "GROUP BY activity_name ";
+                "GROUP BY activity_name " +
+                "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
