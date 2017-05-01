@@ -386,7 +386,16 @@ console.log(sql);
                     return rejected(error);
                 }
                 
-                data.location_usage = rows;
+                data.location_usage = [];
+                rows.forEach(function(row) {
+                    let usage = {
+                        locationCode : row.location_code,
+                        usageCount : row.usage_count,
+                        crashCount : row.crash_count != null ? row.crash_count : 0
+                    }
+
+                    data.location_usage.push(usage);
+                });
 
                 return resolved(context);
             });
@@ -421,7 +430,16 @@ console.log(sql);
                     return rejected(error);
                 }
                 
-                data.device_usage = rows;
+                data.device_usage = [];
+                rows.forEach(function(row) {
+                    let usage = {
+                        deviceName : row.device_name,
+                        usageCount : row.usage_count,
+                        crashCount : row.crash_count != null ? row.crash_count : 0
+                    }
+
+                    data.device_usage.push(usage);
+                });
 
                 return resolved(context);
             });
@@ -458,7 +476,16 @@ console.log(sql);
                     return rejected(error);
                 }
                 
-                data.os_usage = rows;
+                data.os_usage = [];
+                rows.forEach(function(row) {
+                    let usage = {
+                        osVersion : row.os_ver,
+                        usageCount : row.usage_count,
+                        crashCount : row.crash_count != null ? row.crash_count : 0
+                    }
+
+                    data.os_usage.push(usage);
+                });
 
                 return resolved(context);
             });
@@ -496,7 +523,16 @@ console.log(sql);
                     return rejected(error);
                 }
                 
-                data.activity_usage = rows;
+                data.activity_usage = [];
+                rows.forEach(function(row) {
+                    let usage = {
+                        activityName : row.activity_name,
+                        usageCount : row.usage_count,
+                        crashCount : row.crash_count != null ? row.crash_count : 0
+                    }
+
+                    data.activity_usage.push(usage);
+                });
 
                 return resolved(context);
             });
