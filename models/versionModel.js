@@ -276,7 +276,7 @@ console.log(sql);
                     "ON version_table.ver_id = activity_table.act_ver_id " +
                     "WHERE version_table.package_name = ? " +
                     "GROUP BY version_table.os_ver, version_table.device_name " +
-                    "ORDER BY os_ver ASC ";
+                    "ORDER BY user_count DESC ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
