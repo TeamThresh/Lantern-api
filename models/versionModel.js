@@ -274,8 +274,39 @@ console.log(sql);
                     "FROM version_table " +
                     "INNER JOIN activity_table " +
                     "ON version_table.ver_id = activity_table.act_ver_id " +
-                    "WHERE version_table.package_name = ? " +
-                    "GROUP BY version_table.os_ver, version_table.device_name " +
+                    "WHERE version_table.package_name = ? ";
+                    
+            if (data.filter != undefined) {
+                if (data.filter.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.filter.location);
+                }
+                if (data.filter.device != undefined) {
+                    console.log("디바이스")
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.filter.device);
+                }
+                if (data.filter.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.filter.os);
+                    console.log(data.filter);
+                }
+
+                if (data.filter.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.filter.nlocation);
+                }
+                if (data.filter.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.filter.ndevice);
+                }
+                if (data.filter.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.filter.nos);
+                }
+            }
+
+            sql += "GROUP BY version_table.os_ver, version_table.device_name " +
                     "ORDER BY user_count DESC ";
 
             context.connection.query(sql, select, function (err, rows) {
