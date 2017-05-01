@@ -6,7 +6,7 @@ var errorCode = require('./errorCode');
 module.exports = function (err, res, mode) {
     if (err instanceof Error) {
         console.log(err);
-        res.status(err.status).json({msg : err.msg});
+        res.status(err.status).json({msg : err.message});
     } else {
         var error = errorCode[err];
         console.log(error);

@@ -11,9 +11,16 @@ var versionModel = {
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
 	            }
 	            
 	            context.nameList = [];
@@ -33,11 +40,48 @@ var versionModel = {
             	"FROM version_table " +
             	"WHERE `package_name` = ? ";
 
+            if (data.filter != undefined) {
+                if (data.filter.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.filter.location);
+                }
+                if (data.filter.device != undefined) {
+                    console.log("디바이스")
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.filter.device);
+                }
+                if (data.filter.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.filter.os);
+                    console.log(data.filter);
+                }
+
+                if (data.filter.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.filter.nlocation);
+                }
+                if (data.filter.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.filter.ndevice);
+                }
+                if (data.filter.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.filter.nos);
+                }
+            }
+
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
 	            }
 	            
 	            data.ver_key = [];
@@ -55,20 +99,32 @@ var versionModel = {
             var sql = "SELECT DISTINCT act_id " +
             	"FROM activity_table " +
             	"WHERE `act_ver_id` IN (";
-        	
-            data.ver_key.forEach(function(ver_id, index) {
-            	sql += ver_id;
-            	if (index < data.ver_key.length - 1) {
-            		sql += ",";
-            	}
-            });
+        	sql += data.ver_key.toString();
             sql += ") ";
+            if (data.filter != undefined) {
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?)";
+                    select.push(data.filter.activity_name);
+                }
+
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?)";
+                    select.push(data.filter.nactivity_name);
+                }
+            }
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
 	            }
 	            
 	            data.act_id_list = []
@@ -88,19 +144,21 @@ var versionModel = {
             	"WHERE `activity_name` = ? "+
             	"AND `act_ver_id` IN (";
         	
-            data.ver_key.forEach(function(ver_id, index) {
-            	sql += ver_id;
-            	if (index < data.ver_key.length - 1) {
-            		sql += ",";
-            	}
-            });
+            sql += data.ver_key.toString();
             sql += ") ";
-
+console.log(sql);
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
 	            }
 	            
 	            data.act_id_list = []
@@ -119,19 +177,21 @@ var versionModel = {
             	"FROM activity_table " +
             	"WHERE `act_ver_id` IN (";
         	
-            data.ver_key.forEach(function(ver_id, index) {
-            	sql += ver_id;
-            	if (index < data.ver_key.length - 1) {
-            		sql += ",";
-            	}
-            });
+            sql += data.ver_key.toString();
             sql += ") ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
 	            }
 	            
 	            data.act_name_list = []
@@ -161,19 +221,21 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `act_ver_id` IN (";
             
-            data.ver_key.forEach(function(ver_id, index) {
-                sql += ver_id;
-                if (index < data.ver_key.length - 1) {
-                    sql += ",";
-                }
-            });
+            sql += data.ver_key.toString();
             sql += ") GROUP BY `act_t`.`activity_name`";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 }
                 
                 data.act_name_list = []
@@ -218,9 +280,16 @@ var versionModel = {
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 }
                 
                 data.device_list = [];

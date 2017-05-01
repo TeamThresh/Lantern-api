@@ -39,19 +39,15 @@ module.exports = {
 		        });
             })
             .catch(function(err) {
-            	var error = new Error("Failed get package list");
-                error.status = 500;
-                console.error(err);
-                context.connection.rollback();
-                mysqlSetting.releaseConnection(context);
-                return next(error);
+                return next(err);
             });
     }, 
 
     getDeviceStatus : function (req, res, next) {
         var data = {
             access_token: req.header('access-token'),
-            package_name : req.params.packageName
+            package_name : req.params.packageName,
+            filter : require('./filter').setFilter(req.query)
         };
 
         mysqlSetting.getPool()
@@ -74,12 +70,7 @@ module.exports = {
                 });
             })
             .catch(function(err) {
-                var error = new Error("Failed get package list");
-                error.status = 500;
-                console.error(err);
-                context.connection.rollback();
-                mysqlSetting.releaseConnection(context);
-                return next(error);
+                return next(err);
             });
     }
 };

@@ -20,9 +20,16 @@ var memoryModel = {
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
-                    return rejected(err);
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
 	            }
 	            
 	            data.memUsageList = [];

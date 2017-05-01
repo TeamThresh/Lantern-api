@@ -19,8 +19,11 @@ module.exports = {
     getNodesAndLinks : function (req, res, next) {
         var data = {
             access_token: req.header('access-token'),
-            package_name : req.params.packageName
+            package_name : req.params.packageName,
+            filter : require('./filter').setFilter(req.query)
         };
+
+        console.log(Array(req.query.os));
 
         mysqlSetting.getPool()
             .then(mysqlSetting.getConnection)
@@ -52,12 +55,7 @@ module.exports = {
 		        return res.json(data);
             })
             .catch(function(err) {
-            	var error = new Error("Failed get package list");
-                error.status = 500;
-                console.error(err);
-                context.connection.rollback();
-                mysqlSetting.releaseConnection(context);
-                return next(error);
+                return next(err);
             });
     },
 
@@ -65,7 +63,8 @@ module.exports = {
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
-            activity_name : req.params.activityName
+            activity_name : req.params.activityName,
+            filter : require('./filter').setFilter(req.query)
         };
 
         mysqlSetting.getPool()
@@ -107,12 +106,7 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                var error = new Error("Failed get package list");
-                error.status = 500;
-                console.error(err);
-                context.connection.rollback();
-                mysqlSetting.releaseConnection(context);
-                return next(error);
+                return next(err);
             });
     }
     
