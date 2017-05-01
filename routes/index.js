@@ -17,9 +17,15 @@ module.exports = function(){
   router.get('/memory/:packageName/:activityName', api.memory.getMemory);
   router.get('/network/:packageName/:activityName', api.network.getNetwork);
 
-  router.get('/deviceByOS/:packageName', api.package.getDeviceStatus);
+  router.get('/deviceByOS/:packageName', api.package.getDeviceByOS);
   router.get('/location/:packageName', api.network.getLocation);
   router.get('/topError/:packageName', api.crash.getTopCrash);
+
+  router.get('/allVersions/:packageName', api.package.getAllVersionStatus);
+  router.get('/statusOfLocation/:packageName', api.package.getStatusOfLocation);
+  router.get('/statusOfDevice/:packageName', api.package.getStatusOfDevice);
+  router.get('/statusOfOs/:packageName', api.package.getStatusOfOs);
+  router.get('/statusOfActivity/:packageName', api.package.getStatusOfActivity);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {

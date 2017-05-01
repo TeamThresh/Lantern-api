@@ -314,7 +314,194 @@ console.log(sql);
                 return resolved(context);
             });
         });
-    }
+    },
+
+    getAllVersionUsage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            let select = [data.package_name];
+            let sql = "SELECT DISTINCT device_name, os_ver, location_code, " +
+                "activity_name, SUM(user_count) AS user_count " +
+                "FROM version_table " +
+                "JOIN activity_table " +
+                "ON ver_id = act_ver_id " +
+                "WHERE `package_name` = ? " +
+                "GROUP BY device_name, os_ver, location_code, activity_name";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                data.all_version = [];
+                rows.forEach(function(row) {
+                    let version = {
+                        deviceName : row.device_name,
+                        osVersion : row.os_ver,
+                        location : row.location_code,
+                        activiyName : row.activity_name,
+                        usage : row.user_count
+                    }
+
+                    data.all_version.push(version);
+                });
+
+                return resolved(context);
+            });
+        });
+    },
+
+    getLocationUsage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            let select = [data.package_name];
+            let sql = "SELECT DISTINCT location_code, SUM(user_count) AS usage_count, " +
+                "SUM(crash_count) as crash_count " +
+                "FROM version_table " +
+                "JOIN activity_table " +
+                "ON ver_id = act_ver_id " +
+                "LEFT JOIN crash_table " +
+                "ON crash_act_id = act_id " +
+                "WHERE `package_name` = ? " +
+                "GROUP BY location_code";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                data.location_usage = rows;
+
+                return resolved(context);
+            });
+        });
+    },
+
+    getDeviceUsage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            let select = [data.package_name, data.selector.location];
+            let sql = "SELECT DISTINCT device_name, SUM(user_count) AS usage_count, " +
+                "SUM(crash_count) as crash_count " +
+                "FROM version_table " +
+                "JOIN activity_table " +
+                "ON ver_id = act_ver_id " +
+                "LEFT JOIN crash_table " +
+                "ON crash_act_id = act_id " +
+                "WHERE `package_name` = ? " +
+                "AND `location_code` IN (?) " +
+                "GROUP BY device_name";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                data.device_usage = rows;
+
+                return resolved(context);
+            });
+        });
+    },
+
+    getOsUsage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            let select = [data.package_name, data.selector.location, 
+                data.selector.device];
+            let sql = "SELECT DISTINCT os_ver, SUM(user_count) AS usage_count, " +
+                "SUM(crash_count) as crash_count " +
+                "FROM version_table " +
+                "JOIN activity_table " +
+                "ON ver_id = act_ver_id " +
+                "LEFT JOIN crash_table " +
+                "ON crash_act_id = act_id " +
+                "WHERE `package_name` = ? " +
+                "AND `location_code` IN (?) " +
+                "AND `device_name` IN (?) " +
+                "GROUP BY os_ver";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                data.os_usage = rows;
+
+                return resolved(context);
+            });
+        });
+    },
+
+    getActivityUsage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            let select = [data.package_name, data.selector.location, 
+                data.selector.device, data.selector.os];
+            let sql = "SELECT DISTINCT activity_name, SUM(user_count) AS usage_count, " +
+                "SUM(crash_count) as crash_count " +
+                "FROM version_table " +
+                "JOIN activity_table " +
+                "ON ver_id = act_ver_id " +
+                "LEFT JOIN crash_table " +
+                "ON crash_act_id = act_id " +
+                "WHERE `package_name` = ? " +
+                "AND `location_code` IN (?) " +
+                "AND `device_name` IN (?) " +
+                "AND `os_ver` IN (?) " +
+                "GROUP BY activity_name ";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                data.activity_usage = rows;
+
+                return resolved(context);
+            });
+        });
+    },
 };
 
 module.exports = versionModel;
