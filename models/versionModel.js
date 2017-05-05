@@ -400,8 +400,39 @@ console.log(sql);
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
-                "WHERE `package_name` = ? " +
-                "GROUP BY location_code " +
+                "WHERE `package_name` = ? ";
+
+            if (data.selector != undefined) {
+                if (data.selector.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.selector.location);
+                }
+                if (data.selector.device != undefined) {
+                    console.log("디바이스")
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.selector.device);
+                }
+                if (data.selector.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.selector.os);
+                    console.log(data.selector);
+                }
+
+                if (data.selector.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.selector.nlocation);
+                }
+                if (data.selector.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.selector.ndevice);
+                }
+                if (data.selector.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.selector.nos);
+                }
+            }
+
+            sql += "GROUP BY location_code " +
                 "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
@@ -444,9 +475,39 @@ console.log(sql);
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
-                "WHERE `package_name` = ? " +
-                "AND `location_code` IN (?) " +
-                "GROUP BY device_name" +
+                "WHERE `package_name` = ? ";
+
+            if (data.selector != undefined) {
+                if (data.selector.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.selector.location);
+                }
+                if (data.selector.device != undefined) {
+                    console.log("디바이스")
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.selector.device);
+                }
+                if (data.selector.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.selector.os);
+                    console.log(data.selector);
+                }
+
+                if (data.selector.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.selector.nlocation);
+                }
+                if (data.selector.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.selector.ndevice);
+                }
+                if (data.selector.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.selector.nos);
+                }
+            }
+
+            sql += "GROUP BY device_name" +
                 "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
@@ -490,10 +551,39 @@ console.log(sql);
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
-                "WHERE `package_name` = ? " +
-                "AND `location_code` IN (?) " +
-                "AND `device_name` IN (?) " +
-                "GROUP BY os_ver" +
+                "WHERE `package_name` = ? ";
+
+            if (data.selector != undefined) {
+                if (data.selector.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.selector.location);
+                }
+                if (data.selector.device != undefined) {
+                    console.log("디바이스")
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.selector.device);
+                }
+                if (data.selector.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.selector.os);
+                    console.log(data.selector);
+                }
+
+                if (data.selector.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.selector.nlocation);
+                }
+                if (data.selector.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.selector.ndevice);
+                }
+                if (data.selector.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.selector.nos);
+                }
+            }
+
+            sql += "GROUP BY os_ver" +
                 "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
@@ -528,8 +618,7 @@ console.log(sql);
 
     getActivityUsage : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            let select = [data.package_name, data.selector.location, 
-                data.selector.device, data.selector.os];
+            let select = [data.package_name];
             let sql = "SELECT DISTINCT activity_name, SUM(user_count) AS usage_count, " +
                 "SUM(crash_count) as crash_count " +
                 "FROM version_table " +
@@ -537,11 +626,39 @@ console.log(sql);
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
-                "WHERE `package_name` = ? " +
-                "AND `location_code` IN (?) " +
-                "AND `device_name` IN (?) " +
-                "AND `os_ver` IN (?) " +
-                "GROUP BY activity_name " +
+                "WHERE `package_name` = ? ";
+                
+            if (data.selector != undefined) {
+                if (data.selector.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.selector.location);
+                }
+                if (data.selector.device != undefined) {
+                    console.log("디바이스")
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.selector.device);
+                }
+                if (data.selector.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.selector.os);
+                    console.log(data.selector);
+                }
+
+                if (data.selector.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.selector.nlocation);
+                }
+                if (data.selector.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.selector.ndevice);
+                }
+                if (data.selector.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.selector.nos);
+                }
+            }
+
+            sql += "GROUP BY activity_name " +
                 "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
