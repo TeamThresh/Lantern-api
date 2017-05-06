@@ -46,14 +46,12 @@ var versionModel = {
                     select.push(data.filter.location);
                 }
                 if (data.filter.device != undefined) {
-                    console.log("디바이스")
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.filter.device);
                 }
                 if (data.filter.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.filter.os);
-                    console.log(data.filter);
                 }
 
                 if (data.filter.nlocation != undefined) {
@@ -146,7 +144,7 @@ var versionModel = {
         	
             sql += data.ver_key.toString();
             sql += ") ";
-console.log(sql);
+
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
                     var error = new Error(err);

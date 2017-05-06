@@ -9,6 +9,7 @@ var render = require('./renderController');
 var cpu = require('./cpuController');
 var memory = require('./memoryController');
 var network = require('./networkController');
+var stack = require('./stackController');
 
 var api = {
 	package : package,
@@ -17,7 +18,8 @@ var api = {
 	render : render,
 	cpu : cpu,
 	memory : memory,
-	network : network
+	network : network,
+	stack : stack,
 };
 
 module.exports = api;

@@ -28,6 +28,9 @@ module.exports = function(){
   router.get('/statusOfOs/:packageName', api.package.getStatusOfOs);
   router.get('/statusOfActivity/:packageName', api.package.getStatusOfActivity);
 
+  // Callstack
+  router.get('/callstack/:packageName/:activityName', api.stack.getCallstack);
+
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {
     next(404);
