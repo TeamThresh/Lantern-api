@@ -280,14 +280,12 @@ var versionModel = {
                     select.push(data.filter.location);
                 }
                 if (data.filter.device != undefined) {
-                    console.log("디바이스")
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.filter.device);
                 }
                 if (data.filter.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.filter.os);
-                    console.log(data.filter);
                 }
 
                 if (data.filter.nlocation != undefined) {
@@ -406,14 +404,12 @@ var versionModel = {
                     select.push(data.selector.location);
                 }
                 if (data.selector.device != undefined) {
-                    console.log("디바이스")
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.selector.device);
                 }
                 if (data.selector.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
-                    console.log(data.selector);
                 }
 
                 if (data.selector.nlocation != undefined) {
@@ -481,14 +477,12 @@ var versionModel = {
                     select.push(data.selector.location);
                 }
                 if (data.selector.device != undefined) {
-                    console.log("디바이스")
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.selector.device);
                 }
                 if (data.selector.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
-                    console.log(data.selector);
                 }
 
                 if (data.selector.nlocation != undefined) {
@@ -557,14 +551,12 @@ var versionModel = {
                     select.push(data.selector.location);
                 }
                 if (data.selector.device != undefined) {
-                    console.log("디바이스")
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.selector.device);
                 }
                 if (data.selector.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
-                    console.log(data.selector);
                 }
 
                 if (data.selector.nlocation != undefined) {
@@ -632,14 +624,12 @@ var versionModel = {
                     select.push(data.selector.location);
                 }
                 if (data.selector.device != undefined) {
-                    console.log("디바이스")
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.selector.device);
                 }
                 if (data.selector.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
-                    console.log(data.selector);
                 }
 
                 if (data.selector.nlocation != undefined) {
@@ -688,6 +678,72 @@ var versionModel = {
             });
         });
     },
+
+    getUserConnection : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.package_name];
+            var sql = "SELECT SUM(user_count) AS connection, SUM(user_retention_count) AS retention, collect_time " +
+                "FROM activity_table " +
+                "INNER JOIN version_table " +
+                "ON act_ver_id = ver_id " +
+                "WHERE `package_name` = ? ";
+
+            if (data.filter != undefined) {
+                if (data.filter.dateRange != undefined) {
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
+                    "AND collect_time BETWEEN ? AND ? ";
+                }
+
+                if (data.filter.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.filter.location);
+                }
+                if (data.filter.device != undefined) {
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.filter.device);
+                }
+                if (data.filter.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.filter.os);
+                }
+
+                if (data.filter.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.filter.nlocation);
+                }
+                if (data.filter.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.filter.ndevice);
+                }
+                if (data.filter.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.filter.nos);
+                }
+            }
+
+            sql += "GROUP BY collect_time " +
+                "ORDER BY collect_time ASC";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                data.user_connection = rows;
+
+                return resolved(context);
+            });
+        });
+    }
 };
 
 module.exports = versionModel;

@@ -20,6 +20,7 @@ module.exports = function(){
   router.get('/deviceByOS/:packageName', api.package.getDeviceByOS);
   router.get('/location/:packageName', api.network.getLocation);
   router.get('/topError/:packageName', api.crash.getTopCrash);
+  router.get('/userCount/:packageName', api.package.getUserUsage);
 
   router.get('/allVersions/:packageName', api.package.getAllVersionStatus);
   // TODO /location 과 똑같은데..?

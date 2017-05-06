@@ -217,4 +217,33 @@ module.exports = {
                 return next(err);
             });
     },
+
+    getUserUsage : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            filter : require('./filter').setFilter(req.query)
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.getUserConnection(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = data.user_connection;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    }
 };
