@@ -738,7 +738,14 @@ var versionModel = {
                     return rejected(error);
                 }
                 
-                data.user_connection = rows;
+                data.user_connection = [];
+                rows.forEach(function(row) {
+                    data.user_connection.push({
+                        connection : row.connection, 
+                        retention : row.retention,
+                        collect_time : new Date(row.collect_time).getTime()
+                    })
+                });
 
                 return resolved(context);
             });
