@@ -41,6 +41,11 @@ var versionModel = {
             	"WHERE `package_name` = ? ";
 
             if (data.filter != undefined) {
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
+                }
+
                 if (data.filter.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.filter.location);
@@ -275,6 +280,11 @@ var versionModel = {
                     "WHERE version_table.package_name = ? ";
                     
             if (data.filter != undefined) {
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
+                }
+
                 if (data.filter.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.filter.location);
@@ -399,6 +409,11 @@ var versionModel = {
                 "WHERE `package_name` = ? ";
 
             if (data.selector != undefined) {
+                if (data.selector.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
+                }
+
                 if (data.selector.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.selector.location);
@@ -472,6 +487,11 @@ var versionModel = {
                 "WHERE `package_name` = ? ";
 
             if (data.selector != undefined) {
+                if (data.selector.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
+                }
+
                 if (data.selector.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.selector.location);
@@ -546,6 +566,11 @@ var versionModel = {
                 "WHERE `package_name` = ? ";
 
             if (data.selector != undefined) {
+                if (data.selector.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
+                }
+
                 if (data.selector.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.selector.location);
@@ -619,6 +644,11 @@ var versionModel = {
                 "WHERE `package_name` = ? ";
                 
             if (data.selector != undefined) {
+                if (data.selector.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
+                }
+
                 if (data.selector.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.selector.location);
@@ -690,9 +720,10 @@ var versionModel = {
 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
                     select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                    "AND collect_time BETWEEN ? AND ? ";
                 }
+
 
                 if (data.filter.location != undefined) {
                     sql += "AND `location_code` IN (?) ";

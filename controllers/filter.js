@@ -4,6 +4,21 @@ module.exports = {
 	setFilter : function(query) {
 		let filter = {};
 
+        let dateRange = {};
+        if (query.startRange != undefined) {
+            //dateRange.start = query.startRange
+            let temp_date = new Date(Number(query.startRange)).toISOString().split('T');
+            dateRange.start = temp_date[0]+" "+temp_date[1].split('.')[0];
+        }
+        if (query.endRange != undefined) {
+            //dateRange.end = query.endRange
+            let temp_date = new Date(Number(query.endRange)).toISOString().split('T');
+            dateRange.end = temp_date[0]+" "+temp_date[1].split('.')[0];
+        }
+        if (dateRange.start != undefined && dateRange.end != undefined) {
+            filter.dateRange = dateRange;
+        }
+
         if (query.location != undefined)
             filter.location = query.location.split(',');
         if (query.device != undefined)
