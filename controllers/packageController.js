@@ -74,6 +74,36 @@ module.exports = {
             });
     },
 
+    getSelectVersionList : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            activity_name : req.params.activityName,
+            filter : require('./filter').setFilter(req.query)
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.getVersionInRange(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = data.user_list;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    },
+
     getAllVersionStatus : function(req, res, next) {
         var data = {
             access_token: req.header('access-token'),

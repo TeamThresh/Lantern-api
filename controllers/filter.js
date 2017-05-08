@@ -4,6 +4,7 @@ module.exports = {
 	setFilter : function(query) {
 		let filter = {};
 
+        // 기간 필터
         let dateRange = {};
         if (query.startRange != undefined) {
             //dateRange.start = query.startRange
@@ -19,13 +20,26 @@ module.exports = {
             filter.dateRange = dateRange;
         }
 
+        // 사용량 필터
+        let usageRange = {};
+        if (query.startUsage != undefined) {
+            usageRange.start = query.startUsage;
+        }
+        if (query.endUsage != undefined) {
+            usageRange.end = query.endUsage;
+        }
+        if (usageRange.start != undefined && usageRange.end != undefined) {
+            filter.usageRange = usageRange;
+        }
+
+        // 지역, 기기, os, Activity 필터
         if (query.location != undefined)
             filter.location = query.location.split(',');
         if (query.device != undefined)
             filter.device = query.device.split(',');
         if (query.os != undefined)
             filter.os = query.os.split(',');
-        if (query.activity_name != undefined)
+        if (query.activity != undefined)
             filter.activity_name = query.activity.split(',');
 
         if (query.nlocation != undefined) {
@@ -40,8 +54,8 @@ module.exports = {
         	filter.nos = query.nos.split(',');
         	filter.os = undefined;
         }
-        if (query.nactivity_name != undefined) {
-        	filter.nactivity_name = query.nactivity_name.split(',');
+        if (query.nactivity != undefined) {
+        	filter.nactivity_name = query.nactivity.split(',');
         	filter.activity_name = undefined;
         }
 

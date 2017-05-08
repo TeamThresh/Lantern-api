@@ -852,6 +852,97 @@ var versionModel = {
                 return resolved(context);
             });
         });
+    },
+
+    getVersionInRange : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.package_name, 
+                data.filter.dateRange.start, data.filter.dateRange.end,
+                data.filter.usageRange.start, data.filter.usageRange.end];
+            var sql = "SELECT uuid, cpu_raw_time, collect_time, device_name, " +
+                "os_ver, location_code, cpu_raw_rate, cpu_raw_count " +
+                "FROM cpu_raw_table " +
+                "INNER JOIN activity_table ON craw_act_id = act_id " +
+                "INNER JOIN version_table ON act_ver_id = ver_id " +
+                "LEFT JOIN user_table ON ver_id = user_ver_id " +
+                "WHERE package_name = ? "
+                "AND cpu_raw_time BETWEEN ? AND ? " +
+                "AND cpu_raw_rate/cpu_raw_count BETWEEN ? AND ? ";
+
+            if (data.filter != undefined) {
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
+                }
+
+
+                if (data.filter.location != undefined) {
+                    sql += "AND `location_code` IN (?) ";
+                    select.push(data.filter.location);
+                }
+                if (data.filter.device != undefined) {
+                    sql += "AND `device_name` IN (?) ";
+                    select.push(data.filter.device);
+                }
+                if (data.filter.os != undefined) {
+                    sql += "AND `os_ver` IN (?) ";
+                    select.push(data.filter.os);
+                }
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.filter.activity_name);
+                }
+
+                if (data.filter.nlocation != undefined) {
+                    sql += "AND `location_code` NOT IN (?) ";
+                    select.push(data.filter.nlocation);
+                }
+                if (data.filter.ndevice != undefined) {
+                    sql += "AND `device_name` NOT IN (?) ";
+                    select.push(data.filter.ndevice);
+                }
+                if (data.filter.nos != undefined) {
+                    sql += "AND `os_ver` NOT IN (?) ";
+                    select.push(data.filter.nos);
+                }
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.filter.nactivity_name);
+                }
+            }
+
+            sql += "ORDER BY cpu_raw_time ASC";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+
+                data.user_list = [];
+                rows.forEach(function(row) {
+                    data.user_list.push({
+                        uuid : row.uuid, 
+                        device : row.device_name,
+                        os : row.os_ver,
+                        location : row.location_code,
+                        usage_rate : row.cpu_raw_rate,
+                        usage_count : row.cpu_raw_count,
+                        time : cpu_raw_time
+                    })
+                });
+
+                return resolved(context);
+            });
+        });
     }
 };
 
