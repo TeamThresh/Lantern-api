@@ -65,18 +65,22 @@ var linkModel = {
 
     getActivityCount : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [];
+            var select = [data.ver_key];
             var sql = "SELECT SUM(user_count) AS user_count " +
             	"FROM activity_table " +
-        		"WHERE `act_ver_id` IN (";
+        		"WHERE `act_ver_id` IN (?) ";
             	
-            data.ver_key.forEach(function(ver_id, index) {
-            	sql += ver_id;
-            	if (index < data.ver_key.length - 1) {
-            		sql += ",";
-            	}
-            });
-            sql += ")";
+            if (data.filter != undefined) {
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.filter.activity_name);
+                }
+
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.filter.nactivity_name);
+                }
+            }
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {

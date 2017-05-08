@@ -106,12 +106,12 @@ var versionModel = {
             sql += ") ";
             if (data.filter != undefined) {
                 if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?)";
+                    sql += "AND `activity_name` IN (?) ";
                     select.push(data.filter.activity_name);
                 }
 
                 if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?)";
+                    sql += "AND `activity_name` NOT IN (?) ";
                     select.push(data.filter.nactivity_name);
                 }
             }
@@ -141,14 +141,23 @@ var versionModel = {
 
     getActivityIdByVersionWithName : function(context, data) {
     	return new Promise(function(resolved, rejected) {
-            var select = [data.activity_name];
+            var select = [data.activity_name, data.ver_key];
             var sql = "SELECT DISTINCT act_id " +
             	"FROM activity_table " +
             	"WHERE `activity_name` = ? "+
-            	"AND `act_ver_id` IN (";
-        	
-            sql += data.ver_key.toString();
-            sql += ") ";
+            	"AND `act_ver_id` IN (?) ";
+
+            if (data.filter != undefined) {
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.filter.activity_name);
+                }
+
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.filter.nactivity_name);
+                }
+            }
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -173,6 +182,9 @@ var versionModel = {
         });
     },
 
+    /**
+     * Deprecated
+     */
     getActivityNameByVersion : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [];
@@ -208,7 +220,7 @@ var versionModel = {
 
     getActNameCrashByVersion : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [];
+            var select = [data.ver_key];
             var sql = "SELECT act_t.activity_name, SUM(user_count) as user_count, " + 
                 "SUM(crash_count) as crash_count, SUM(obc_t.host_status > 300) as status_count, " +
                 "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
@@ -222,10 +234,21 @@ var versionModel = {
                 "ON `act_t`.`act_id` = `crash_t`.`crash_act_id` " +
                 "LEFT JOIN obc_table as obc_t " +
                 "ON act_t.act_id = obc_t.host_act_id " +
-                "WHERE `act_ver_id` IN (";
-            
-            sql += data.ver_key.toString();
-            sql += ") GROUP BY `act_t`.`activity_name`";
+                "WHERE `act_ver_id` IN (?) ";
+
+            if (data.filter != undefined) {
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.filter.activity_name);
+                }
+
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.filter.nactivity_name);
+                }
+            }
+
+            sql += "GROUP BY `act_t`.`activity_name`";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -297,6 +320,10 @@ var versionModel = {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.filter.os);
                 }
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.filter.activity_name);
+                }
 
                 if (data.filter.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
@@ -309,6 +336,10 @@ var versionModel = {
                 if (data.filter.nos != undefined) {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.filter.nos);
+                }
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.filter.nactivity_name);
                 }
             }
 
@@ -426,6 +457,10 @@ var versionModel = {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
                 }
+                if (data.selector.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.selector.activity_name);
+                }
 
                 if (data.selector.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
@@ -438,6 +473,10 @@ var versionModel = {
                 if (data.selector.nos != undefined) {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.selector.nos);
+                }
+                if (data.selector.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.selector.nactivity_name);
                 }
             }
 
@@ -504,6 +543,10 @@ var versionModel = {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
                 }
+                if (data.selector.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.selector.activity_name);
+                }
 
                 if (data.selector.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
@@ -517,9 +560,13 @@ var versionModel = {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.selector.nos);
                 }
+                if (data.selector.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.selector.nactivity_name);
+                }
             }
 
-            sql += "GROUP BY device_name" +
+            sql += "GROUP BY device_name " +
                 "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
@@ -583,6 +630,10 @@ var versionModel = {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
                 }
+                if (data.selector.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.selector.activity_name);
+                }
 
                 if (data.selector.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
@@ -596,9 +647,13 @@ var versionModel = {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.selector.nos);
                 }
+                if (data.selector.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.selector.nactivity_name);
+                }
             }
 
-            sql += "GROUP BY os_ver" +
+            sql += "GROUP BY os_ver " +
                 "ORDER BY usage_count ";
 
             context.connection.query(sql, select, function (err, rows) {
@@ -661,6 +716,10 @@ var versionModel = {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
                 }
+                if (data.selector.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.selector.activity_name);
+                }
 
                 if (data.selector.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
@@ -673,6 +732,10 @@ var versionModel = {
                 if (data.selector.nos != undefined) {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.selector.nos);
+                }
+                if (data.selector.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.selector.nactivity_name);
                 }
             }
 
@@ -737,6 +800,10 @@ var versionModel = {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.filter.os);
                 }
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.filter.activity_name);
+                }
 
                 if (data.filter.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
@@ -749,6 +816,10 @@ var versionModel = {
                 if (data.filter.nos != undefined) {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.filter.nos);
+                }
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.filter.nactivity_name);
                 }
             }
 

@@ -99,14 +99,16 @@ var crashModel = {
                     select.push(data.filter.location);
                 }
                 if (data.filter.device != undefined) {
-                    console.log("디바이스")
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.filter.device);
                 }
                 if (data.filter.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.filter.os);
-                    console.log(data.filter);
+                }
+                if (data.filter.activity_name != undefined) {
+                    sql += "AND `activity_name` IN (?) ";
+                    select.push(data.filter.activity_name);
                 }
 
                 if (data.filter.nlocation != undefined) {
@@ -120,6 +122,10 @@ var crashModel = {
                 if (data.filter.nos != undefined) {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.filter.nos);
+                }
+                if (data.filter.nactivity_name != undefined) {
+                    sql += "AND `activity_name` NOT IN (?) ";
+                    select.push(data.filter.nactivity_name);
                 }
             }
             sql += "GROUP BY crash_name " +
