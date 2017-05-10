@@ -431,12 +431,21 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             let select = [data.package_name];
             let sql = "SELECT DISTINCT location_code, SUM(user_count) AS usage_count, " +
-                "SUM(crash_count) as crash_count " +
+                "SUM(crash_count) as crash_count, " +
+                "SUM(obc_t.host_status > 300) as status_count, " +
+                "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
+                "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM version_table " +
-                "JOIN activity_table " +
+                "JOIN activity_table AS act_t" +
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
+                "LEFT JOIN cpu_table AS c_t " +
+                "ON act_t.act_id = c_t.cpu_act_id " +
+                "LEFT JOIN memory_table AS m_t " +
+                "ON act_t.act_id = m_t.mem_act_id " +
+                "LEFT JOIN obc_table AS obc_t " +
+                "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
             if (data.selector != undefined) {
@@ -517,12 +526,21 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             let select = [data.package_name, data.selector.location];
             let sql = "SELECT DISTINCT device_name, SUM(user_count) AS usage_count, " +
-                "SUM(crash_count) as crash_count " +
+                "SUM(crash_count) as crash_count, " +
+                "SUM(obc_t.host_status > 300) as status_count, " +
+                "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
+                "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM version_table " +
-                "JOIN activity_table " +
+                "JOIN activity_table AS act_t" +
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
+                "LEFT JOIN cpu_table AS c_t " +
+                "ON act_t.act_id = c_t.cpu_act_id " +
+                "LEFT JOIN memory_table AS m_t " +
+                "ON act_t.act_id = m_t.mem_act_id " +
+                "LEFT JOIN obc_table AS obc_t " +
+                "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
             if (data.selector != undefined) {
@@ -604,12 +622,21 @@ var versionModel = {
             let select = [data.package_name, data.selector.location, 
                 data.selector.device];
             let sql = "SELECT DISTINCT os_ver, SUM(user_count) AS usage_count, " +
-                "SUM(crash_count) as crash_count " +
+                "SUM(crash_count) as crash_count, " +
+                "SUM(obc_t.host_status > 300) as status_count, " +
+                "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
+                "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM version_table " +
-                "JOIN activity_table " +
+                "JOIN activity_table AS act_t " +
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
+                "LEFT JOIN cpu_table AS c_t " +
+                "ON act_t.act_id = c_t.cpu_act_id " +
+                "LEFT JOIN memory_table AS m_t " +
+                "ON act_t.act_id = m_t.mem_act_id " +
+                "LEFT JOIN obc_table AS obc_t " +
+                "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
             if (data.selector != undefined) {
@@ -690,12 +717,21 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             let select = [data.package_name];
             let sql = "SELECT DISTINCT activity_name, SUM(user_count) AS usage_count, " +
-                "SUM(crash_count) as crash_count " +
+                "SUM(crash_count) as crash_count, " +
+                "SUM(obc_t.host_status > 300) as status_count, " +
+                "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
+                "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM version_table " +
-                "JOIN activity_table " +
+                "JOIN activity_table AS act_t " +
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
+                "LEFT JOIN cpu_table AS c_t " +
+                "ON act_t.act_id = c_t.cpu_act_id " +
+                "LEFT JOIN memory_table AS m_t " +
+                "ON act_t.act_id = m_t.mem_act_id " +
+                "LEFT JOIN obc_table AS obc_t " +
+                "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
                 
             if (data.selector != undefined) {
@@ -761,7 +797,10 @@ var versionModel = {
                     let usage = {
                         activityName : row.activity_name,
                         usageCount : row.usage_count,
-                        crashCount : row.crash_count != null ? row.crash_count : 0
+                        crashCount : row.crash_count != null ? row.crash_count : 0,
+                        cpuCount : row.cpu_count,
+                        memoryCount : row.mem_count,
+                        networkCount : row.status_count
                     }
 
                     data.activity_usage.push(usage);
@@ -936,7 +975,7 @@ var versionModel = {
                         location : row.location_code,
                         usage_rate : row.cpu_raw_rate,
                         usage_count : row.cpu_raw_count,
-                        time : cpu_raw_time
+                        time : new Date(row.cpu_raw_time).getTime()
                     })
                 });
 
