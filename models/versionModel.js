@@ -517,7 +517,7 @@ var versionModel = {
 
     getDeviceUsage : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            let select = [data.package_name, data.selector.location];
+            let select = [data.package_name];
             let sql = "SELECT DISTINCT device_name, SUM(user_count) AS usage_count, " +
                 "SUM(crash_count) as crash_count, " +
                 "SUM(obc_t.host_status > 300) as status_count, " +
@@ -615,8 +615,7 @@ var versionModel = {
 
     getOsUsage : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            let select = [data.package_name, data.selector.location, 
-                data.selector.device];
+            let select = [data.package_name];
             let sql = "SELECT DISTINCT os_ver, SUM(user_count) AS usage_count, " +
                 "SUM(crash_count) as crash_count, " +
                 "SUM(obc_t.host_status > 300) as status_count, " +
