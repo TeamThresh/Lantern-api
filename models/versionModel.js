@@ -269,21 +269,11 @@ var versionModel = {
                     let temp = {
                         name : row.activity_name,
                         usageCount : row.user_count,
+                        crashCount : row.crash_count != null ? row.crash_count : 0,
                         cpuUsage : row.cpu_count,
-                        memoryUsage : row.mem_count
+                        memoryUsage : row.mem_count,
+                        networkCount : row.status_count != null ? row.status_count : 0,
                     };
-
-                    if (row.crash_count != null) {
-                        temp.crashCount = row.crash_count;
-                    } else {
-                        temp.crashCount = 0;
-                    }
-
-                    if (row.status_count != null) {
-                        temp.networkCount = row.status_count;
-                    } else {
-                        temp.networkCount = 0
-                    }
 
                     data.act_name_list.push(temp);
                 });
@@ -511,7 +501,10 @@ var versionModel = {
                     let usage = {
                         locationCode : row.location_code,
                         usageCount : row.usage_count,
-                        crashCount : row.crash_count != null ? row.crash_count : 0
+                        crashCount : row.crash_count != null ? row.crash_count : 0,
+                        cpuCount : row.cpu_count,
+                        memoryCount : row.mem_count,
+                        networkCount : row.status_count != null ? row.status_count : 0
                     }
 
                     data.location_usage.push(usage);
@@ -606,7 +599,10 @@ var versionModel = {
                     let usage = {
                         deviceName : row.device_name,
                         usageCount : row.usage_count,
-                        crashCount : row.crash_count != null ? row.crash_count : 0
+                        crashCount : row.crash_count != null ? row.crash_count : 0,
+                        cpuCount : row.cpu_count,
+                        memoryCount : row.mem_count,
+                        networkCount : row.status_count != null ? row.status_count : 0
                     }
 
                     data.device_usage.push(usage);
@@ -702,7 +698,10 @@ var versionModel = {
                     let usage = {
                         osVersion : row.os_ver,
                         usageCount : row.usage_count,
-                        crashCount : row.crash_count != null ? row.crash_count : 0
+                        crashCount : row.crash_count != null ? row.crash_count : 0,
+                        cpuCount : row.cpu_count,
+                        memoryCount : row.mem_count,
+                        networkCount : row.status_count != null ? row.status_count : 0
                     }
 
                     data.os_usage.push(usage);
@@ -800,7 +799,7 @@ var versionModel = {
                         crashCount : row.crash_count != null ? row.crash_count : 0,
                         cpuCount : row.cpu_count,
                         memoryCount : row.mem_count,
-                        networkCount : row.status_count
+                        networkCount : row.status_count != null ? row.status_count : 0
                     }
 
                     data.activity_usage.push(usage);
