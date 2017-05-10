@@ -426,7 +426,7 @@ var versionModel = {
                 "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
                 "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM version_table " +
-                "JOIN activity_table AS act_t" +
+                "JOIN activity_table AS act_t " +
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
@@ -524,7 +524,7 @@ var versionModel = {
                 "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
                 "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
                 "FROM version_table " +
-                "JOIN activity_table AS act_t" +
+                "JOIN activity_table AS act_t " +
                 "ON ver_id = act_ver_id " +
                 "LEFT JOIN crash_table " +
                 "ON crash_act_id = act_id " +
