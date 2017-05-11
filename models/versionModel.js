@@ -781,7 +781,7 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             var insert = [data.package_name, data.group_name, data.group_set, data.group_set];
             var sql = "INSERT INTO group_table SET " +
-                "group_package_id = ?, " +
+                "group_package_name = ?, " +
                 "group_name = ?, " +
                 "group_set = ? " +
                 "ON DUPLICATE KEY UPDATE " +
@@ -805,7 +805,7 @@ var versionModel = {
             var select = [data.package_name];
             var sql = "SELECT group_name " +
                 "FROM group_table " +
-                "WHERE `package_name` = ? " +
+                "WHERE `group_package_name` = ? " +
                 "ORDER BY group_id ASC";
 
             context.connection.query(sql, select, function (err, rows) {
@@ -834,7 +834,7 @@ var versionModel = {
             var select = [data.package_name, data.group_name];
             var sql = "SELECT group_set " +
                 "FROM group_table " +
-                "WHERE `package_name` = ? " +
+                "WHERE `group_package_name` = ? " +
                 "LIMIT 1 ";
 
             context.connection.query(sql, select, function (err, rows) {
