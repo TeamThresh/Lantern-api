@@ -38,6 +38,8 @@ var versionModel = {
             var select = [data.package_name];
             var sql = "SELECT DISTINCT ver_id " +
             	"FROM version_table " +
+                "LEFT JOIN activity_table " +
+                "ON ver_id = act_ver_id "
             	"WHERE `package_name` = ? ";
 
             if (data.filter != undefined) {
