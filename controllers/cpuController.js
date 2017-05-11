@@ -51,6 +51,25 @@ module.exports = {
             .catch(function(err) {
                 return next(err);
             });
+    },
+
+    test : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            uuid : req.query.uuid,
+            startRange : Number(req.query.startRange),
+            endRange : Number(req.query.endRange)
+        };
+
+        require('../models/resourceMongoModel')(data)//.resMongoModel()
+            .then(function(result) {
+                res.statusCode = 200;
+                return res.json(result);
+            })
+            .catch(function(err) {
+                return res.status(500).json({msg:err});
+            })
     }
     
 };

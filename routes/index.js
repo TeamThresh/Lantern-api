@@ -36,6 +36,8 @@ module.exports = function(){
   router.get('/callstack/:packageName/:activityName', api.stack.getCallstack);
   router.get('/userList/:packageName/:activityName', api.package.getSelectVersionList);
 
+  router.get('/detail/:packageName', api.detailRes.getResourceByUuid);
+
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {
     next(404);

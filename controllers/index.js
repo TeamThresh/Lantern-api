@@ -10,6 +10,7 @@ var cpu = require('./cpuController');
 var memory = require('./memoryController');
 var network = require('./networkController');
 var stack = require('./stackController');
+var detailRes = require('./detailController');
 
 var api = {
 	package : package,
@@ -20,6 +21,7 @@ var api = {
 	memory : memory,
 	network : network,
 	stack : stack,
+	detailRes : detailRes
 };
 
 module.exports = api;
