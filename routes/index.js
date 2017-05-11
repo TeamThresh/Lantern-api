@@ -25,7 +25,7 @@ module.exports = function(){
   router.get('/statusOfActivity/:packageName', api.package.getStatusOfActivity);
   router.get('/group/:packageName', api.package.getGroupList);
   router.get('/group/:packageName/:groupName', api.package.getStatusByGroup);
-  router.post('/statusByGroup/:packageName', api.package.setStatusByGroup);
+  router.post('/group/:packageName', api.package.setStatusByGroup);
 
   // Summary View
   router.get('/one-depth-userflow/:packageName/:activityName', api.link.getUserflow);
