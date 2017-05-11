@@ -444,10 +444,6 @@ var versionModel = {
                     select.push(data.selector.dateRange.start, data.selector.dateRange.end);
                 }
 
-                if (data.selector.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.selector.location);
-                }
                 if (data.selector.device != undefined) {
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.selector.device);
@@ -461,10 +457,6 @@ var versionModel = {
                     select.push(data.selector.activity_name);
                 }
 
-                if (data.selector.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.selector.nlocation);
-                }
                 if (data.selector.ndevice != undefined) {
                     sql += "AND `device_name` NOT IN (?) ";
                     select.push(data.selector.ndevice);
@@ -546,10 +538,6 @@ var versionModel = {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.selector.location);
                 }
-                if (data.selector.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.selector.device);
-                }
                 if (data.selector.os != undefined) {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
@@ -562,10 +550,6 @@ var versionModel = {
                 if (data.selector.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
                     select.push(data.selector.nlocation);
-                }
-                if (data.selector.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.selector.ndevice);
                 }
                 if (data.selector.nos != undefined) {
                     sql += "AND `os_ver` NOT IN (?) ";
@@ -648,10 +632,6 @@ var versionModel = {
                     sql += "AND `device_name` IN (?) ";
                     select.push(data.selector.device);
                 }
-                if (data.selector.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.selector.os);
-                }
                 if (data.selector.activity_name != undefined) {
                     sql += "AND `activity_name` IN (?) ";
                     select.push(data.selector.activity_name);
@@ -664,10 +644,6 @@ var versionModel = {
                 if (data.selector.ndevice != undefined) {
                     sql += "AND `device_name` NOT IN (?) ";
                     select.push(data.selector.ndevice);
-                }
-                if (data.selector.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.selector.nos);
                 }
                 if (data.selector.nactivity_name != undefined) {
                     sql += "AND `activity_name` NOT IN (?) ";
@@ -750,10 +726,6 @@ var versionModel = {
                     sql += "AND `os_ver` IN (?) ";
                     select.push(data.selector.os);
                 }
-                if (data.selector.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.selector.activity_name);
-                }
 
                 if (data.selector.nlocation != undefined) {
                     sql += "AND `location_code` NOT IN (?) ";
@@ -766,10 +738,6 @@ var versionModel = {
                 if (data.selector.nos != undefined) {
                     sql += "AND `os_ver` NOT IN (?) ";
                     select.push(data.selector.nos);
-                }
-                if (data.selector.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.selector.nactivity_name);
                 }
             }
 
