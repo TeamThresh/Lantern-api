@@ -136,7 +136,8 @@ module.exports = {
     getStatusOfLocation : function(req, res, next) {
         var data = {
             access_token: req.header('access-token'),
-            package_name : req.params.packageName
+            package_name : req.params.packageName,
+            selector : require('./filter').setFilter(req.query)
         };
 
         mysqlSetting.getPool()
@@ -242,6 +243,87 @@ module.exports = {
             .then(function(data) {
                 res.statusCode = 200;
                 return res.json(data);
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    },
+
+    getGroupList : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.getGroupList(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = data.group_list;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    },
+
+    getStatusByGroup : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            group_name : req.params.groupName
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.getGroup(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = data.group_set;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    },
+
+    setStatusByGroup : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            group_name : req.params.groupName,
+            group_set : req.body.filters
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.setGroup(context, data);
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({msg : "complete"});
             })
             .catch(function(err) {
                 return next(err);
