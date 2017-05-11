@@ -22,21 +22,20 @@ var resourceSchema = new Schema(SchemaSet.testSchema);
 module.exports.resMongoModel = function(data) {
 	return new Promise(function(resolved, rejected) {
 		var Res = mongoose.model('resourceModels', resourceSchema);
-		console.log(data);
-		Res.findOne({
+		Res.find({
 			"package_name" : data.package_name,
-		    "device_info.UUID" : data.uuid,
+		    "device_info.uuid" : data.uuid,
 		    "data": {
 		        $elemMatch: {
 		            type : "res",
-		            "duration_time.start" : { $gt : data.startRange },
-		            "duration_time.end" : { $lt : data.endRange }
+		            "duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+		            "duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
 		        }
-		    }}, function(err, book){
+		    }}, function(err, resData){
 		        if(err) return rejected(err);
-		        if(!book) return rejected(book);
+		        if(!resData) return rejected("No data");
 		        
-		        return resolved(book);
+		        return resolved(resData);
 	    });
 
 	});
