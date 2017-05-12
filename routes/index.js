@@ -41,6 +41,9 @@ module.exports = function(){
 
   router.get('/detail/:packageName', api.detailRes.getResourceByUuid);
 
+  // Crash Dashboard
+  router.get('/crashUsage/:packageName', api.crash.getCrashUsage);
+
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {
     next(404);
