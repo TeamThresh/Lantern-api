@@ -210,7 +210,7 @@ var crashModel = {
                     select.push(data.filter.nactivity_name);
                 }
             }
-            sql += "GROUP BY crash_name " +
+            sql += "GROUP BY crash_id, crash_name " +
                 "ORDER BY count";
 
             context.connection.query(sql, select, function (err, rows) {
@@ -245,7 +245,8 @@ var crashModel = {
     getCrashInfo : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name, data.crash_id];
-            var sql = "SELECT crash_id, SUM(crash_count) AS count, crash_name, first_time, last_time " +
+            var sql = "SELECT crash_id, crash_name, first_time, last_time, " +
+                "(SELECT SUM(crash_count) FROM crash_table WHERE crash_id = crash_raw_id) AS count " +
                 "FROM crash_table " +
                 "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
                 "INNER JOIN activity_table ON crash_act_id = act_id " +
