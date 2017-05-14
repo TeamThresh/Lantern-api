@@ -150,4 +150,9 @@ module.exports = {
                 return next(err);
             });
     },
+
+    getCrashStack : function(req, res, next){
+        res.statusCode = 200;
+        return res.json("data");
+    }
 };
