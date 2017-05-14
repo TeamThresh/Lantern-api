@@ -30,7 +30,7 @@ var linkModel = {
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
-                    error.status = 404;
+                    error.status = 9404;
                     context.connection.rollback();
                     return rejected(error);
 	            }
@@ -91,7 +91,7 @@ var linkModel = {
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
-                    error.status = 404;
+                    error.status = 9404;
                     context.connection.rollback();
                     return rejected(error);
 	            }

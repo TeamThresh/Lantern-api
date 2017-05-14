@@ -64,7 +64,7 @@ module.exports.resMongoModel = function(data) {
 		        }
 		        if(!resData) {
 		        	var error = new Error("No data");
-                    error.status = 404;
+                    error.status = 9404;
 		        	return rejected(error);
 		        }
 		        

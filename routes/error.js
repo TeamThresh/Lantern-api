@@ -4,19 +4,18 @@
 var errorCode = require('./errorCode');
 
 module.exports = function (err, res, mode) {
-    if (err instanceof Error) {
-        console.log(err);
-        res.status(err.status).json({msg : err.message});
-    } else {
-        var error = errorCode[err];
-        console.log(error);
-        if (mode === 'development') {
-            // development error handler
-            res.status(error.status).json(error);
+    console.log(err);
+    var error;
+    console.log(err.status);
+    err.status == undefined ? error = errorCode[500] : error = errorCode[err.status];
+    console.log(errorCode[500]);
+    console.log(error);
+    if (mode === 'development') {
+        // development error handler
+        res.status(error.status).json(error.msg);
 
-        } else if (mode === 'production') {
-            // production error handler
-            res.status(error.status).json(error);
-        }
+    } else if (mode === 'production') {
+        // production error handler
+        res.status(error.status).json(error.msg);
     }
 };

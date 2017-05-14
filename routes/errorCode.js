@@ -36,43 +36,62 @@
 module.exports = {
   "400": {
     "status": 400,
-    "msg": "잘못된 요청입니다.",
-    "description": "Bad Request"
+    "msg": {
+      "내용" : "잘못된 요청입니다.",
+      "description": "Bad Request"
+    }
   },
 
   "401": {
     "status": 401,
-    "msg": "토큰 인증에 실패하였습니다.",
-    "description": "False token"
+    "msg": {
+      "내용" : "토큰 인증에 실패하였습니다.",
+      "description": "False token"
+    }
   },
 
   "404": {
     "status": 404,
-    "msg": "잘못된 주소입니다.",
-    "description": "Bad Request"
+    "msg": {
+      "내용" : "잘못된 주소입니다.",
+      "description": "Bad Request"
+    }
   },
 
   "500": {
     "status": 500,
-    "msg": "내부 서버 오류",
-    "description": "Internal Server Error"
+    "msg": {
+      "내용" : "내부 서버 오류",
+      "description": "Internal Server Error"
+    }
   },
 
   "9400": {
     "status": 400,
-    "msg": "잘못된 코드입니다.",
-    "description": "invalid parameter"
+    "msg": {
+      "내용" : "잘못된 코드입니다.",
+      "description": "invalid parameter"
+    }
+  },
+
+  "9404": {
+    "status" : 200,
+    "msg" : []
   },
 
   "9500": {
     "status": 500,
-    "msg": "해당 정보가 없습니다.",
-    "description": "No have content"
+    "msg": {
+      "내용" : "해당 정보가 없습니다.",
+      "description": "No have content"
+    }
   },
 
   "1401": {
     "status": 200,
-    "msg": "아이디가 중복됩니다.",
-    "description": "Exist Email"
+    "msg": {
+      "내용" : "아이디가 중복됩니다.",
+      "description": "Exist Email"
+    }
   }
 }
