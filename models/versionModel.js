@@ -1040,11 +1040,12 @@ var versionModel = {
     getVersionsByCrash : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name, data.crash_id];
-            var sql = "SELECT os_ver, app_ver, device_name, location_code, crash_count " +
+            var sql = "SELECT os_ver, app_ver, device_name, location_code, SUM(crash_count) AS crash_count " +
                 "FROM crash_table " +
+                "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
                 "INNER JOIN activity_table ON crash_act_id = act_id " +
                 "INNER JOIN version_table ON act_ver_id = ver_id " +
-                "WHERE package_name = ? "
+                "WHERE package_name = ? " +
                 "AND crash_id = ? ";
 
             if (data.filter != undefined) {
@@ -1089,7 +1090,8 @@ var versionModel = {
                 }
             }
 
-            sql += "ORDER BY crash_count DESC";
+            sql += "GROUP BY app_ver, os_ver, device_name, location_code " +
+                "ORDER BY crash_count DESC";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
