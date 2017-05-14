@@ -101,7 +101,7 @@ var crashModel = {
                     sql += "AND collect_time BETWEEN ? AND ? ";
                     select.push(data.filter.dateRange.start, data.filter.dateRange.end);
                 }
-                
+
                 if (data.filter.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.filter.location);
@@ -136,7 +136,7 @@ var crashModel = {
                     select.push(data.filter.nactivity_name);
                 }
             }
-            sql += "GROUP BY crash_name " +
+            sql += "GROUP BY crash_id " +
                 "ORDER BY count";
 
             context.connection.query(sql, select, function (err, rows) {
