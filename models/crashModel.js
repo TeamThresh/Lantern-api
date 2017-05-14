@@ -294,8 +294,6 @@ var crashModel = {
                     select.push(data.filter.nactivity_name);
                 }
             }
-            sql += "GROUP BY crash_id, crash_name " +
-                "ORDER BY count";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
