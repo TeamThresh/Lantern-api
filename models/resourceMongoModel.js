@@ -57,8 +57,16 @@ module.exports.resMongoModel = function(data) {
 			}, {
 			    $limit : data.limit
 			}, function(err, resData){
-		        if(err) return rejected(err);
-		        if(!resData) return rejected("No data");
+		        if(err) {
+		        	var error = new Error(err);
+		        	error.status = 500;
+		        	return rejected(error);
+		        }
+		        if(!resData) {
+		        	var error = new Error("No data");
+                    error.status = 404;
+		        	return rejected(error);
+		        }
 		        
 		        return resolved(resData);
 	    });

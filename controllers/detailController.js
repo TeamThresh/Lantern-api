@@ -28,8 +28,8 @@ module.exports = {
                 return res.json(result);
             })
             .catch(function(err) {
-                return res.status(500).json({msg:err});
-            })
+                return next(err);
+            });
     }
     
 };

@@ -28,7 +28,7 @@ var networkModel = {
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                 	var error = new Error("No data");
-                    error.status = 500;
+                    error.status = 404;
                 	context.connection.rollback();
                     return rejected(error);
 	            }
@@ -134,7 +134,7 @@ var networkModel = {
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                 	var error = new Error("No data");
-                    error.status = 500;
+                    error.status = 404;
                 	context.connection.rollback();
                     return rejected(error);
 	            }
