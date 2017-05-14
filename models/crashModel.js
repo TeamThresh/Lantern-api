@@ -251,7 +251,7 @@ var crashModel = {
                 "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
                 "INNER JOIN activity_table ON crash_act_id = act_id " +
                 "INNER JOIN version_table ON act_ver_id = ver_id " +
-                "WHERE package_name = ? "
+                "WHERE package_name = ? " +
                 "AND crash_id = ? ";
                 
             if (data.filter != undefined) {
