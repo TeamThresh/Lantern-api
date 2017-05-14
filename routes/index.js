@@ -36,14 +36,15 @@ module.exports = function(){
   router.get('/network/:packageName/:activityName', api.network.getNetwork);
 
   // Detail View
-  router.get('/callstack/:packageName/:activityName', api.stack.getCallstack);
+  router.get('/reverseStack/:packageName/:activityName', api.stack.getCallstack);
   router.get('/userList/:packageName/:activityName', api.package.getSelectVersionList);
 
   router.get('/detail/:packageName', api.detailRes.getResourceByUuid);
 
   // Crash Dashboard
   router.get('/crashUsage/:packageName', api.crash.getCrashUsage);
-  router.get('/crashVersions/:packageName/:crashId', api.crash.getVersionsByCrash);
+  router.get('/crashDetail/:packageName/:crashId', api.crash.getVersionsByCrash);
+  router.get('/crashReverseStack/:packageName/:crashId', api.crash.getCrashStack);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {

@@ -127,11 +127,17 @@ module.exports = {
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
+                return CrashModel.getCrashInfo(context, data);
+            })
+            .then(function(context) {
                 return VersionModel.getVersionsByCrash(context, data);
             })
             .then(function(context) {
                 return new Promise(function(resolved) {
-                    context.result = data.crash_version_list;
+                    context.result = {
+                        crash_info : data.crashInfo,
+                        crash_version : data.crash_version_list
+                    }
                     return resolved(context);
                 });
             })
