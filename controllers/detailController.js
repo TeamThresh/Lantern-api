@@ -18,7 +18,8 @@ module.exports = {
             package_name : req.params.packageName,
             uuid : req.query.uuid,
             startRange : Number(req.query.startRange),
-            endRange : Number(req.query.endRange)
+            endRange : Number(req.query.endRange),
+            limit : 1
         };
 
         ResourceMongoModel.resMongoModel(data)

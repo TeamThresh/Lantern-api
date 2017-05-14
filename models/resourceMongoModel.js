@@ -22,7 +22,47 @@ var resourceSchema = new Schema(SchemaSet.testSchema);
 module.exports.resMongoModel = function(data) {
 	return new Promise(function(resolved, rejected) {
 		var Res = mongoose.model('resourceModels', resourceSchema);
-		Res.find({
+		Res.aggregate({
+			    $match : {
+			        "package_name" : data.package_name,
+			        "device_info.uuid" : data.uuid,
+			        "data.type" : "res",
+			        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+			        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+			    }
+			}, {
+			    $unwind : "$data"
+			    
+			}, {
+			    $match : {
+			        "data.type" : "res"
+			    }
+			}, {
+			    $group : {
+			        _id : "$_id",
+			        data : {
+			            $push : {
+			                "app" : {
+			                    "memory" : "$data.app.memory",
+			                    "cpu_app" : "$data.app.cpu_app"
+			                },
+			                "os" : {
+			                    "vmstat" : "$data.os.vmstat",
+			                    "cpu" : "$data.os.cpu"
+			                },
+			                "duration_time" : "$data.duration_time"
+			            }
+			        }
+			    }
+			}, {
+			    $limit : data.limit
+			}, function(err, resData){
+		        if(err) return rejected(err);
+		        if(!resData) return rejected("No data");
+		        
+		        return resolved(resData);
+	    });
+		/*Res.find({
 			"package_name" : data.package_name,
 		    "device_info.uuid" : data.uuid,
 		    "data": {
@@ -36,7 +76,7 @@ module.exports.resMongoModel = function(data) {
 		        if(!resData) return rejected("No data");
 		        
 		        return resolved(resData);
-	    });
+	    });*/
 
 	});
 }

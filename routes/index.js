@@ -25,7 +25,7 @@ module.exports = function(){
   router.get('/statusOfActivity/:packageName', api.package.getStatusOfActivity);
   router.get('/group/:packageName', api.package.getGroupList);
   router.get('/group/:packageName/:groupName', api.package.getStatusByGroup);
-  router.post('/group/:packageName', api.package.setStatusByGroup);
+  router.post('/group/:packageName/:groupName', api.package.setStatusByGroup);
 
   // Summary View
   router.get('/one-depth-userflow/:packageName/:activityName', api.link.getUserflow);
@@ -43,6 +43,7 @@ module.exports = function(){
 
   // Crash Dashboard
   router.get('/crashUsage/:packageName', api.crash.getCrashUsage);
+  router.get('/crashVersions/:packageName/:crashId', api.crash.getVersionsByCrash);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {

@@ -89,7 +89,7 @@ var crashModel = {
     getCrashNameWithCount : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
-            var sql = "SELECT SUM(crash_count) AS count, crash_name " +
+            var sql = "SELECT crash_id, SUM(crash_count) AS count, crash_name " +
                 "FROM crash_table " +
                 "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
                 "INNER JOIN activity_table ON crash_act_id = act_id " +
@@ -158,7 +158,7 @@ var crashModel = {
     getCrashUsage : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
-            var sql = "SELECT SUM(crash_count) AS count, crash_name, collect_time " +
+            var sql = "SELECT crash_id, SUM(crash_count) AS count, crash_name, collect_time " +
                 "FROM crash_table " +
                 "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
                 "INNER JOIN activity_table ON crash_act_id = act_id " +
@@ -220,6 +220,7 @@ var crashModel = {
                 data.crashList = [];
                 rows.forEach(function(row) {
                     data.crashList.push({
+                        crash_id : row.crash_id,
                         count : row.count, 
                         crash_name : row.crash_name,
                         collect_time : new Date(row.collect_time).getTime()
