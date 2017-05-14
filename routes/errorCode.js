@@ -53,8 +53,8 @@ module.exports = {
   "404": {
     "status": 404,
     "msg": {
-      "내용" : "잘못된 주소입니다.",
-      "description": "Bad Request"
+      "내용" : "요청 페이지를 찾을 수 없습니다.",
+      "description": "Not Found"
     }
   },
 
