@@ -97,6 +97,11 @@ var crashModel = {
                 "WHERE package_name = ? ";
                 
             if (data.filter != undefined) {
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
+                }
+                
                 if (data.filter.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.filter.location);
@@ -166,6 +171,11 @@ var crashModel = {
                 "WHERE package_name = ? ";
                 
             if (data.filter != undefined) {
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
+                }
+
                 if (data.filter.location != undefined) {
                     sql += "AND `location_code` IN (?) ";
                     select.push(data.filter.location);
