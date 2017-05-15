@@ -116,6 +116,11 @@ var versionModel = {
                     sql += "AND `activity_name` NOT IN (?) ";
                     select.push(data.filter.nactivity_name);
                 }
+
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
+                }
             }
 
             context.connection.query(sql, select, function (err, rows) {
@@ -158,6 +163,11 @@ var versionModel = {
                 if (data.filter.nactivity_name != undefined) {
                     sql += "AND `activity_name` NOT IN (?) ";
                     select.push(data.filter.nactivity_name);
+                }
+
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
                 }
             }
 
@@ -247,6 +257,11 @@ var versionModel = {
                 if (data.filter.nactivity_name != undefined) {
                     sql += "AND `activity_name` NOT IN (?) ";
                     select.push(data.filter.nactivity_name);
+                }
+
+                if (data.filter.dateRange != undefined) {
+                    sql += "AND collect_time BETWEEN ? AND ? ";
+                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
                 }
             }
 
