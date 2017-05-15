@@ -36,7 +36,7 @@ var stackModel = {
 	            	if (callstack[row.thread_name] == undefined) {
 	            		callstack[row.thread_name] = {}
 	            		if (row.call_uplevel == null) {
-	            			callstack[row.thread_name].root = row.call_clevel
+	            			row.call_uplevel = 0;
 	            		}
 
 	            		callstack[row.thread_name].stack = [{
@@ -47,7 +47,7 @@ var stackModel = {
             			}];
 	            	} else {
 	            		if (row.call_uplevel == null) {
-	            			callstack[row.thread_name].root = row.call_clevel
+	            			row.call_uplevel = 0;
 	            		}
 
 	            		callstack[row.thread_name].stack.push({
@@ -62,7 +62,12 @@ var stackModel = {
 				data.callstack = [];
 	            let thread_name = Object.keys(callstack);
 	            thread_name.forEach(function(name) {
-	            	let orderd = treeModel(callstack[name].stack, callstack[name].root);
+	            	callstack[name].stack.push({
+		            	id : 0,
+		            	stackName : 'root'
+		            });
+
+	            	let orderd = treeModel(callstack[name].stack, 0);
 	            	data.callstack.push({
 	            		threadName : name,
 	            		stack : orderd
