@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(logger('dev'));
 
 // set the secret key variable for jwt
-app.set('jwt-secret', new Buffer(credentials.mongoSecret).toString('base64'));
+app.set('jwt-secret', new Buffer(credentials.jwtsecret).toString('base64'));
 
 // Route Handlers
 app.use('/api', routes());

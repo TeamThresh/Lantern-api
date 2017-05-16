@@ -13,7 +13,7 @@ var auth = {
 		const data = { 
 			username : req.body.username, 
 			password : crypto.createHmac('sha256', 
-					new Buffer(credentials.mongoSecret))
+					new Buffer(credentials.jwtsecret))
 				.update(req.body.password)
 				.digest('base64')
 		}
@@ -72,7 +72,7 @@ var auth = {
 		const data = {
 			username : req.params.username,
 			password : crypto.createHmac('sha256', 
-					new Buffer(credentials.mongoSecret))
+					new Buffer(credentials.jwtsecret))
 				.update(req.body.password)
 				.digest('base64')
 		}
