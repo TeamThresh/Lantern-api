@@ -140,9 +140,9 @@ var auth = {
             	return new Promise(function(resolved, rejected) {
             		// token does not exist
 				    if(!token) {
-				    	var error = new Error(err);
+				    	var error = new Error('not logged in');
 				    	error.status = 401;
-				    	return rejected('not logged in');
+				    	return rejected(error);
 				    }
 
 				    jwt.verify(token, req.app.get('jwt-secret'), (err, decoded) => {
