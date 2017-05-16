@@ -16,14 +16,14 @@ module.exports = {
 
     getPackageNames : function (req, res, next) {
         var data = {
-            access_token: req.header('access-token')
+            access_token: req.token
         };
 
         mysqlSetting.getPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
-            	return VersionModel.getPackageList(context, data.access_token);
+            	return VersionModel.getPackageList(context, data);
             })
             .then(function(context) {
             	return new Promise(function(resolved) {

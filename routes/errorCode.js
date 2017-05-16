@@ -50,6 +50,14 @@ module.exports = {
     }
   },
 
+  "403": {
+    "status": 403,
+    "msg": {
+      "내용" : "권한이 없습니다.",
+      "description": "Not athorized"
+    }
+  },
+
   "404": {
     "status": 404,
     "msg": {
@@ -87,7 +95,7 @@ module.exports = {
     }
   },
 
-  "1401": {
+  "9401": {
     "status": 200,
     "msg": {
       "내용" : "아이디가 중복됩니다.",

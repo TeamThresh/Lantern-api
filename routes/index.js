@@ -3,48 +3,54 @@
  */
 var express = require('express');
 var api = require('../controllers');
+var auth = require('../controllers/authController');
 var router = express.Router();
 
 module.exports = function(){
 
+  // Authentication
+  router.post('/user', auth.regist);
+  router.post('/user/:username', auth.login);
+  router.post('/user/:username/:packageName', auth.check, auth.addProject);
+
   // Dashboard
-  router.get('/packageNames', api.package.getPackageNames);
-  router.get('/nodesAndLinks/:packageName', api.link.getNodesAndLinks);
-  router.get('/deviceByOS/:packageName', api.package.getDeviceByOS);
-  router.get('/location/:packageName', api.network.getLocation);
-  router.get('/topError/:packageName', api.crash.getTopCrash);
-  router.get('/userCount/:packageName', api.package.getUserUsage);
+  router.get('/packageNames', auth.check, api.package.getPackageNames);
+  router.get('/nodesAndLinks/:packageName', auth.check, auth.checkProject, api.link.getNodesAndLinks);
+  router.get('/deviceByOS/:packageName', auth.check, auth.checkProject, api.package.getDeviceByOS);
+  router.get('/location/:packageName', auth.check, auth.checkProject, api.network.getLocation);
+  router.get('/topError/:packageName', auth.check, auth.checkProject, api.crash.getTopCrash);
+  router.get('/userCount/:packageName', auth.check, auth.checkProject, api.package.getUserUsage);
 
   // Package Version
-  router.get('/allVersions/:packageName', api.package.getAllVersionStatus);
+  router.get('/allVersions/:packageName', auth.check, auth.checkProject, api.package.getAllVersionStatus);
 
   // Filter
-  router.get('/statusOfLocation/:packageName', api.package.getStatusOfLocation); // TODO /location 과 똑같은데..?
-  router.get('/statusOfDevice/:packageName', api.package.getStatusOfDevice); 
-  router.get('/statusOfOs/:packageName', api.package.getStatusOfOs);
-  router.get('/statusOfActivity/:packageName', api.package.getStatusOfActivity);
-  router.get('/group/:packageName', api.package.getGroupList);
-  router.get('/group/:packageName/:groupName', api.package.getStatusByGroup);
-  router.post('/group/:packageName/:groupName', api.package.setStatusByGroup);
+  router.get('/statusOfLocation/:packageName', auth.check, auth.checkProject, api.package.getStatusOfLocation); // TODO /location 과 똑같은데..?
+  router.get('/statusOfDevice/:packageName', auth.check, auth.checkProject, api.package.getStatusOfDevice); 
+  router.get('/statusOfOs/:packageName', auth.check, auth.checkProject, api.package.getStatusOfOs);
+  router.get('/statusOfActivity/:packageName', auth.check, auth.checkProject, api.package.getStatusOfActivity);
+  router.get('/group/:packageName', auth.check, auth.checkProject, api.package.getGroupList);
+  router.get('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.getStatusByGroup);
+  router.post('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.setStatusByGroup);
 
   // Summary View
-  router.get('/one-depth-userflow/:packageName/:activityName', api.link.getUserflow);
-  router.get('/crash/:packageName/:activityName', api.crash.getCrash);
-  router.get('/rendering/:packageName/:activityName', api.render.getRendering);
-  router.get('/cpu/:packageName/:activityName', api.cpu.getCPU);
-  router.get('/memory/:packageName/:activityName', api.memory.getMemory);
-  router.get('/network/:packageName/:activityName', api.network.getNetwork);
+  router.get('/one-depth-userflow/:packageName/:activityName', auth.check, auth.checkProject, api.link.getUserflow);
+  router.get('/crash/:packageName/:activityName', auth.check, auth.checkProject, api.crash.getCrash);
+  router.get('/rendering/:packageName/:activityName', auth.check, auth.checkProject, api.render.getRendering);
+  router.get('/cpu/:packageName/:activityName', auth.check, auth.checkProject, api.cpu.getCPU);
+  router.get('/memory/:packageName/:activityName', auth.check, auth.checkProject, api.memory.getMemory);
+  router.get('/network/:packageName/:activityName', auth.check, auth.checkProject, api.network.getNetwork);
 
   // Detail View
-  router.get('/reverseStack/:packageName/:activityName', api.stack.getCallstack);
-  router.get('/userList/:packageName/:activityName', api.package.getSelectVersionList);
+  router.get('/reverseStack/:packageName/:activityName', auth.check, auth.checkProject, api.stack.getCallstack);
+  router.get('/userList/:packageName/:activityName', auth.check, auth.checkProject, api.package.getSelectVersionList);
 
-  router.get('/detail/:packageName', api.detailRes.getResourceByUuid);
+  router.get('/detail/:packageName', auth.check, auth.checkProject, api.detailRes.getResourceByUuid);
 
   // Crash Dashboard
-  router.get('/crashUsage/:packageName', api.crash.getCrashUsage);
-  router.get('/crashDetail/:packageName/:crashId', api.crash.getVersionsByCrash);
-  router.get('/crashReverseStack/:packageName/:crashId', api.crash.getCrashStack);
+  router.get('/crashUsage/:packageName', auth.check, auth.checkProject, api.crash.getCrashUsage);
+  router.get('/crashDetail/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getVersionsByCrash);
+  router.get('/crashReverseStack/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getCrashStack);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {

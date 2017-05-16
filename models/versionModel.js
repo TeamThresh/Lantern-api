@@ -5,9 +5,10 @@
 var versionModel = {
     getPackageList : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [];
-            var sql = "SELECT DISTINCT package_name " +
-            	"FROM version_table ";
+            var select = [data.access_token.user_id];
+            var sql = `SELECT DISTINCT ap_package_name 
+            	FROM admin_package_table 
+                WHERE ap_admin_id = ? `;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -25,7 +26,7 @@ var versionModel = {
 	            
 	            context.nameList = [];
 	            rows.forEach(function(row) {
-	            	context.nameList.push(row.package_name);
+	            	context.nameList.push(row.ap_package_name);
 	            });
 	            //
             	return resolved(context);
