@@ -35,7 +35,7 @@ var stackModel = {
 	            rows.forEach(function(row) {
 	            	if (callstack[row.thread_name] == undefined) {
 	            		callstack[row.thread_name] = {}
-	            		if (row.call_uplevel == null) {
+	            		if (row.call_uplevel == row.call_clevel) {
 	            			row.call_uplevel = 0;
 	            		}
 
@@ -46,7 +46,7 @@ var stackModel = {
             				count : row.call_count
             			}];
 	            	} else {
-	            		if (row.call_uplevel == null) {
+	            		if (row.call_uplevel == row.call_clevel) {
 	            			row.call_uplevel = 0;
 	            		}
 
@@ -59,6 +59,8 @@ var stackModel = {
 	            	}
 	            });
 
+	            const TreeModel = require('./treeModel');
+	            
 				data.callstack = [];
 	            let thread_name = Object.keys(callstack);
 	            thread_name.forEach(function(name) {
@@ -67,7 +69,7 @@ var stackModel = {
 		            	stackName : 'root'
 		            });
 
-	            	let orderd = treeModel(callstack[name].stack, 0);
+	            	let orderd = TreeModel.expendTreeModel(callstack[name].stack, 0);
 	            	data.callstack.push({
 	            		threadName : name,
 	            		stack : orderd
@@ -118,7 +120,7 @@ var stackModel = {
 	            rows.forEach(function(row) {
 	            	if (callstack[row.thread_name] == undefined) {
 	            		callstack[row.thread_name] = {}
-	            		if (row.call_uplevel == null) {
+	            		if (row.call_uplevel == row.call_clevel) {
 	            			row.call_uplevel = 0;
 	            		}
 
@@ -129,7 +131,7 @@ var stackModel = {
             				count : row.call_count
             			}];
 	            	} else {
-	            		if (row.call_uplevel == null) {
+	            		if (row.call_uplevel == row.call_clevel) {
 	            			row.call_uplevel = 0;
 	            		}
 
@@ -141,6 +143,8 @@ var stackModel = {
 	            		});
 	            	}
 	            });
+	            
+	            const TreeModel = require('./treeModel');
 
 				data.callstack = [];
 	            let thread_name = Object.keys(callstack);
@@ -150,7 +154,7 @@ var stackModel = {
 		            	stackName : 'root'
 		            });
 
-	            	let orderd = treeModel(callstack[name].stack, 0);
+	            	let orderd = TreeModel.expendTreeModel(callstack[name].stack, 0);
 	            	data.callstack.push({
 	            		threadName : name,
 	            		stack : orderd
@@ -161,35 +165,6 @@ var stackModel = {
             });
         });
     },
-};
-
-//트리 변환 메서드
-var treeModel = function (arrayList, rootId) {
-	var rootNodes = [];
-	var traverse = function (nodes, item, index) {
-		if (nodes instanceof Array) {
-			return nodes.some(function (node) {
-				if (node.id === item.parentId) {
-					node.children = node.children || [];
-					return node.children.push(arrayList.splice(index, 1)[0]);
-				}
-
-				return traverse(node.children, item, index);
-			});
-		}
-	};
-
-	while (arrayList.length > 0) {
-		arrayList.some(function (item, index) {
-			if (item.id === rootId) {
-				return rootNodes.push(arrayList.splice(index, 1)[0]);
-			}
-
-			return traverse(rootNodes, item, index);
-		});
-	}
-
-	return rootNodes;
 };
 
 module.exports = stackModel;
