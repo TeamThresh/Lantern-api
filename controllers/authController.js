@@ -160,7 +160,7 @@ var auth = {
 	checkProject : function(req, res, next) {
 		const data = {
 			user_id : req.token.user_id,
-			package_name : req.params.package_name
+			package_name : req.params.packageName
 		}
 
         mysqlSetting.getPool()
