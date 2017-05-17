@@ -8,6 +8,8 @@ var authModel = require('../models/authModel');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 
+const SESSION_NAME = 'LANTERNSESSIONID';
+
 var auth = {
 	regist : function(req, res, next) {
 		const data = { 
@@ -116,10 +118,13 @@ var auth = {
 	    	})
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
-                res.statusCode = 200;
+            	// TODO Expire는 client-side 에서 유효기간을 잡는건 무의미하다.
+            	// 서버랑 맞추면 좋긴한데 어차피 보안상 서버에서의 유효기간이 중요하기 때문
+            	// 나중에 혹시 유효한 쿠키였던 경우 re-issue 갱신해줄 수 있으므로 
+            	// 클라이언트 사이드 쿠키는 유효기간을 무한으로 두어도 된다.
+                res.cookie(SESSION_NAME, data);
                 return res.json({
-                    msg : 'login complete',
-                    token : data
+                    msg : 'login complete'
                 });
             })
 		    .catch(function(err) {
@@ -128,8 +133,13 @@ var auth = {
 	},
 
 	check : function(req, res, next) {
-		// read the token from header or url 
-	    const token = req.headers['x-access-token'] || req.query.token
+		// read the token from cookie
+	    const token = req.cookies[SESSION_NAME]
+	    if( ! token ) {
+	    	res.statusCode = 401;
+	    	res.json({});
+	    	return next();
+	    }
 
 	    let decodedToken;
 	    // create a promise that decodes the token
