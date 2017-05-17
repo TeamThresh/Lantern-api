@@ -83,7 +83,8 @@ var authModel = {
 
     login : function(context, data) {
     	return new Promise(function(resolved, rejected) {
-            var update = [new Date().toISOString(), context.result, data.user_id];
+    		var format = require('date-format');
+            var update = [format('yyyy-MM-dd hh:mm:00', new Date()), context.result, data.user_id];
             var sql = `UPDATE admin_table SET 
             	last_login = ?,
             	admin_token = ?
