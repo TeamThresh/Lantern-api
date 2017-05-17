@@ -113,9 +113,9 @@ var auth = {
 		// read the token from cookie
 	    const token = req.cookies[SESSION_NAME]
 	    if( ! token ) {
-	    	res.statusCode = 401;
-	    	res.json({});
-	    	return next();
+	    	var error = new Error('not logged in');
+	    	error.status = 401;
+	    	return next(error);
 	    }
 
 	    let decodedToken;

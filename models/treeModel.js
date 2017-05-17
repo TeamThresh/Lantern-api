@@ -2,7 +2,6 @@
 
 module.exports = function (arrayList, rootId) {
 	var rootNodes = [];
-	console.log(arrayList.length);
 	var traverse = function (nodes, item, index) {
 		if (nodes instanceof Array) {
 			return nodes.some(function (node) {
@@ -33,37 +32,29 @@ module.exports = function (arrayList, rootId) {
 module.exports.expendTreeModel = (arrayList, rootId) => {
 	var rootNode = {};
 
-	var search = (item) => {
-		arrayList.forEach((compItem) => {
+	var search = (item, array) => {
+		return array.some((compItem, index) => {
 			if (item.id == compItem.parentId) {
 				item.children = item.children || [];
-				return item.children.push(compItem);
+				item.children.push(compItem);
+				if (array.length != 0) {
+					array.splice(index, 1);
+					return search(compItem, JSON.parse(JSON.stringify(array)));
+				} else 
+					return true;
 			}
-		})
-
-		if (item.children) {
-			item.children.forEach((children) => {
-				search(children);
-			});
-		}
+			return false;
+		});
 	}
 
-	arrayList.forEach((item) => {
+	arrayList.some((item, index) => {
 		if (item.id == rootId) {
 			rootNode = item;
-			search(rootNode);
+			arrayList.splice(index, 1);
+			return search(rootNode, arrayList);
 		}
+		return false;
 	});
 
 	return rootNode;
 }
-
-/*
-		let compareItem = arrayList.slice(0, 1);
-		arrayList.forEach((item, index) => {
-			if (item.parentId == compareItem.id) {
-				if (compareItem.children instanceof undefined) compareItem.children = [];
-				compareItem.children.push(item);
-			}
-		});
-		rootNodes.push(compareItem);*/

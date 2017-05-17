@@ -60,7 +60,7 @@ var stackModel = {
 	            });
 
 	            const TreeModel = require('./treeModel');
-	            
+
 				data.callstack = [];
 	            let thread_name = Object.keys(callstack);
 	            thread_name.forEach(function(name) {
@@ -69,7 +69,8 @@ var stackModel = {
 		            	stackName : 'root'
 		            });
 
-	            	let orderd = TreeModel.expendTreeModel(callstack[name].stack, 0);
+	            	let orderd = []
+	            	orderd.push(TreeModel.expendTreeModel(callstack[name].stack, 0));
 	            	data.callstack.push({
 	            		threadName : name,
 	            		stack : orderd
@@ -154,7 +155,8 @@ var stackModel = {
 		            	stackName : 'root'
 		            });
 
-	            	let orderd = TreeModel.expendTreeModel(callstack[name].stack, 0);
+	            	let orderd = []
+	            	orderd.push(TreeModel.expendTreeModel(callstack[name].stack, 0));
 	            	data.callstack.push({
 	            		threadName : name,
 	            		stack : orderd
