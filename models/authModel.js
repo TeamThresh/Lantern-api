@@ -74,7 +74,7 @@ var authModel = {
 	            context.user = {
 	            	user_id : rows[0].admin_user_id,
 	            	username : rows[0].admin_username,
-	            	nickname : rows[0].nickname
+	            	nickname : rows[0].nickname,
 	            	password : rows[0].admin_password
 	            };
 
