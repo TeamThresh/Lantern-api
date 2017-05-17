@@ -20,6 +20,7 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             activity_name : req.params.activityName,
+            limit : Number(req.query.limit) || 10,
             filter : require('./filter').setFilter(req.query)
         };
 
@@ -57,7 +58,7 @@ module.exports = {
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
-            limit : req.query.limit || 10,
+            limit : Number(req.query.limit) || 10,
             filter : require('./filter').setFilter(req.query)
         };
 

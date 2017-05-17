@@ -21,7 +21,7 @@ module.exports = function(){
   router.get('/nodesAndLinks/:packageName', auth.check, auth.checkProject, api.link.getNodesAndLinks);
   router.get('/deviceByOS/:packageName', auth.check, auth.checkProject, api.package.getDeviceByOS);
   router.get('/location/:packageName', auth.check, auth.checkProject, api.network.getLocation);
-  router.get('/crashConut/:packageName', auth.check, auth.checkProject, api.crash.getTopCrash);
+  router.get('/crashCount/:packageName', auth.check, auth.checkProject, api.crash.getTopCrash);
   router.get('/userCount/:packageName', auth.check, auth.checkProject, api.package.getUserUsage);
 
   // Package Version
