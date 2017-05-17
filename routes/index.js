@@ -54,6 +54,7 @@ module.exports = function(){
   router.get('/crashUsage/:packageName', auth.check, auth.checkProject, api.crash.getCrashUsage);
   router.get('/crashDetail/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getVersionsByCrash);
   router.get('/crashReverseStack/:packageName/:crashId', auth.check, auth.checkProject, api.stack.getCrashStack);
+  router.get('/crashEventPath/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getCrashEventPath);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {
