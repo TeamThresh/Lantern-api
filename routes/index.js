@@ -53,7 +53,7 @@ module.exports = function(){
   // Crash Dashboard
   router.get('/crashUsage/:packageName', auth.check, auth.checkProject, api.crash.getCrashUsage);
   router.get('/crashDetail/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getVersionsByCrash);
-  router.get('/crashReverseStack/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getCrashStack);
+  router.get('/crashReverseStack/:packageName/:crashId', auth.check, auth.checkProject, api.stack.getCrashStack);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {

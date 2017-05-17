@@ -51,6 +51,38 @@ module.exports = {
             .catch(function(err) {
                 return next(err);
             });
+    },
+
+    getCrashStack : function(req, res, next){
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            crash_id : req.params.crashId,
+            filter : require('./filter').setFilter(req.query)
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return StackModel.getCrashstack(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = data.callstack;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    data: data
+                });
+            })
+            .catch(function(err) {
+                return next(err);
+            });
     }
     
 };

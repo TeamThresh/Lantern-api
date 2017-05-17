@@ -61,6 +61,7 @@ var auth = {
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
+            	// TODO 확인해서 토큰만료가 남았으면 현재 토큰만 반환할 것
             	return authModel.checkUser(context, data);
 	    	})
 	    	.then(function(context) {

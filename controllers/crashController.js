@@ -150,10 +150,5 @@ module.exports = {
             .catch(function(err) {
                 return next(err);
             });
-    },
-
-    getCrashStack : function(req, res, next){
-        res.statusCode = 200;
-        return res.json("data");
     }
 };
