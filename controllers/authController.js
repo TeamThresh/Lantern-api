@@ -14,6 +14,7 @@ var auth = {
 	regist : function(req, res, next) {
 		const data = { 
 			username : req.body.username, 
+			nickname : req.body.nickname, 
 			password : crypto.createHmac('sha256', 
 					new Buffer(credentials.jwtsecret))
 				.update(req.body.password)
@@ -44,32 +45,6 @@ var auth = {
 	    
 	},
 
-	addProject : function(req, res, next) {
-		const data = { 
-			user_id : req.token.user_id,
-			package_name : req.params.packageName,
-			level : req.body.level
-		}
-
-		// check username duplication
-		mysqlSetting.getPool()
-            .then(mysqlSetting.getConnection)
-            .then(mysqlSetting.connBeginTransaction)
-            .then((context) => {
-            	return authModel.addAuthToProject(context, data);
-	    	})
-            .then(mysqlSetting.commitTransaction)
-            .then(function(data) {
-                res.statusCode = 200;
-                return res.json({
-                    msg : 'regist complete'
-                });
-            })
-		    .catch(function(err) {
-		    	next(err);
-		    })
-	},
-
 	login : function(req, res, next) {
 		const data = {
 			username : req.params.username,
@@ -98,7 +73,8 @@ var auth = {
                     jwt.sign(
                         {
                             user_id: context.user.user_id,
-                            username: context.user.username
+                            username: context.user.username,
+                            nickname: context.user.nickname
                         }, 
                         secret, 
                         {
@@ -200,7 +176,165 @@ var auth = {
 			.catch(function(err) {
 				return next(err);
 			})
-	}
+	},
+
+	addProject : function(req, res, next) {
+		const data = { 
+			user_id : req.token.user_id,
+			package_name : req.params.packageName,
+			level : 'owner'
+		}
+
+		// check username duplication
+		mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then((context) => {
+            	return authModel.addAuthToProject(context, data);
+	    	})
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'regist complete'
+                });
+            })
+		    .catch(function(err) {
+		    	next(err);
+		    })
+	},
+
+	rmProject : function(req, res, next) {
+		const data = { 
+			user_id : req.token.user_id,
+			package_name : req.params.packageName
+		}
+
+		// check username duplication
+		mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then((context) => {
+            	return authModel.removeProject(context, data);
+	    	})
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'remove complete'
+                });
+            })
+		    .catch(function(err) {
+		    	next(err);
+		    })
+	},
+
+	editMember : function(req, res, next) {
+		const data = { 
+			user_id : req.token.user_id,
+			username : req.token.username,
+			package_name : req.params.packageName,
+			member_name : req.params.membername,
+			level : req.body.level
+		}
+
+		if (data.username == data.member_name) {
+			let err = new Error();
+			err.status = 406;
+			return next(err);
+		}
+
+		// check username duplication
+		mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then((context) => {
+            	return authModel.checkProject(context, data);
+            })
+            .then((context) => {
+            	return new Promise((resolved, rejected) => {
+            		if (data.project_level == 'admin'
+        			|| data.level != 'member') {
+	            		let err = new Error();
+						err.status = 403;
+						return rejected(err);
+					} else if (data.project_level == 'owner'
+					|| data.level == 'owner') {
+						let err = new Error();
+						err.status = 403;
+						return rejected(err);
+            		} else if (data.project_level == 'member') {
+	            		let err = new Error();
+						err.status = 403;
+						return rejected(err);
+	            	}
+
+        			return resolved(context);
+            	});
+            })
+            .then((context) => {
+            	return authModel.checkLevel(context, data);
+            })
+            .then((context) => {
+            	data.checked_user.package_name = data.package_name;
+            	return authModel.addAuthToProject(context, data.checked_user);
+	    	})
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'member edited'
+                });
+            })
+		    .catch(function(err) {
+		    	next(err);
+		    })
+	},
+
+	rmMember : function(req, res, next) {
+		const data = { 
+			user_id : req.token.user_id,
+			package_name : req.params.packageName,
+			member_name : req.params.membername
+		}
+
+		// check username duplication
+		mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then((context) => {
+            	return authModel.checkProject(context, data);
+            })
+            .then((context) => {
+            	return authModel.checkLevel(context, data);
+            })
+            .then((context) => {
+            	return new Promise((resolved, rejected) => {
+            		if (data.checked_user.level != 'owner'
+        			&& data.project_level == 'admin'
+        			|| data.project_level == 'owner') {
+	            		return resolved(context);
+					} else {
+						let err = new Error();
+						err.status = 403;
+						return rejected(err);
+            		}
+            	});
+            })
+            .then((context) => {
+            	return authModel.removeMember(context, data.checked_user);
+	    	})
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'member deleted'
+                });
+            })
+		    .catch(function(err) {
+		    	next(err);
+		    })
+	},
 }
 
 module.exports = auth;

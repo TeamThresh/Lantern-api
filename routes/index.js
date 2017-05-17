@@ -11,7 +11,10 @@ module.exports = function(){
   // Authentication
   router.post('/user', auth.regist);
   router.post('/user/:username', auth.login);
-  router.post('/user/:username/:packageName', auth.check, auth.addProject);
+  router.post('/project/:packageName', auth.check, auth.addProject);
+  router.delete('/project/:packageName', auth.check, auth.rmProject);
+  router.put('/project/:packageName/:membername', auth.check, auth.editMember);
+  router.delete('/project/:packageName/:membername', auth.check, auth.rmMember);
 
   // Dashboard
   router.get('/packageNames', auth.check, api.package.getPackageNames);

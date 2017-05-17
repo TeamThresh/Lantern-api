@@ -31,9 +31,10 @@ var authModel = {
 
     createUser : function(context, data) {
     	return new Promise(function(resolved, rejected) {
-    		var insert = [data.username, data.password];
+    		var insert = [data.username, data.nickname, data.password];
     		var sql = `INSERT INTO admin_table SET
     			admin_username = ?,
+    			nickname = ?,
     			admin_password = ? `;
 
 			context.connection.query(sql, insert, function (err, rows) {
@@ -52,7 +53,7 @@ var authModel = {
     checkUser : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [data.username];
-            var sql = `SELECT admin_user_id, admin_username, admin_password
+            var sql = `SELECT admin_user_id, admin_username, nickname, admin_password
             	FROM admin_table 
             	WHERE admin_username = ? `;
 
@@ -73,6 +74,7 @@ var authModel = {
 	            context.user = {
 	            	user_id : rows[0].admin_user_id,
 	            	username : rows[0].admin_username,
+	            	nickname : rows[0].nickname
 	            	password : rows[0].admin_password
 	            };
 
@@ -132,6 +134,96 @@ var authModel = {
     	})
     },
 
+    removeMember : function(context, data) {
+    	return new Promise(function(resolved, rejected) {
+    		var insert = [data.user_id, data.package_name];
+    		var sql = `DELETE admin_package_table 
+    			WHERE ap_admin_id = ?
+    			AND ap_package_name = ? `;
+
+			context.connection.query(sql, insert, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.affectedRows == 0) {
+                	var error = new Error("Not Authorized");
+                    error.status = 403;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+
+                return resolved(context);
+            });
+    	})
+    },
+
+    checkLevel : function(context, data) {
+    	return new Promise(function(resolved, rejected) {
+    		var select = [data.member_name, data.package_name];
+    		var sql = `SELECT admin_id, ap_level 
+    			FROM admin_package_table 
+    			INNER JOIN admin_table ON admin_id = ap_admin_id
+    			WHERE admin_username = ? 
+    			AND ap_package_name = ?`;
+
+			context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+
+                switch(rows[0].ap_level) {
+                	case 'owner':
+                		var error = new Error(err);
+	                    error.status = 500;
+	                    context.connection.rollback();
+	                    return rejected(error);
+                    case 'admin':
+                    	if (data.project_level != 'owner') {
+                    		var error = new Error(err);
+		                    error.status = 500;
+		                    context.connection.rollback();
+		                    return rejected(error);
+                    	}
+                    case 'member':
+                    	data.checked_user = {
+                    		user_id : rows[0].admin_id,
+                    		level : rows[0].ap_level
+                    	};
+                    	return resolved(context);
+                }
+            });
+    	})
+    },
+
+    removeProject : function(context, data) {
+    	return new Promise(function(resolved, rejected) {
+    		var insert = [data.user_id, data.package_name];
+    		var sql = `DELETE admin_package_table 
+    			WHERE ap_package_name = ? `;
+
+			context.connection.query(sql, insert, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.affectedRows == 0) {
+                	var error = new Error("Not Authorized");
+                    error.status = 403;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+
+                return resolved(context);
+            });
+    	})
+    },
+
     checkProject : function(context, data) {
     	return new Promise(function(resolved, rejected) {
     		var select = [data.user_id, data.package_name];
@@ -153,7 +245,7 @@ var authModel = {
                     return rejected(error);
                 }
 
-                context.result = rows[0].ap_level
+                data.project_level = rows[0].ap_level
                 return resolved(context);
             });
     	})
