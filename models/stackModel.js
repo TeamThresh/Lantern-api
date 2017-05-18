@@ -6,16 +6,16 @@ var stackModel = {
     getCallstack : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.act_id_list];
-            var sql = "SELECT thread_name, call_clevel, " +
-				"(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_clevel) AS clevel_name, " +
-				"call_uplevel, " +
-				"(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_uplevel) AS uplevel_name, " +
-				"SUM(call_count) AS call_count " +
-				"FROM callstack_table AS CT " +
-				"LEFT JOIN callstack_name_table AS CNT " +
-				"ON call_clevel = call_id AND call_uplevel = call_id " +
-				"WHERE call_act_id IN (?) " +
-				"GROUP BY thread_name, call_clevel, call_uplevel";
+            var sql = `SELECT thread_name, call_clevel, 
+				(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_clevel) AS clevel_name, 
+				call_uplevel, 
+				(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_uplevel) AS uplevel_name, 
+				SUM(call_count) AS call_count 
+				FROM callstack_table AS CT 
+				LEFT JOIN callstack_name_table AS CNT 
+				ON call_clevel = call_id AND call_uplevel = call_id 
+				WHERE call_act_id IN (?) 
+				GROUP BY thread_name, call_clevel, call_uplevel`;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {

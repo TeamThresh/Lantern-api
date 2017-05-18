@@ -165,12 +165,12 @@ var crashModel = {
     getCrashUsage : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
-            var sql = "SELECT crash_id, SUM(crash_count) AS count, crash_name, collect_time " +
-                "FROM crash_table " +
-                "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
-                "INNER JOIN activity_table ON crash_act_id = act_id " +
-                "INNER JOIN version_table ON act_ver_id = ver_id " +
-                "WHERE package_name = ? ";
+            var sql = `SELECT SUM(crash_count) AS count, collect_time 
+                FROM crash_table 
+                INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
+                INNER JOIN activity_table ON crash_act_id = act_id 
+                INNER JOIN version_table ON act_ver_id = ver_id 
+                WHERE package_name = ? `;
                 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {
@@ -212,8 +212,8 @@ var crashModel = {
                     select.push(data.filter.nactivity_name);
                 }
             }
-            sql += "GROUP BY crash_id, crash_name " +
-                "ORDER BY count";
+            sql += `GROUP BY collect_time 
+                ORDER BY count`;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -232,9 +232,7 @@ var crashModel = {
                 data.crashList = [];
                 rows.forEach(function(row) {
                     data.crashList.push({
-                        crash_id : row.crash_id,
                         count : row.count, 
-                        crash_name : row.crash_name,
                         collect_time : new Date(row.collect_time).getTime()
                     })
                 });
@@ -247,14 +245,14 @@ var crashModel = {
     getCrashInfo : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name, data.crash_id];
-            var sql = "SELECT crash_id, crash_name, first_time, last_time, " +
-                "(SELECT SUM(crash_count) FROM crash_table WHERE crash_id = crash_raw_id) AS count " +
-                "FROM crash_table " +
-                "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
-                "INNER JOIN activity_table ON crash_act_id = act_id " +
-                "INNER JOIN version_table ON act_ver_id = ver_id " +
-                "WHERE package_name = ? " +
-                "AND crash_id = ? ";
+            var sql = `SELECT crash_id, crash_name, first_time, last_time, 
+                crash_wifi, crash_mobile_net, crash_gps, crash_count
+                FROM crash_table 
+                INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
+                INNER JOIN activity_table ON crash_act_id = act_id 
+                INNER JOIN version_table ON act_ver_id = ver_id 
+                WHERE package_name = ? 
+                AND crash_id = ? `;
                 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {
