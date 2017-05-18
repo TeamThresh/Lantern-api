@@ -308,10 +308,13 @@ var crashModel = {
                     context.connection.rollback();
                     return rejected(error);
                 }
-    
+                
                 data.crashInfo = {
                     crash_id : rows[0].crash_id,
-                    count : rows[0].count, 
+                    count : rows[0].crash_count, 
+                    crash_wifi : rows[0].crash_wifi,
+                    crash_mobile_net : row[0].crash_mobile_net,
+                    crash_gps : row[0].crash_gps,
                     crash_name : rows[0].crash_name,
                     first_time : new Date(rows[0].first_time).getTime(),
                     last_time : new Date(rows[0].last_time).getTime()
