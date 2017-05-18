@@ -111,6 +111,38 @@ var authModel = {
         });
     },
 
+    getToken : function(context, data) {
+    	return new Promise(function(resolved, rejected) {
+    		var select = [data.user.user_id];
+    		var sql = `SELECT admin_token, last_login 
+    			FROM admin_table 
+    			WHERE admin_user_id `;
+
+			context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                } else if (rows.length == 0) {
+					var error = new Error("Not Authorized");
+                    error.status = 400;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+
+                if (new Date(rows[0].last_login).getTime() + 7 * 24 * 60 * 60 * 1000
+					< new Date().getTime()) {
+                	data.isExpired = true;
+                } else {
+                	data.token = rows[0].admin_token;
+                }
+
+                return resolved(context);
+            });
+    	});
+    },
+
     addAuthToProject : function(context, data) {
     	return new Promise(function(resolved, rejected) {
     		var insert = [data.user_id, data.package_name, data.level, data.level];

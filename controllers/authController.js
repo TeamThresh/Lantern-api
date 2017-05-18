@@ -69,25 +69,34 @@ var auth = {
 	    		return authModel.verify(context, context.user.password, data.password);
 	    	})
 	    	.then(function(context) {
+	    		// get User access token
+	    		return authModel.getToken(context, data);
+	    	})
+	    	.then(function(context) {
                 // create a promise that generates jwt asynchronously
                 return new Promise((resolved, rejected) => {
-                    jwt.sign(
-                        {
-                            user_id: context.user.user_id,
-                            username: context.user.username,
-                            nickname: context.user.nickname
-                        }, 
-                        secret, 
-                        {
-                        	// TODO 확인할것
-                            expiresIn: '7d',
-                            issuer: credentials.jwt.issuer,
-                            subject: credentials.jwt.subject
-                        }, (err, token) => {
-                            if (err) return rejected(err);
-                        	context.result = token;
-                            return resolved(context); 
-                        });
+                	if (data.isExpired) {
+	                    jwt.sign(
+	                        {
+	                            user_id: context.user.user_id,
+	                            username: context.user.username,
+	                            nickname: context.user.nickname
+	                        }, 
+	                        secret, 
+	                        {
+	                        	// TODO 확인할것
+	                            expiresIn: '7d',
+	                            issuer: credentials.jwt.issuer,
+	                            subject: credentials.jwt.subject
+	                        }, (err, token) => {
+	                            if (err) return rejected(err);
+	                        	context.result = token;
+	                            return resolved(context); 
+	                        });
+	                } else {
+	                	context.result = data.token;
+	                	return resolved(context);
+	                }
                 });
             })
 	    	.then(function(context) {
