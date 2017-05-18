@@ -44,9 +44,7 @@ module.exports = {
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
 		        res.statusCode = 200;
-		        return res.json({
-                    network : data
-                });
+		        return res.json(data);
             })
             .catch(function(err) {
                 return next(err);
@@ -75,9 +73,7 @@ module.exports = {
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
                 res.statusCode = 200;
-                return res.json({
-                    location : data
-                });
+                return res.json(data);
             })
             .catch(function(err) {
                 return next(err);
