@@ -317,6 +317,7 @@ var crashModel = {
                     crash_mobile_net : rows[0].crash_mobile_net,
                     crash_gps : rows[0].crash_gps,
                     crash_name : rows[0].crash_name,
+                    crash_stacktrace : rows[0].crash_stacktrace,
                     first_time : new Date(rows[0].first_time).getTime(),
                     last_time : new Date(rows[0].last_time).getTime()
                 }
