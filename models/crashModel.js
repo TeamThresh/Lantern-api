@@ -246,7 +246,8 @@ var crashModel = {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name, data.crash_id];
             var sql = `SELECT crash_id, crash_name, first_time, last_time, 
-                crash_wifi, crash_mobile_net, crash_gps, crash_count
+                crash_wifi, crash_mobile_net, crash_gps, crash_count,
+                crash_stacktrace
                 FROM crash_table 
                 INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
                 INNER JOIN activity_table ON crash_act_id = act_id 
