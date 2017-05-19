@@ -103,7 +103,7 @@ module.exports = {
             package_name : req.params.packageName
         }
 
-        if (user_level != 'owner') {
+        if (data.user_level != 'owner') {
             let err = new Error();
             err.status = 403;
             return next(err);

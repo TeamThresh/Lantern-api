@@ -235,8 +235,9 @@ var authModel = {
     removeProject : function(context, data) {
     	return new Promise(function(resolved, rejected) {
     		var insert = [data.user_id, data.package_name];
-    		var sql = `DELETE admin_package_table 
-    			WHERE ap_package_name = ? `;
+    		var sql = `DELETE FROM admin_package_table 
+    			WHERE ap_admin_id = ?
+    			AND ap_package_name = ? `;
 
 			context.connection.query(sql, insert, function (err, rows) {
                 if (err) {

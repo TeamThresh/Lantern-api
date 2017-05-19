@@ -30,9 +30,9 @@ var versionModel = {
             var sql = `UPDATE package_table SET
                 pack_name = ?,
                 project_name = ? 
-                WHERE package_name = ? `;
+                WHERE pack_name = ? `;
 
-            context.connection.query(sql, insert, function (err, rows) {
+            context.connection.query(sql, update, function (err, rows) {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
@@ -47,11 +47,11 @@ var versionModel = {
 
     removePackage : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var insert = [data.addPackage];
-            var sql = `DELETE package_table
+            var del = [data.package_name];
+            var sql = `DELETE FROM package_table
                 WHERE pack_name = ? `;
 
-            context.connection.query(sql, insert, function (err, rows) {
+            context.connection.query(sql, del, function (err, rows) {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
