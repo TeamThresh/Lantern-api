@@ -180,6 +180,10 @@ var auth = {
             .then(function(context) {
             	return AuthModel.checkProject(context, data);
 	    	})
+	    	.then((context) => {
+	    		context.result = data.project_level;
+	    		return Promise.resolved(context);
+	    	})
 			.then(mysqlSetting.commitTransaction)
 			.then(function(data) {
 				req.token.user_level = data;
