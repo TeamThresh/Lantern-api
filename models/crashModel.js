@@ -51,19 +51,11 @@ var crashModel = {
 
     getCrashCount : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [];
-            var sql = "SELECT SUM(crash_count) AS crash_count " +
-            	"FROM crash_table " +
-                "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
-        		"WHERE `crash_act_id` IN (";
-            	
-            data.act_id_list.forEach(function(act_id, index) {
-            	sql += act_id;
-            	if (index < data.act_id_list.length - 1) {
-            		sql += ",";
-            	}
-            });
-            sql += ")";
+            var select = [data.act_id_list];
+            var sql = `SELECT SUM(crash_count) AS crash_count 
+            	FROM crash_table 
+                INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
+        		WHERE crash_act_id IN (?)`;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -79,7 +71,7 @@ var crashModel = {
                     return rejected(error);
 	            }
 	            
-	            data.crashCount = rows[0].crash_count;
+	            data.crashCount = rows[0].crash_count || 0 ;
 	            
             	return resolved(context);
             });
