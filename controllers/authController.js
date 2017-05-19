@@ -212,17 +212,17 @@ var auth = {
             .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
             	return new Promise((resolved, rejected) => {
-            		if (data.project_level == 'admin'
+            		if (data.user_level == 'admin'
         			|| data.level != 'member') {
 	            		let err = new Error();
 						err.status = 403;
 						return rejected(err);
-					} else if (data.project_level == 'owner'
+					} else if (data.user_level == 'owner'
 					|| data.level == 'owner') {
 						let err = new Error();
 						err.status = 403;
 						return rejected(err);
-            		} else if (data.project_level == 'member') {
+            		} else if (data.user_level == 'member') {
 	            		let err = new Error();
 						err.status = 403;
 						return rejected(err);
