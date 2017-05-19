@@ -182,7 +182,9 @@ var auth = {
 	    	})
 	    	.then((context) => {
 	    		context.result = data.project_level;
-	    		return Promise.resolved(context);
+	    		return new Promise((resolved) => {
+	    			return resolved(context);
+	    		});
 	    	})
 			.then(mysqlSetting.commitTransaction)
 			.then(function(data) {
