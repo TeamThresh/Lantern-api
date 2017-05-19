@@ -113,7 +113,7 @@ var authModel = {
 
     getToken : function(context, data) {
     	return new Promise(function(resolved, rejected) {
-    		var select = [data.user.user_id];
+    		var select = [data.user_id];
     		var sql = `SELECT admin_token, last_login 
     			FROM admin_table 
     			WHERE admin_user_id `;

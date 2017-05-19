@@ -41,3 +41,6 @@ jspm_packages
 credentials.js
 
 whatap.conf
+
+# mac
+.DS_Store
