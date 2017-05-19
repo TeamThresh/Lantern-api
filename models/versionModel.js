@@ -7,7 +7,7 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             var insert = [data.package_name, data.project_name, data.type];
             var sql = `INSERT INTO package_table SET
-                package_name = ?,
+                pack_name = ?,
                 project_name = ?,
                 project_type = ? `;
 
@@ -28,7 +28,7 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             var update = [data.package_name, data.project_name, data.package_name];
             var sql = `UPDATE package_table SET
-                package_name = ?,
+                pack_name = ?,
                 project_name = ? 
                 WHERE package_name = ? `;
 
@@ -49,7 +49,7 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
             var insert = [data.addPackage];
             var sql = `DELETE package_table
-                WHERE package_name = ? `;
+                WHERE pack_name = ? `;
 
             context.connection.query(sql, insert, function (err, rows) {
                 if (err) {
