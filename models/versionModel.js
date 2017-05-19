@@ -3,12 +3,78 @@
  */
 
 var versionModel = {
+    addPackage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var insert = [data.package_name, data.project_name, data.type];
+            var sql = `INSERT INTO package_table SET
+                package_name = ?,
+                project_name = ?,
+                project_type = ? `;
+
+            context.connection.query(sql, insert, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                return resolved(context);
+            });
+        });
+    },
+
+    editPackage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var update = [data.package_name, data.project_name, data.package_name];
+            var sql = `UPDATE package_table SET
+                package_name = ?,
+                project_name = ? 
+                WHERE package_name = ? `;
+
+            context.connection.query(sql, insert, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                return resolved(context);
+            });
+        });
+    },
+
+    removePackage : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var insert = [data.addPackage];
+            var sql = `DELETE package_table
+                WHERE package_name = ? `;
+
+            context.connection.query(sql, insert, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    context.connection.rollback();
+                    return rejected(error);
+                }
+                
+                return resolved(context);
+            });
+        });
+    },
+
     getPackageList : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [data.access_token.user_id];
-            var sql = `SELECT DISTINCT ap_package_name 
-            	FROM admin_package_table 
-                WHERE ap_admin_id = ? `;
+            var select = [data.user_id];
+            var sql = `SELECT ap_package_name, project_name, project_type, 
+                (SELECT app_ver 
+                    FROM version_table 
+                    WHERE package_name = ap_package_name ORDER BY app_ver DESC LIMIT 1) AS app_ver
+                FROM admin_package_table  
+                INNER JOIN package_table ON pack_name = ap_package_name
+                WHERE ap_admin_id = 1
+                GROUP BY ap_package_name, project_name, project_type `;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -24,11 +90,16 @@ var versionModel = {
                     return rejected(error);
 	            }
 	            
-	            context.nameList = [];
+	            context.packageNameList = [];
 	            rows.forEach(function(row) {
-	            	context.nameList.push(row.ap_package_name);
+	            	context.packageNameList.push({
+                        package : row.ap_package_name,
+                        name : row.project_name,
+                        type : row.project_type,
+                        app_ver : row.app_ver
+                    });
 	            });
-	            //
+	            
             	return resolved(context);
             });
         });
@@ -967,15 +1038,15 @@ var versionModel = {
             var select = [data.package_name, 
                 data.filter.dateRange.start, data.filter.dateRange.end,
                 data.filter.usageRange.start, data.filter.usageRange.end];
-            var sql = "SELECT uuid, cpu_raw_time, collect_time, device_name, " +
-                "os_ver, location_code, cpu_raw_rate, cpu_raw_count " +
-                "FROM cpu_raw_table " +
-                "INNER JOIN activity_table ON craw_act_id = act_id " +
-                "INNER JOIN version_table ON act_ver_id = ver_id " +
-                "LEFT JOIN user_table ON ver_id = user_ver_id " +
-                "WHERE package_name = ? "
-                "AND cpu_raw_time BETWEEN ? AND ? " +
-                "AND cpu_raw_rate/cpu_raw_count BETWEEN ? AND ? ";
+            var sql = `SELECT uuid, cpu_raw_time, collect_time, device_name, 
+                os_ver, location_code, cpu_raw_rate, cpu_raw_count 
+                FROM cpu_raw_table 
+                INNER JOIN activity_table ON craw_act_id = act_id 
+                INNER JOIN version_table ON act_ver_id = ver_id 
+                LEFT JOIN user_table ON ver_id = user_ver_id 
+                WHERE package_name = ? 
+                AND cpu_raw_time BETWEEN ? AND ? 
+                AND cpu_raw_rate/cpu_raw_count BETWEEN ? AND ? `;
 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {

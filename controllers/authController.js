@@ -4,7 +4,9 @@
 
 var credentials = require('../credentials');
 var mysqlSetting = require('../models/mysqlSetting');
-var authModel = require('../models/authModel');
+var AuthModel = require('../models/authModel');
+var VersionModel = require('../models/versionModel');
+
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 
@@ -26,11 +28,11 @@ var auth = {
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
-            	return authModel.checkUserName(context, data);
+            	return AuthModel.checkUserName(context, data);
 	    	})
 		    .then((context) => {
     		    // create a new user if does not exist
-	            return authModel.createUser(context, data);
+	            return AuthModel.createUser(context, data);
 		    })
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
@@ -62,15 +64,15 @@ var auth = {
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
             	// TODO 확인해서 토큰만료가 남았으면 현재 토큰만 반환할 것
-            	return authModel.checkUser(context, data);
+            	return AuthModel.checkUser(context, data);
 	    	})
 	    	.then(function(context) {
 	    		// user exists, check the password
-	    		return authModel.verify(context, context.user.password, data.password);
+	    		return AuthModel.verify(context, context.user.password, data.password);
 	    	})
 	    	.then(function(context) {
 	    		// get User access token
-	    		return authModel.getToken(context, data);
+	    		return AuthModel.getToken(context, data);
 	    	})
 	    	.then(function(context) {
                 // create a promise that generates jwt asynchronously
@@ -100,7 +102,7 @@ var auth = {
                 });
             })
 	    	.then(function(context) {
-	    		return authModel.login(context, context.user);
+	    		return AuthModel.login(context, context.user);
 	    	})
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
@@ -154,7 +156,7 @@ var auth = {
 	    	})
 	    	.then(function(context) {
 	    		// user exists, check the password
-	    		return authModel.verifyToken(context, decodedToken, token);
+	    		return AuthModel.verifyToken(context, decodedToken, token);
 	    	})
 	    	.then(mysqlSetting.commitTransaction)
 		    .then(function(decoded) {
@@ -176,7 +178,7 @@ var auth = {
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
-            	return authModel.checkProject(context, data);
+            	return AuthModel.checkProject(context, data);
 	    	})
 			.then(mysqlSetting.commitTransaction)
 			.then(function(data) {
@@ -188,61 +190,11 @@ var auth = {
 			})
 	},
 
-	addProject : function(req, res, next) {
-		const data = { 
-			user_id : req.token.user_id,
-			package_name : req.params.packageName,
-			level : 'owner'
-		}
-
-		// check username duplication
-		mysqlSetting.getPool()
-            .then(mysqlSetting.getConnection)
-            .then(mysqlSetting.connBeginTransaction)
-            .then((context) => {
-            	return authModel.addAuthToProject(context, data);
-	    	})
-            .then(mysqlSetting.commitTransaction)
-            .then(function(data) {
-                res.statusCode = 200;
-                return res.json({
-                    msg : 'regist complete'
-                });
-            })
-		    .catch(function(err) {
-		    	next(err);
-		    })
-	},
-
-	rmProject : function(req, res, next) {
-		const data = { 
-			user_id : req.token.user_id,
-			package_name : req.params.packageName
-		}
-
-		// check username duplication
-		mysqlSetting.getPool()
-            .then(mysqlSetting.getConnection)
-            .then(mysqlSetting.connBeginTransaction)
-            .then((context) => {
-            	return authModel.removeProject(context, data);
-	    	})
-            .then(mysqlSetting.commitTransaction)
-            .then(function(data) {
-                res.statusCode = 200;
-                return res.json({
-                    msg : 'remove complete'
-                });
-            })
-		    .catch(function(err) {
-		    	next(err);
-		    })
-	},
-
 	editMember : function(req, res, next) {
 		const data = { 
 			user_id : req.token.user_id,
 			username : req.token.username,
+			user_level : req.token.user_level,
 			package_name : req.params.packageName,
 			member_name : req.params.membername,
 			level : req.body.level
@@ -258,9 +210,6 @@ var auth = {
 		mysqlSetting.getPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
-            .then((context) => {
-            	return authModel.checkProject(context, data);
-            })
             .then((context) => {
             	return new Promise((resolved, rejected) => {
             		if (data.project_level == 'admin'
@@ -283,11 +232,11 @@ var auth = {
             	});
             })
             .then((context) => {
-            	return authModel.checkLevel(context, data);
+            	return AuthModel.checkLevel(context, data);
             })
             .then((context) => {
             	data.checked_user.package_name = data.package_name;
-            	return authModel.addAuthToProject(context, data.checked_user);
+            	return AuthModel.addAuthToProject(context, data.checked_user);
 	    	})
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
@@ -304,6 +253,7 @@ var auth = {
 	rmMember : function(req, res, next) {
 		const data = { 
 			user_id : req.token.user_id,
+			user_level : req.token.user_level,
 			package_name : req.params.packageName,
 			member_name : req.params.membername
 		}
@@ -313,10 +263,7 @@ var auth = {
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
-            	return authModel.checkProject(context, data);
-            })
-            .then((context) => {
-            	return authModel.checkLevel(context, data);
+            	return AuthModel.checkLevel(context, data);
             })
             .then((context) => {
             	return new Promise((resolved, rejected) => {
@@ -332,7 +279,7 @@ var auth = {
             	});
             })
             .then((context) => {
-            	return authModel.removeMember(context, data.checked_user);
+            	return AuthModel.removeMember(context, data.checked_user);
 	    	})
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {

@@ -5,6 +5,7 @@
 var credentials = require('../credentials');
 var mysqlSetting = require('../models/mysqlSetting');
 var VersionModel = require('../models/versionModel');
+var AuthModel = require('../models/authModel');
 
 /**
  *
@@ -14,9 +15,125 @@ var VersionModel = require('../models/versionModel');
  */
 module.exports = {
 
+    addProject : function(req, res, next) {
+        const data = { 
+            user_id : req.token.user_id,
+            package_name : req.params.packageName,
+            project_name : req.body.project_name,
+            level : 'owner'
+        }
+
+        if (req.body.type == 'android' 
+            || req.body.type == 'unity') {
+            data.type = req.body.type;
+        } else {
+            let err = new Error('wrong parameter');
+            err.status = 400;
+            return next(err);
+        }
+
+        // check username duplication
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then((context) => {
+                return VersionModel.addPackage(context, data);
+            })
+            .then((context) => {
+                return AuthModel.addAuthToProject(context, data);
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'regist complete'
+                });
+            })
+            .catch(function(err) {
+                next(err);
+            })
+    },
+
+    editProject : function(req, res, next) {
+        const data = { 
+            user_id : req.token.user_id,
+            user_level : req.token.user_level,
+            package_name : req.params.packageName,
+            project_name : req.body.project_name
+        }
+
+        if (user_level != 'owner') {
+            let err = new Error();
+            err.status = 403;
+            return next(err);
+        }
+
+        if (req.body.type == 'android' 
+            || req.body.type == 'unity') {
+            data.type = req.body.type;
+        } else {
+            let err = new Error('wrong parameter');
+            err.status = 400;
+            return next(err);
+        }
+
+        // check username duplication
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then((context) => {
+                return VersionModel.editPackage(context, data);
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'edit complete'
+                });
+            })
+            .catch(function(err) {
+                next(err);
+            })
+    },
+
+    rmProject : function(req, res, next) {
+        const data = { 
+            user_id : req.token.user_id,
+            user_level : req.token.user_level,
+            package_name : req.params.packageName
+        }
+
+        if (user_level != 'owner') {
+            let err = new Error();
+            err.status = 403;
+            return next(err);
+        }
+
+        // check username duplication
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then((context) => {
+                return AuthModel.removeProject(context, data);
+            })
+            .then((context) => {
+                return VersionModel.removePackage(context, data);
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'remove complete'
+                });
+            })
+            .catch(function(err) {
+                next(err);
+            })
+    },
+
     getPackageNames : function (req, res, next) {
         var data = {
-            access_token: req.token
+            user_id : req.token.user_id
         };
 
         mysqlSetting.getPool()
@@ -27,7 +144,7 @@ module.exports = {
             })
             .then(function(context) {
             	return new Promise(function(resolved) {
-            		context.result = context.nameList;
+            		context.result = context.packageNameList;
             		return resolved(context);
             	});
             })
