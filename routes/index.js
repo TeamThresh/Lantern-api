@@ -11,10 +11,8 @@ module.exports = function(){
   // Authentication
   router.post('/user', auth.regist);
   router.post('/user/:username', auth.login);
-  router.post('/project/:packageName', auth.check, auth.addProject);
-  router.delete('/project/:packageName', auth.check, auth.rmProject);
-  router.put('/project/:packageName/:membername', auth.check, auth.editMember);
-  router.delete('/project/:packageName/:membername', auth.check, auth.rmMember);
+  router.put('/project/:packageName/:membername', auth.check, auth.checkProject, auth.editMember);
+  router.delete('/project/:packageName/:membername', auth.check, auth.checkProject, auth.rmMember);
 
   // Dashboard
   router.get('/packageNames', auth.check, api.package.getPackageNames);
@@ -26,6 +24,9 @@ module.exports = function(){
 
   // Package Version
   router.get('/allVersions/:packageName', auth.check, auth.checkProject, api.package.getAllVersionStatus);
+  router.post('/project/:packageName', auth.check, auth.checkProject, api.package.addProject);
+  router.put('/project/:packageName', auth.check, auth.checkProject, api.package.editProject);
+  router.delete('/project/:packageName', auth.check, auth.checkProject, api.package.rmProject);
 
   // Filter
   router.get('/statusOfLocation/:packageName', auth.check, auth.checkProject, api.package.getStatusOfLocation); // TODO /location 과 똑같은데..?
