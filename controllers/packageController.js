@@ -62,7 +62,7 @@ module.exports = {
             project_name : req.body.project_name
         }
 
-        if (user_level != 'owner') {
+        if (data.user_level != 'owner') {
             let err = new Error();
             err.status = 403;
             return next(err);
