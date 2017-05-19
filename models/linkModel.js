@@ -7,8 +7,8 @@ var linkModel = {
     getLinkList : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [];
-            var sql = "SELECT (SELECT activity_name FROM activity_table WHERE act_id = link_act_id) AS source_id, " +
-            	"(SELECT activity_name FROM activity_table WHERE act_id = before_act_id) AS target_id, " +
+            var sql = "SELECT (SELECT activity_name FROM activity_table WHERE act_id = link_act_id) AS target_id, " +
+            	"(SELECT activity_name FROM activity_table WHERE act_id = before_act_id) AS source_id, " +
             	"link_count " +
             	"FROM link_table " +
         		"WHERE `before_act_id` IN (";
