@@ -10,7 +10,7 @@ var pool = mysql.createPool({
     user: credentials.mysql.user,
     password: credentials.mysql.password,
     database: credentials.mysql.database,
-    connectionLimit: 50,
+    connectionLimit: 100,
     waitForConnections: true
 });
 
@@ -64,6 +64,13 @@ var commitTransaction = function(context) {
         });
     });
 };
+
+var rollbackTransaction = function(context) {
+    return new Promise(function(resolved, rejected) {
+        context.connection.rollback();
+        return resolved(context);
+    });
+}
 
 var releaseConnection = function(context) {
     return new Promise(function(resolved, rejected) {

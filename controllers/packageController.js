@@ -50,7 +50,11 @@ module.exports = {
                 });
             })
             .catch(function(err) {
-                next(err);
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
             })
     },
 
@@ -92,7 +96,11 @@ module.exports = {
                 });
             })
             .catch(function(err) {
-                next(err);
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
             })
     },
 
@@ -127,7 +135,11 @@ module.exports = {
                 });
             })
             .catch(function(err) {
-                next(err);
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
             })
     },
 
@@ -154,8 +166,12 @@ module.exports = {
 		        return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     }, 
 
     getDeviceByOS : function (req, res, next) {
@@ -185,8 +201,12 @@ module.exports = {
                 });
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getSelectVersionList : function(req, res, next) {
@@ -215,8 +235,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getAllVersionStatus : function(req, res, next) {
@@ -244,8 +268,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getStatusOfLocation : function(req, res, next) {
@@ -273,8 +301,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getStatusOfDevice : function(req, res, next) {
@@ -302,8 +334,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getStatusOfOs : function(req, res, next) {
@@ -331,8 +367,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getStatusOfActivity : function(req, res, next) {
@@ -360,8 +400,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getGroupList : function(req, res, next) {
@@ -388,8 +432,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getStatusByGroup : function(req, res, next) {
@@ -417,8 +465,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     setStatusByGroup : function(req, res, next) {
@@ -441,8 +493,12 @@ module.exports = {
                 return res.json({msg : "complete"});
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getUserUsage : function(req, res, next) {
@@ -470,7 +526,11 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     }
 };

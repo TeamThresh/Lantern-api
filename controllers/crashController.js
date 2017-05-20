@@ -48,8 +48,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getTopCrash : function (req, res, next) {
@@ -78,8 +82,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getCrashUsage : function (req, res, next) {
@@ -107,8 +115,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
     
     getVersionsByCrash : function (req, res, next) {
@@ -143,8 +155,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getCrashEventPath : function (req, res, next) {
@@ -159,12 +175,10 @@ module.exports = {
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
-                console.log('EVENT PATH START');
                 return CrashModel.getEventPath(context, data);
             })
             .then(function(context) {
                 return new Promise(function(resolved) {
-                    console.log('EVENT PATH END');
                     context.result = data.eventpath
                     return resolved(context);
                 });
@@ -175,7 +189,11 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     }
 };

@@ -15,8 +15,7 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 return resolved(context);
@@ -36,8 +35,7 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 return resolved(context);
@@ -55,8 +53,7 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 return resolved(context);
@@ -80,14 +77,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            context.packageNameList = [];
@@ -151,14 +146,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            data.ver_key = [];
@@ -199,14 +192,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            data.act_id_list = []
@@ -247,14 +238,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            data.act_id_list = []
@@ -283,14 +272,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            data.act_name_list = []
@@ -343,14 +330,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.act_name_list = []
@@ -429,14 +414,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.device_list = [];
@@ -478,14 +461,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.all_version = [];
@@ -567,14 +548,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.location_usage = [];
@@ -657,14 +636,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.device_usage = [];
@@ -747,14 +724,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.os_usage = [];
@@ -837,14 +812,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.activity_usage = [];
@@ -881,8 +854,7 @@ var versionModel = {
                 if (err) {
                     var error = new Error("insert failed");
                     error.status = 500;
-                    console.error(err);
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 return resolved(context);
@@ -902,14 +874,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.group_list = [];
@@ -934,14 +904,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.group_set = JSON.parse(rows[0].group_set);
@@ -1009,14 +977,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.user_connection = [];
@@ -1096,14 +1062,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 data.user_list = [];
@@ -1184,14 +1148,12 @@ var versionModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 data.crash_version_list = [];

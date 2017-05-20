@@ -42,8 +42,12 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-		    	next(err);
-		    })
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
 	    
 	},
 
@@ -116,8 +120,12 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-		    	next(err);
-		    })
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
 	},
 
 	check : function(req, res, next) {
@@ -164,8 +172,12 @@ var auth = {
 		    	return next();
 		    })
 		    .catch(function(err) {
-		    	return next(err);
-		    });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
 	},
 
 	checkProject : function(req, res, next) {
@@ -192,8 +204,12 @@ var auth = {
 				return next();
 			})
 			.catch(function(err) {
-				return next(err);
-			})
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
 	},
 
 	editMember : function(req, res, next) {
@@ -252,8 +268,12 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-		    	next(err);
-		    })
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
 	},
 
 	rmMember : function(req, res, next) {
@@ -295,8 +315,12 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-		    	next(err);
-		    })
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
 	},
 }
 

@@ -14,14 +14,12 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length > 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("exist user");
                     error.status = 9401;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
             	return resolved(context);
@@ -41,8 +39,7 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 return resolved(context);
@@ -61,14 +58,12 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// 아무것도 없는 경우
                     var error = new Error("login failed");
                     error.status = 403;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            context.user = {
@@ -96,14 +91,12 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// 아무것도 없는 경우
                     var error = new Error("login failed");
                     error.status = 403;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 
             	return resolved(context);
@@ -122,13 +115,11 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
 					var error = new Error("Not Authorized");
                     error.status = 400;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 if (new Date(rows[0].last_login).getTime() + 7 * 24 * 60 * 60 * 1000
@@ -157,8 +148,7 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 return resolved(context);
@@ -177,13 +167,11 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.affectedRows == 0) {
                 	var error = new Error("Not Authorized");
                     error.status = 403;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 return resolved(context);
@@ -204,24 +192,26 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 9404;
+                    return rejected({ context : context, error : error });
                 }
 
                 switch(rows[0].ap_level) {
                 	case 'owner':
                 		var error = new Error(err);
 	                    error.status = 500;
-	                    context.connection.rollback();
-	                    return rejected(error);
+	                    return rejected({ context : context, error : error });
                     case 'admin':
                     	if (data.project_level != 'owner') {
                     		var error = new Error(err);
 		                    error.status = 500;
-		                    context.connection.rollback();
-		                    return rejected(error);
+		                    return rejected({ context : context, error : error });
                     	}
-                    case 'member':
+                    default : // member
                     	data.checked_user = {
                     		user_id : rows[0].admin_id,
                     		level : rows[0].ap_level
@@ -243,13 +233,11 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.affectedRows == 0) {
                 	var error = new Error("Not Authorized");
                     error.status = 403;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 return resolved(context);
@@ -269,13 +257,11 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	var error = new Error("no data");
                     error.status = 403;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 data.project_level = rows[0].ap_level
@@ -289,8 +275,7 @@ var authModel = {
     		if (origin !== target) {
 	    		var error = new Error('Login failed');
 				error.status = 403;
-				context.connection.rollback();
-			    return rejected(error);
+				return rejected({ context : context, error : error });
 	    	}
 
 	    	return resolved(context);
@@ -309,14 +294,12 @@ var authModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// 아무것도 없는 경우
                     var error = new Error("login failed");
                     error.status = 403;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 
             	return resolved(context);

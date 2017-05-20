@@ -23,14 +23,12 @@ var crashModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            data.crashList = [];
@@ -61,14 +59,12 @@ var crashModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
 	            }
 	            
 	            data.crashCount = rows[0].crash_count || 0 ;
@@ -137,14 +133,12 @@ var crashModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
                 
                 data.crashList = rows;
@@ -211,14 +205,12 @@ var crashModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
     
                 data.crashList = [];
@@ -292,14 +284,12 @@ var crashModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
 
                 data.crashInfo = {
@@ -385,14 +375,12 @@ var crashModel = {
                 if (err) {
                     var error = new Error(err);
                     error.status = 500;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 } else if (rows.length == 0) {
                     // TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
-                    context.connection.rollback();
-                    return rejected(error);
+                    return rejected({ context : context, error : error });
                 }
     
                 let eventpath = [];

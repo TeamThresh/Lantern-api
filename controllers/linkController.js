@@ -23,8 +23,6 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
-        console.log(Array(req.query.os));
-
         mysqlSetting.getPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
@@ -55,8 +53,12 @@ module.exports = {
 		        return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     },
 
     getUserflow : function (req, res, next) {
@@ -106,8 +108,12 @@ module.exports = {
                 return res.json(data);
             })
             .catch(function(err) {
-                return next(err);
-            });
+                mysqlSetting.rollbackTransaction(err.context)
+                    .then(mysqlSetting.releaseConnection(err.context));
+                    .then(function() {
+                        return next(err.error);
+                    })
+            })
     }
     
 };
