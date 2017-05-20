@@ -51,7 +51,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -97,7 +97,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -136,7 +136,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -167,7 +167,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -202,7 +202,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -236,7 +236,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -269,7 +269,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -302,7 +302,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -335,7 +335,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -368,7 +368,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -401,7 +401,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -433,7 +433,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -466,7 +466,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -494,7 +494,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
@@ -527,7 +527,7 @@ module.exports = {
             })
             .catch(function(err) {
                 mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection(err.context))
+                    .then(mysqlSetting.releaseConnection)
                     .then(function() {
                         return next(err.error);
                     })
