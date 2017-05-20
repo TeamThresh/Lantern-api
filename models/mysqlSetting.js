@@ -83,4 +83,5 @@ module.exports.getPool = getPool;
 module.exports.getConnection = getConnection;
 module.exports.connBeginTransaction = connBeginTransaction;
 module.exports.commitTransaction = commitTransaction;
+module.exports.rollbackTransaction = rollbackTransaction;
 module.exports.releaseConnection = releaseConnection;
