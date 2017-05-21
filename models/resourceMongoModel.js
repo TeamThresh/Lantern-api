@@ -179,3 +179,127 @@ module.exports.resOSMongoModel = function(data) {
 
 	});
 }
+
+
+module.exports.resVmstatMongoModel = function(data) {
+	return new Promise(function(resolved, rejected) {
+		var Res = mongoose.model('resourceModels', resourceSchema);
+		Res.aggregate({
+			    $match : {
+			        "package_name" : data.package_name,
+        			"data.app.activity_stack" : data.activity_name,
+			        "data.type" : "res",
+			        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+			        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+			    }
+			}, {
+			    $unwind : "$data"
+			    
+			}, {
+			    $match : {
+			        "data.type" : "res"
+			    }
+			}, {
+			    $group : {
+			        _id : "$_id",
+			        data : {
+		                $push : {
+		                    "r" : "$data.os.vmstat.r",
+		                    "b" : "$data.os.vmstat.b",
+		                    "swpd" : "$data.os.vmstat.swpd",
+		                    "free" : "$data.os.vmstat.free",
+		                    "buff" : "$data.os.vmstat.buff",
+		                    "cache" : "$data.os.vmstat.cache",
+		                    "si" : "$data.os.vmstat.si",
+		                    "so" : "$data.os.vmstat.so",
+		                    "bi" : "$data.os.vmstat.bi",
+		                    "bo" : "$data.os.vmstat.bo",
+		                    "in" : "$data.os.vmstat.in",
+		                    "cs" : "$data.os.vmstat.cs",
+		                    "us" : "$data.os.vmstat.us",
+		                    "sy" : "$data.os.vmstat.sy",
+		                    "id" : "$data.os.vmstat.id",
+		                    "wa" : "$data.os.vmstat.wa"
+		                    
+		                }
+		            }
+			    }
+			}, function(err, resRawData){
+		        if(err) {
+		        	var error = new Error(err);
+		        	error.status = 500;
+		        	return rejected(error);
+		        }
+		        if(!resRawData) {
+		        	var error = new Error("No data");
+                    error.status = 9404;
+		        	return rejected(error);
+		        }
+
+		        let resData = [];
+		        resRawData.forEach(function(resStack) {
+		        	resStack.data.forEach(function(res) {
+		        		resData.push(res);
+		        	})
+		        });
+		        
+		        return resolved(resData);
+	    });
+
+	});
+}
+
+module.exports.resMemoryMongoModel = function(data) {
+	return new Promise(function(resolved, rejected) {
+		var Res = mongoose.model('resourceModels', resourceSchema);
+		Res.aggregate({
+			    $match : {
+			        "package_name" : data.package_name,
+        			"data.app.activity_stack" : data.activity_name,
+			        "data.type" : "res",
+			        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+			        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+			    }
+			}, {
+			    $unwind : "$data"
+			    
+			}, {
+			    $match : {
+			        "data.type" : "res"
+			    }
+			}, {
+			    $group : {
+			        _id : "$_id",
+			        data : {
+		                $push : {
+		                    "max" : "$data.app.memory.max",
+		                    "total" : "$data.app.memory.total",
+		                    "alloc" : "$data.app.memory.alloc",
+		                    "free" : "$data.app.memory.free"
+		                }
+		            }
+			    }
+			}, function(err, resRawData){
+		        if(err) {
+		        	var error = new Error(err);
+		        	error.status = 500;
+		        	return rejected(error);
+		        }
+		        if(!resRawData) {
+		        	var error = new Error("No data");
+                    error.status = 9404;
+		        	return rejected(error);
+		        }
+
+		        let resData = [];
+		        resRawData.forEach(function(resStack) {
+		        	resStack.data.forEach(function(res) {
+		        		resData.push(res);
+		        	})
+		        });
+		        
+		        return resolved(resData);
+	    });
+
+	});
+}

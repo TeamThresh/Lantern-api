@@ -52,6 +52,8 @@ module.exports = function(){
 
   router.get('/cpu/detailApp/:packageName/:activityName', auth.check, auth.checkProject, api.detailRes.getResourceAppByActivity);
   router.get('/cpu/detailOS/:packageName/:activityName', auth.check, auth.checkProject, api.detailRes.getResourceOSByActivity);
+  router.get('/memory/detailApp/:packageName/:activityName', auth.check, auth.checkProject, api.detailRes.getResourceMemoryByActivity);
+  router.get('/memory/vmstat/:packageName/:activityName', auth.check, auth.checkProject, api.detailRes.getResourceVmstatByActivity);
 
   // Crash Dashboard
   router.get('/crashUsage/:packageName', auth.check, auth.checkProject, api.crash.getCrashUsage);

@@ -48,6 +48,43 @@ module.exports = {
             .catch(function(err) {
                 return next(err);
             });
-    }
+    },
+
+    getResourceMemByActivity : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            activity_name : req.params.activityName,
+            startRange : Number(req.query.startRange),
+            endRange : Number(req.query.endRange)
+        };
+
+        ResourceMongoModel.resMemoryMongoModel(data)
+            .then(function(result) {
+                res.statusCode = 200;
+                return res.json(result);
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    },
     
+    getResourceVmstatByActivity : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            activity_name : req.params.activityName,
+            startRange : Number(req.query.startRange),
+            endRange : Number(req.query.endRange)
+        };
+
+        ResourceMongoModel.resVmstatMongoModel(data)
+            .then(function(result) {
+                res.statusCode = 200;
+                return res.json(result);
+            })
+            .catch(function(err) {
+                return next(err);
+            });
+    },
 };
