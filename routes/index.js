@@ -33,10 +33,10 @@ module.exports = function(){
   router.get('/statusOfDevice/:packageName', auth.check, auth.checkProject, api.package.getStatusOfDevice); 
   router.get('/statusOfOs/:packageName', auth.check, auth.checkProject, api.package.getStatusOfOs);
   router.get('/statusOfActivity/:packageName', auth.check, auth.checkProject, api.package.getStatusOfActivity);
-  router.get('/group/:packageName', auth.check, auth.checkProject, api.package.getGroupList);
-  router.get('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.getStatusByGroup);
-  router.post('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.setStatusByGroup);
-  router.delete('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.deleteGroup);
+  router.get('/group/:packageName', auth.check, auth.checkProject, api.group.getGroupList);
+  router.get('/group/:packageName/:groupName', auth.check, auth.checkProject, api.group.getStatusByGroup);
+  router.post('/group/:packageName/:groupName', auth.check, auth.checkProject, api.group.setStatusByGroup);
+  router.delete('/group/:packageName/:groupName', auth.check, auth.checkProject, api.group.deleteGroup);
 
   // Summary View
   router.get('/one-depth-userflow/:packageName/:activityName', auth.check, auth.checkProject, api.link.getUserflow);
