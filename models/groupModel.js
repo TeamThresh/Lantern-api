@@ -51,7 +51,7 @@ var groupModel = {
             var sql = "SELECT group_name " +
                 "FROM group_table " +
                 "WHERE `group_package_name` = ? " +
-                "ORDER BY group_id ASC ";
+                "ORDER BY group_name ASC ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
