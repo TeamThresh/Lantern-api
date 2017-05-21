@@ -50,7 +50,7 @@ module.exports = {
             });
     },
 
-    getResourceMemByActivity : function(req, res, next) {
+    getResourceMemoryByActivity : function(req, res, next) {
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
