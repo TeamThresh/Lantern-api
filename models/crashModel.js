@@ -77,7 +77,7 @@ var crashModel = {
     getCrashNameWithCount : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
-            var sql = `SELECT crash_id, SUM(crash_count) AS count, crash_name 
+            var sql = `SELECT crash_id, SUM(crash_count) AS count, crash_name, crash_location
                 FROM crash_table 
                 INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
                 INNER JOIN activity_table ON crash_act_id = act_id 
@@ -125,7 +125,7 @@ var crashModel = {
                 }
             }
             select.push(data.limit);
-            sql += `GROUP BY crash_id, crash_name 
+            sql += `GROUP BY crash_id, crash_name, crash_location 
                 ORDER BY count 
                 LIMIT ? `;
 
