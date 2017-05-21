@@ -1010,7 +1010,7 @@ var versionModel = {
                         GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
                         ORDER BY ?? ASC`;
                     select.push(field.field_name[1], 
-                        data.filter.usageRange.start, data.filter.usageRange.end
+                        data.filter.usageRange.start, data.filter.usageRange.end,
                         field.field_name[0], field.field_name[1], field.field_name[0]);
                     break;
                 case 'ui':
@@ -1018,7 +1018,7 @@ var versionModel = {
                         GROUP BY collect_time, device_name, os_ver, location_code, ??
                         ORDER BY ?? ASC`;
                     select.push(field.field_name[1], field.field_name[2], 
-                        data.filter.usageRange.start, data.filter.usageRange.end
+                        data.filter.usageRange.start, data.filter.usageRange.end,
                         field.field_name[0], field.field_name[0]);
                     break;
             }
