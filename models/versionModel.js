@@ -1122,7 +1122,7 @@ var versionModel = {
                     return rejected({ context : context, error : error });
                 }
 
-                data[data.field_name] = rows[0];
+                data[data.field_name] = rows;
 
                 return resolved(context);
             });
