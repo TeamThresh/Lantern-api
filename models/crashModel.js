@@ -230,7 +230,8 @@ var crashModel = {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name, data.crash_id];
             var sql = `SELECT crash_id, crash_name, first_time, last_time, 
-                crash_wifi, crash_mobile_net, crash_gps, crash_count,
+                SUM(crash_wifi) AS crash_wifi, SUM(crash_mobile_net) AS crash_mobile_net, 
+                SUM(crash_gps) AS crash_gps, SUM(crash_count) AS crash_count,
                 crash_stacktrace
                 FROM crash_table 
                 INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
@@ -280,6 +281,8 @@ var crashModel = {
                 }
             }
 
+            sql += "GROUP BY crash_id, crash_name, first_time, last_time, crash_stacktrace ";
+
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
                     var error = new Error(err);
@@ -291,7 +294,7 @@ var crashModel = {
                     error.status = 9404;
                     return rejected({ context : context, error : error });
                 }
-
+                
                 data.crashInfo = {
                     crash_id : rows[0].crash_id,
                     count : rows[0].crash_count, 
@@ -302,7 +305,7 @@ var crashModel = {
                     crash_stacktrace : rows[0].crash_stacktrace,
                     first_time : new Date(rows[0].first_time).getTime(),
                     last_time : new Date(rows[0].last_time).getTime()
-                }
+                };
                 
                 return resolved(context);
             });
