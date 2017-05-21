@@ -53,8 +53,6 @@ module.exports.resMongoModel = function(data) {
 			            }
 			        }
 			    }
-			}, {
-			    $limit : data.limit
 			}, function(err, resData){
 		        if(err) {
 		        	var error = new Error(err);
