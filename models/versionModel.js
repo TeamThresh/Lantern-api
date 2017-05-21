@@ -1004,41 +1004,28 @@ var versionModel = {
 
             var select = [];
             var sql = `SELECT ??, `;
-            var after_sql = "";
             var field = {};
             switch (data.resourceType) {
                 case 'cpu':
                     field.field_name = ['cpu_raw_time', 'cpu_raw_rate', 'cpu_raw_count'];
                     field.table_name = 'cpu_raw_table';
-                    field.group = ['cpu_raw_time', 'cpu_raw_rate'];
-                    field.order = 'cpu_raw_time';
 
                     select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
-                    after_sql = `GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
-                        ORDER BY ?? ASC`;
                     break;
                 case 'memory':
                     field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count'];
                     field.table_name = 'mem_raw_table';
-                    field.group = ['mem_raw_time', 'mem_raw_rate'];
-                    field.order = 'mem_raw_time';
 
                     select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
-                    after_sql = `GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
-                        ORDER BY ?? ASC`;
                     break;
                 case 'ui':
                     field.field_name = ['ui_time', 'ui_speed', 'ui_count'];
                     field.table_name = 'ui_table';
-                    field.group = ['ui_time'];
-                    field.order = 'ui_time';
 
                     select.push(field.field_name[0], field.field_name[1], field.field_name[1]);
                     sql += `SUM(??) AS ??, `; 
-                    after_sql = `GROUP BY collect_time, device_name, os_ver, location_code, ??
-                        ORDER BY ?? ASC`;
                     break;
             }
 
@@ -1098,8 +1085,19 @@ var versionModel = {
                 }
             }
 
-            select.push(field.group, field.order);
-            sql += after_sql;
+            switch (data.resourceType) {
+                case 'cpu':
+                case 'memory':
+                    sql += `GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
+                        ORDER BY ?? ASC`;
+                    select.push(field.field_name[0], field.field_name[1], field.field_name[0]);
+                    break;
+                case 'ui':
+                    sql += `GROUP BY collect_time, device_name, os_ver, location_code, ??
+                        ORDER BY ?? ASC`;
+                    select.push(field.field_name[0], field.field_name[0]);
+                    break;
+            }
 
 
             context.connection.query(sql, select, function (err, rows) {
