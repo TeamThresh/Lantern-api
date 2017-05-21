@@ -952,16 +952,14 @@ var versionModel = {
             select.push(field.field_name[2], field.field_name[2], 
                 field.table_name,
                 data.package_name,
-                field.field_name[0], data.filter.dateRange.start, data.filter.dateRange.end,
-                field.field_name[1], field.field_name[2], data.filter.usageRange.start, data.filter.usageRange.end);
+                field.field_name[0], data.filter.dateRange.start, data.filter.dateRange.end);
             sql += `SUM(??) AS ??, collect_time, device_name, os_ver, location_code 
                 FROM ??
                 INNER JOIN activity_table ON craw_act_id = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 LEFT JOIN user_table ON ver_id = user_ver_id 
                 WHERE package_name = ? 
-                AND ?? BETWEEN ? AND ? 
-                AND ?? / ?? BETWEEN ? AND ? `;
+                AND ?? BETWEEN ? AND ? `;
 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {
@@ -1008,14 +1006,20 @@ var versionModel = {
             switch (data.resourceType) {
                 case 'cpu':
                 case 'memory':
-                    sql += `GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
+                    sql += `AND ?? BETWEEN ? AND ? 
+                        GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
                         ORDER BY ?? ASC`;
-                    select.push(field.field_name[0], field.field_name[1], field.field_name[0]);
+                    select.push(field.field_name[1], 
+                        data.filter.usageRange.start, data.filter.usageRange.end
+                        field.field_name[0], field.field_name[1], field.field_name[0]);
                     break;
                 case 'ui':
-                    sql += `GROUP BY collect_time, device_name, os_ver, location_code, ??
+                    sql += `AND ?? / ?? BETWEEN ? AND ? 
+                        GROUP BY collect_time, device_name, os_ver, location_code, ??
                         ORDER BY ?? ASC`;
-                    select.push(field.field_name[0], field.field_name[0]);
+                    select.push(field.field_name[1], field.field_name[2], 
+                        data.filter.usageRange.start, data.filter.usageRange.end
+                        field.field_name[0], field.field_name[0]);
                     break;
             }
 
