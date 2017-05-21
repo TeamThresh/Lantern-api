@@ -927,21 +927,21 @@ var versionModel = {
             var field = {};
             switch (data.resourceType) {
                 case 'cpu':
-                    field.field_name = ['cpu_raw_time', 'cpu_raw_rate', 'cpu_raw_count'];
+                    field.field_name = ['cpu_raw_time', 'cpu_raw_rate', 'cpu_raw_count', 'craw_act_id'];
                     field.table_name = 'cpu_raw_table';
 
                     select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
                     break;
                 case 'memory':
-                    field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count'];
+                    field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count', 'mraw_act_id'];
                     field.table_name = 'memory_raw_table';
 
                     select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
                     break;
                 case 'ui':
-                    field.field_name = ['ui_time', 'ui_speed', 'ui_count'];
+                    field.field_name = ['ui_time', 'ui_speed', 'ui_count', 'ui_act_id'];
                     field.table_name = 'ui_table';
 
                     select.push(field.field_name[0], field.field_name[1], field.field_name[1]);
@@ -950,12 +950,12 @@ var versionModel = {
             }
 
             select.push(field.field_name[2], field.field_name[2], 
-                field.table_name,
+                field.table_name, field.field_name[3],
                 data.package_name,
                 field.field_name[0], data.filter.dateRange.start, data.filter.dateRange.end);
             sql += `SUM(??) AS ??, collect_time, device_name, os_ver, location_code 
                 FROM ??
-                INNER JOIN activity_table ON craw_act_id = act_id 
+                INNER JOIN activity_table ON ?? = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 LEFT JOIN user_table ON ver_id = user_ver_id 
                 WHERE package_name = ? 
