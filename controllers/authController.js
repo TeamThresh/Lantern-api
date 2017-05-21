@@ -42,11 +42,16 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-                mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection)
-                    .then(function() {
-                        return next(err.error);
-                    })
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
             })
 	    
 	},
@@ -120,11 +125,16 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-                mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection)
-                    .then(function() {
-                        return next(err.error);
-                    })
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
             })
 	},
 
@@ -172,11 +182,16 @@ var auth = {
 		    	return next();
 		    })
 		    .catch(function(err) {
-                mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection)
-                    .then(function() {
-                        return next(err.error);
-                    })
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
             })
 	},
 
@@ -204,11 +219,16 @@ var auth = {
 				return next();
 			})
 			.catch(function(err) {
-                mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection)
-                    .then(function() {
-                        return next(err.error);
-                    })
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
             })
 	},
 
@@ -268,11 +288,16 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-                mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection)
-                    .then(function() {
-                        return next(err.error);
-                    })
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
             })
 	},
 
@@ -315,11 +340,16 @@ var auth = {
                 });
             })
 		    .catch(function(err) {
-                mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection)
-                    .then(function() {
-                        return next(err.error);
-                    })
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
             })
 	},
 }

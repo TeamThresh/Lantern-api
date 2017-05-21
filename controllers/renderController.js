@@ -47,11 +47,16 @@ module.exports = {
 		        return res.json(data);
             })
             .catch(function(err) {
-                mysqlSetting.rollbackTransaction(err.context)
-                    .then(mysqlSetting.releaseConnection)
-                    .then(function() {
-                        return next(err.error);
-                    })
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
             })
     }
     
