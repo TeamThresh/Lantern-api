@@ -1012,14 +1012,14 @@ var versionModel = {
                     field.order = 'cpu_raw_time';
                     break;
                 case 'memory':
-                    field.field_name = ['mem_raw_time', 'mem_raw_rate', 'SUM(mem_raw_count) AS mem_raw_count'];
+                    field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count'];
                     field.table_name = 'mem_raw_table';
                     field.where_field = ['mem_raw_time', 'mem_raw_rate/mem_raw_count'];
                     field.group = ['mem_raw_time', 'mem_raw_rate'];
                     field.order = 'mem_raw_time';
                     break;
                 case 'ui':
-                    field.field_name = ['ui_time', 'SUM(ui_speed) AS ui_speed', 'SUM(ui_count) AS ui_count'];
+                    field.field_name = ['ui_time', 'SUM(ui_speed) AS ui_speed', 'ui_count'];
                     field.table_name = 'ui_table';
                     field.where_field = ['ui_time', 'ui_speed/ui_count'];
                     field.group = ['ui_time'];
