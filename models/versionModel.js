@@ -1002,7 +1002,7 @@ var versionModel = {
     getVersionInRange : function(context, data) {
         return new Promise(function(resolved, rejected) {
 
-            var select = [field.field_name[0]];
+            var select = [];
             var sql = `SELECT ??, `;
             var field = {};
             switch (data.resourceType) {
@@ -1013,7 +1013,7 @@ var versionModel = {
                     field.group = ['cpu_raw_time', 'cpu_raw_rate'];
                     field.order = 'cpu_raw_time';
 
-                    select.push(field.field_name[1]);
+                    select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
                     break;
                 case 'memory':
@@ -1023,7 +1023,7 @@ var versionModel = {
                     field.group = ['mem_raw_time', 'mem_raw_rate'];
                     field.order = 'mem_raw_time';
 
-                    select.push(field.field_name[1]);
+                    select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
                     break;
                 case 'ui':
@@ -1033,14 +1033,14 @@ var versionModel = {
                     field.group = ['ui_time'];
                     field.order = 'ui_time';
 
-                    select.push(field.field_name[1], field.field_name[1]);
+                    select.push(field.field_name[0], field.field_name[1], field.field_name[1]);
                     sql += `SUM(??) AS ??, `; 
                     break;
             }
 
             select.push(field.field_name[2], field.field_name[2], 
                 field.table_name,
-                data.package_name
+                data.package_name,
                 field.where_field[0], data.filter.dateRange.start, data.filter.dateRange.end,
                 field.where_field[1], data.filter.usageRange.start, data.filter.usageRange.end);
             sql += `SUM(??) AS ??, collect_time, device_name, os_ver, location_code 
