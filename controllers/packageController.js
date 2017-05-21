@@ -464,6 +464,40 @@ module.exports = {
             })
     },
 
+    deleteGroup : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            group_name : req.params.groupName
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.deleteGroup(context, data);
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json({
+                    msg : 'delete complete'
+                });
+            })
+            .catch(function(err) {
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
+            })
+    },
+
     getGroupList : function(req, res, next) {
         var data = {
             access_token: req.header('access-token'),

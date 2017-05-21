@@ -36,6 +36,7 @@ module.exports = function(){
   router.get('/group/:packageName', auth.check, auth.checkProject, api.package.getGroupList);
   router.get('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.getStatusByGroup);
   router.post('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.setStatusByGroup);
+  router.delete('/group/:packageName/:groupName', auth.check, auth.checkProject, api.package.deleteGroup);
 
   // Summary View
   router.get('/one-depth-userflow/:packageName/:activityName', auth.check, auth.checkProject, api.link.getUserflow);

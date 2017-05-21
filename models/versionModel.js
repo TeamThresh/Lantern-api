@@ -862,6 +862,25 @@ var versionModel = {
         });
     },
 
+    deleteGroup : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var del = [data.package_name, data.group_name];
+            var sql = `DELETE FROM group_table 
+                WHERE group_package_name = ? 
+                AND group_name = ? `;
+
+            context.connection.query(sql, del, function (err, rows) {
+                if (err) {
+                    var error = new Error("delete failed");
+                    error.status = 500;
+                    return rejected({ context : context, error : error });
+                }
+
+                return resolved(context);
+            });
+        });
+    },
+
     getGroupList : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
