@@ -50,7 +50,7 @@ module.exports = function(){
   router.get('/reverseStack/:packageName/:activityName', auth.check, auth.checkProject, api.stack.getCallstack);
   router.get('/userList/:packageName/:activityName/:resourceType', auth.check, auth.checkProject, api.package.getSelectVersionList);
 
-  router.get('/detail/:packageName', auth.check, auth.checkProject, api.detailRes.getResourceByUuid);
+  router.get('/detail/:packageName/:activityName', auth.check, auth.checkProject, api.detailRes.getResourceActivity);
 
   // Crash Dashboard
   router.get('/crashUsage/:packageName', auth.check, auth.checkProject, api.crash.getCrashUsage);

@@ -12,11 +12,11 @@ var ResourceMongoModel = require('../models/resourceMongoModel');
  * }}
  */
 module.exports = {
-    getResourceByUuid : function(req, res, next) {
+    getResourceActivity : function(req, res, next) {
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
-            uuid : req.query.uuid,
+            activity_name : req.params.activityName,
             startRange : Number(req.query.startRange),
             endRange : Number(req.query.endRange)
         };
