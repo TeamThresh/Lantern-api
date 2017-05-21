@@ -81,6 +81,7 @@ var groupModel = {
             var sql = "SELECT group_set " +
                 "FROM group_table " +
                 "WHERE `group_package_name` = ? " +
+                "AND `group_name` = ? " +
                 "LIMIT 1 ";
 
             context.connection.query(sql, select, function (err, rows) {
