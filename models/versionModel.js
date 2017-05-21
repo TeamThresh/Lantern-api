@@ -1055,14 +1055,14 @@ var versionModel = {
 
     getVersionsByCrash : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [data.package_name, data.crash_id];
-            var sql = "SELECT os_ver, app_ver, device_name, location_code, SUM(crash_count) AS crash_count " +
-                "FROM crash_table " +
-                "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
-                "INNER JOIN activity_table ON crash_act_id = act_id " +
-                "INNER JOIN version_table ON act_ver_id = ver_id " +
-                "WHERE package_name = ? " +
-                "AND crash_id = ? ";
+            var select = [data.field_name, data.package_name, data.crash_id];
+            var sql = `SELECT ??, SUM(crash_count) AS crash_count 
+                FROM crash_table 
+                INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
+                INNER JOIN activity_table ON crash_act_id = act_id 
+                INNER JOIN version_table ON act_ver_id = ver_id 
+                WHERE package_name = ? 
+                AND crash_id = ? `;
 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {
@@ -1106,8 +1106,8 @@ var versionModel = {
                 }
             }
 
-            sql += "GROUP BY app_ver, os_ver, device_name, location_code " +
-                "ORDER BY crash_count DESC";
+            sql += `GROUP BY ??
+                ORDER BY crash_count DESC`;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -1121,16 +1121,7 @@ var versionModel = {
                     return rejected({ context : context, error : error });
                 }
 
-                data.crash_version_list = [];
-                rows.forEach(function(row) {
-                    data.crash_version_list.push({
-                        app : row.app_ver,
-                        device : row.device_name,
-                        os : row.os_ver,
-                        location : row.location_code,
-                        crash_count : row.crash_count
-                    })
-                });
+                data[data.field_name] = rows[0];
 
                 return resolved(context);
             });

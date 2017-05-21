@@ -137,8 +137,8 @@ module.exports = {
                 }
             })
     },
-    
-    getVersionsByCrash : function (req, res, next) {
+
+    getCrashInfo : function (req, res, next) {
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
@@ -153,14 +153,48 @@ module.exports = {
                 return CrashModel.getCrashInfo(context, data);
             })
             .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = data.crashInfo;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
+            })
+    },
+    
+    getVersionsByCrash : function (req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            crash_id : req.params.crashId,
+            field_name : req.params.mode,
+            filter : require('./filter').setFilter(req.query)
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
                 return VersionModel.getVersionsByCrash(context, data);
             })
             .then(function(context) {
                 return new Promise(function(resolved) {
-                    context.result = {
-                        crash_info : data.crashInfo,
-                        crash_version : data.crash_version_list
-                    }
+                    context.result = data[data.field_name];
                     return resolved(context);
                 });
             })
