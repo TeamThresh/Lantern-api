@@ -935,7 +935,7 @@ var versionModel = {
                     break;
                 case 'memory':
                     field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count'];
-                    field.table_name = 'mem_raw_table';
+                    field.table_name = 'memory_raw_table';
 
                     select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
