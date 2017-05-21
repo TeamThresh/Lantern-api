@@ -1004,6 +1004,7 @@ var versionModel = {
 
             var select = [];
             var sql = `SELECT ??, `;
+            var after_sql = "";
             var field = {};
             switch (data.resourceType) {
                 case 'cpu':
@@ -1014,6 +1015,8 @@ var versionModel = {
 
                     select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
+                    after_sql = `GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
+                        ORDER BY ?? ASC`;
                     break;
                 case 'memory':
                     field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count'];
@@ -1023,6 +1026,8 @@ var versionModel = {
 
                     select.push(field.field_name[0], field.field_name[1]);
                     sql += `??, `; 
+                    after_sql = `GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
+                        ORDER BY ?? ASC`;
                     break;
                 case 'ui':
                     field.field_name = ['ui_time', 'ui_speed', 'ui_count'];
@@ -1032,6 +1037,8 @@ var versionModel = {
 
                     select.push(field.field_name[0], field.field_name[1], field.field_name[1]);
                     sql += `SUM(??) AS ??, `; 
+                    after_sql = `GROUP BY collect_time, device_name, os_ver, location_code, ??
+                        ORDER BY ?? ASC`;
                     break;
             }
 
@@ -1092,8 +1099,7 @@ var versionModel = {
             }
 
             select.push(field.group, field.order);
-            sql += `GROUP BY collect_time, device_name, os_ver, location_code, ?
-                ORDER BY ? ASC`;
+            sql += after_sql;
 
 
             context.connection.query(sql, select, function (err, rows) {
