@@ -1106,6 +1106,7 @@ var versionModel = {
                 }
             }
 
+            select.push(data.field_name);
             sql += `GROUP BY ??
                 ORDER BY crash_count DESC`;
 
