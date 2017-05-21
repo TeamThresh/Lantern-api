@@ -57,7 +57,8 @@ module.exports = function(){
 
   // Crash Dashboard
   router.get('/crashUsage/:packageName', auth.check, auth.checkProject, api.crash.getCrashUsage);
-  router.get('/crashDetail/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getVersionsByCrash);
+  router.get('/crashDetail/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getCrashInfo);
+  router.get('/crashVersion/:packageName/:crashId/:mode', auth.check, auth.checkProject, api.crash.getVersionsByCrash);
   router.get('/crashReverseStack/:packageName/:crashId', auth.check, auth.checkProject, api.stack.getCrashStack);
   router.get('/crashEventPath/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getCrashEventPath);
 

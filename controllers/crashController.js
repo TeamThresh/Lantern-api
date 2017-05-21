@@ -182,9 +182,28 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             crash_id : req.params.crashId,
-            field_name : req.params.mode,
+            mode : req.params.mode,
             filter : require('./filter').setFilter(req.query)
         };
+
+        switch(data.mode) {
+            case 'os':
+                data.field_name = 'os_ver';
+                break;
+            case 'device':
+                data.field_name = 'device_name';
+                break;
+            case 'location':
+                data.field_name = 'location_code';
+                break;
+            case 'app':
+                data.field_name = 'app_ver';
+                break;
+            default:
+                let err = new Error();
+                err.status = 400;
+                return next(err);
+        }
 
         mysqlSetting.getPool()
             .then(mysqlSetting.getConnection)
