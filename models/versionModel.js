@@ -1009,7 +1009,6 @@ var versionModel = {
                 case 'cpu':
                     field.field_name = ['cpu_raw_time', 'cpu_raw_rate', 'cpu_raw_count'];
                     field.table_name = 'cpu_raw_table';
-                    field.where_field = ['cpu_raw_time', 'cpu_raw_rate/cpu_raw_count'];
                     field.group = ['cpu_raw_time', 'cpu_raw_rate'];
                     field.order = 'cpu_raw_time';
 
@@ -1019,7 +1018,6 @@ var versionModel = {
                 case 'memory':
                     field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count'];
                     field.table_name = 'mem_raw_table';
-                    field.where_field = ['mem_raw_time', 'mem_raw_rate/mem_raw_count'];
                     field.group = ['mem_raw_time', 'mem_raw_rate'];
                     field.order = 'mem_raw_time';
 
@@ -1029,7 +1027,6 @@ var versionModel = {
                 case 'ui':
                     field.field_name = ['ui_time', 'ui_speed', 'ui_count'];
                     field.table_name = 'ui_table';
-                    field.where_field = ['ui_time', 'ui_speed/ui_count'];
                     field.group = ['ui_time'];
                     field.order = 'ui_time';
 
@@ -1041,8 +1038,8 @@ var versionModel = {
             select.push(field.field_name[2], field.field_name[2], 
                 field.table_name,
                 data.package_name,
-                field.where_field[0], data.filter.dateRange.start, data.filter.dateRange.end,
-                field.where_field[1], data.filter.usageRange.start, data.filter.usageRange.end);
+                field.field_name[0], data.filter.dateRange.start, data.filter.dateRange.end,
+                field.field_name[1], field.field_name[2], data.filter.usageRange.start, data.filter.usageRange.end);
             sql += `SUM(??) AS ??, collect_time, device_name, os_ver, location_code 
                 FROM ??
                 INNER JOIN activity_table ON craw_act_id = act_id 
@@ -1050,7 +1047,7 @@ var versionModel = {
                 LEFT JOIN user_table ON ver_id = user_ver_id 
                 WHERE package_name = ? 
                 AND ?? BETWEEN ? AND ? 
-                AND ?? BETWEEN ? AND ? `;
+                AND ?? / ?? BETWEEN ? AND ? `;
 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {
