@@ -1001,18 +1001,44 @@ var versionModel = {
 
     getVersionInRange : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [data.package_name, 
-                data.filter.dateRange.start, data.filter.dateRange.end,
-                data.filter.usageRange.start, data.filter.usageRange.end];
-            var sql = `SELECT uuid, cpu_raw_time, collect_time, device_name, 
-                os_ver, location_code, cpu_raw_rate, cpu_raw_count 
-                FROM cpu_raw_table 
+
+            var field = {};
+            switch (data.resourceType) {
+                case 'cpu':
+                    field.field_name = ['cpu_raw_time', 'cpu_raw_rate', 'cpu_raw_count'];
+                    field.table_name = 'cpu_raw_table';
+                    field.where_field = ['cpu_raw_time', 'cpu_raw_rate/cpu_raw_count'];
+                    field.group = ['cpu_raw_time', 'cpu_raw_rate'];
+                    field.order = 'cpu_raw_time';
+                    break;
+                case 'memory':
+                    field.field_name = ['mem_raw_time', 'mem_raw_rate', 'SUM(mem_raw_count) AS mem_raw_count'];
+                    field.table_name = 'mem_raw_table';
+                    field.where_field = ['mem_raw_time', 'mem_raw_rate/mem_raw_count'];
+                    field.group = ['mem_raw_time', 'mem_raw_rate'];
+                    field.order = 'mem_raw_time';
+                    break;
+                case 'ui':
+                    field.field_name = ['ui_time', 'SUM(ui_speed) AS ui_speed', 'SUM(ui_count) AS ui_count'];
+                    field.table_name = 'ui_table';
+                    field.where_field = ['ui_time', 'ui_speed/ui_count'];
+                    field.group = ['ui_time'];
+                    field.order = 'ui_time';
+            }
+
+            var select = [data.package_name, field.field_name[0], field.field_name[1], 
+                field.field_name[2], field.field_name[2], 
+                field.table_name,
+                field.where_field[0], data.filter.dateRange.start, data.filter.dateRange.end,
+                field.where_field[1], data.filter.usageRange.start, data.filter.usageRange.end];
+            sql += `SELECT ?, ?, SUM(?) AS ?, collect_time, device_name, os_ver, location_code 
+                FROM ? 
                 INNER JOIN activity_table ON craw_act_id = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 LEFT JOIN user_table ON ver_id = user_ver_id 
                 WHERE package_name = ? 
-                AND cpu_raw_time BETWEEN ? AND ? 
-                AND cpu_raw_rate/cpu_raw_count BETWEEN ? AND ? `;
+                AND ? BETWEEN ? AND ? 
+                AND ? BETWEEN ? AND ? `;
 
             if (data.filter != undefined) {
                 if (data.filter.dateRange != undefined) {
@@ -1056,7 +1082,10 @@ var versionModel = {
                 }
             }
 
-            sql += "ORDER BY cpu_raw_time ASC";
+            select.push(field.group, field.order);
+            sql += `GROUP BY collect_time, device_name, os_ver, location_code, ?
+                ORDER BY ? ASC`;
+
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -1073,13 +1102,12 @@ var versionModel = {
                 data.user_list = [];
                 rows.forEach(function(row) {
                     data.user_list.push({
-                        uuid : row.uuid, 
                         device : row.device_name,
                         os : row.os_ver,
                         location : row.location_code,
-                        usage_rate : row.cpu_raw_rate,
-                        usage_count : row.cpu_raw_count,
-                        time : new Date(row.cpu_raw_time).getTime()
+                        usage_rate : row[field.field_name[1]],
+                        usage_count : row[field.field_name[2]],
+                        time : new Date(row[field.field_name[0]]).getTime()
                     })
                 });
 

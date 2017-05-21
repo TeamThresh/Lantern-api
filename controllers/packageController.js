@@ -239,6 +239,7 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             activity_name : req.params.activityName,
+            resourceType : req.params.resourceType,
             filter : require('./filter').setFilter(req.query)
         };
 

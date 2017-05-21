@@ -47,7 +47,7 @@ module.exports = function(){
 
   // Detail View
   router.get('/reverseStack/:packageName/:activityName', auth.check, auth.checkProject, api.stack.getCallstack);
-  router.get('/userList/:packageName/:activityName', auth.check, auth.checkProject, api.package.getSelectVersionList);
+  router.get('/userList/:packageName/:activityName/:resourceName', auth.check, auth.checkProject, api.package.getSelectVersionList);
 
   router.get('/detail/:packageName', auth.check, auth.checkProject, api.detailRes.getResourceByUuid);
 
