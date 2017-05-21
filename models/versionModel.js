@@ -1031,7 +1031,7 @@ var versionModel = {
                 field.table_name,
                 field.where_field[0], data.filter.dateRange.start, data.filter.dateRange.end,
                 field.where_field[1], data.filter.usageRange.start, data.filter.usageRange.end];
-            sql += `SELECT ?, ?, SUM(?) AS ?, collect_time, device_name, os_ver, location_code 
+            var sql += `SELECT ?, ?, SUM(?) AS ?, collect_time, device_name, os_ver, location_code 
                 FROM ? 
                 INNER JOIN activity_table ON craw_act_id = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
