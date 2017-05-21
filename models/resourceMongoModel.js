@@ -91,7 +91,7 @@ module.exports.resAppMongoModel = function(data) {
 
 		        let resData = [];
 		        resRawData.forEach(function(resStack) {
-		        	resStack.forEach(function(res) {
+		        	resStack.data.forEach(function(res) {
 		        		resData.push(res.data);
 		        	})
 		        });
@@ -169,7 +169,7 @@ module.exports.resOSMongoModel = function(data) {
 
 		        let resData = [];
 		        resRawData.forEach(function(resStack) {
-		        	resStack.forEach(function(res) {
+		        	resStack.data.forEach(function(res) {
 		        		resData.push(res.data);
 		        	})
 		        });
