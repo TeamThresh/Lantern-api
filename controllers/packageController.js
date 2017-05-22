@@ -6,6 +6,7 @@ var credentials = require('../credentials');
 var mysqlSetting = require('../models/mysqlSetting');
 var VersionModel = require('../models/versionModel');
 var AuthModel = require('../models/authModel');
+var crypto = require('crypto');
 
 /**
  *
@@ -20,7 +21,11 @@ module.exports = {
             user_id : req.token.user_id,
             package_name : req.params.packageName,
             project_name : req.body.project_name,
-            level : 'owner'
+            level : 'owner',
+            project_key : crypto.createHmac('sha256', 
+                    credentials.pack_secret)
+                .update(req.body.project_name)
+                .digest('base64')
         }
 
         if (req.body.type == 'android' 
@@ -157,6 +162,43 @@ module.exports = {
                 }
             })
     },
+
+    getPackageInfo : function (req, res, next) {
+        var data = {
+            user_id : req.token.user_id,
+            package_name : req.params.packageName
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.getPackageInfo(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = context.packageInfo;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
+            })
+    }, 
 
     getPackageNames : function (req, res, next) {
         var data = {

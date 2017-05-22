@@ -24,6 +24,7 @@ module.exports = function(){
 
   // Package Version
   router.get('/allVersions/:packageName', auth.check, auth.checkProject, api.package.getAllVersionStatus);
+  router.get('/project/:packageName', auth.check, auth.checkProject, api.package.getPackageInfo);
   router.post('/project/:packageName', auth.check, api.package.addProject);
   router.put('/project/:packageName', auth.check, auth.checkProject, api.package.editProject);
   router.delete('/project/:packageName', auth.check, auth.checkProject, api.package.rmProject);

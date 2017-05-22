@@ -5,11 +5,12 @@
 var versionModel = {
     addPackage : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var insert = [data.package_name, data.project_name, data.type];
+            var insert = [data.package_name, data.project_name, data.type, data.project_key];
             var sql = `INSERT INTO package_table SET
                 pack_name = ?,
                 project_name = ?,
-                project_type = ? `;
+                project_type = ?,
+                project_key = ? `;
 
             context.connection.query(sql, insert, function (err, rows) {
                 if (err) {
@@ -55,6 +56,32 @@ var versionModel = {
                     error.status = 500;
                     return rejected({ context : context, error : error });
                 }
+                
+                return resolved(context);
+            });
+        });
+    },
+
+    getPackageInfo : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.package_name];
+            var sql = `SELECT pack_name, project_name, project_type, project_key
+                FROM package_table
+                WHERE pack_name = ? `;
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    return rejected({ context : context, error : error });
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 9404;
+                    return rejected({ context : context, error : error });
+                }
+                
+                context.packageInfo = rows[0];
                 
                 return resolved(context);
             });
