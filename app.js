@@ -2,6 +2,7 @@ var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
+var compression = require('compression');
 
 var routes = require('./routes/index');
 var errors = require('./routes/error');
@@ -13,6 +14,9 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// compress all requests 
+app.use(compression())
 
 app.use(logger('dev'));
 
