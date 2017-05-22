@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // compress all requests 
-app.use(compression())
+app.use(compression({ threshold: 0 }));
 
 app.use(logger('dev'));
 
