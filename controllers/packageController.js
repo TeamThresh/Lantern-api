@@ -24,7 +24,7 @@ module.exports = {
             level : 'owner',
             project_key : crypto.createHmac('sha256', 
                     credentials.pack_secret)
-                .update(req.body.project_name)
+                .update(req.params.packageName)
                 .digest('base64')
         }
 
