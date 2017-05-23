@@ -1,19 +1,19 @@
-module.exports.addFullOption = (filter, sql, array) => {
+module.exports.addFullOption = (filter, sql, select) => {
 
     if (filter != undefined) {
 	    if (filter.app != undefined) {
 	        sql += "AND app_ver = ? ";
-	        array.push(filter.app);
+	        select.push(filter.app);
 	    }
 	    
 	    if (filter.dateRange != undefined) {
 	        sql += "AND collect_time BETWEEN ? AND ? ";
-	        array.push(filter.dateRange.start, filter.dateRange.end);
+	        select.push(filter.dateRange.start, filter.dateRange.end);
 	    }
 
 	    if (filter.location != undefined) {
 	        sql += "AND `location_code` IN (?) ";
-	        array.push(filter.location);
+	        select.push(filter.location);
 	    }
         if (filter.device != undefined) {
             sql += "AND `device_name` IN (?) ";
@@ -21,16 +21,16 @@ module.exports.addFullOption = (filter, sql, array) => {
         }
 	    if (filter.os != undefined) {
 	        sql += "AND `os_ver` IN (?) ";
-	        array.push(filter.os);
+	        select.push(filter.os);
 	    }
 	    if (filter.activity_name != undefined) {
 	        sql += "AND `activity_name` IN (?) ";
-	        array.push(filter.activity_name);
+	        select.push(filter.activity_name);
 	    }
 
 	    if (filter.nlocation != undefined) {
 	        sql += "AND `location_code` NOT IN (?) ";
-	        array.push(filter.nlocation);
+	        select.push(filter.nlocation);
 	    }
         if (filter.ndevice != undefined) {
             sql += "AND `device_name` NOT IN (?) ";
@@ -38,16 +38,16 @@ module.exports.addFullOption = (filter, sql, array) => {
         }
 	    if (filter.nos != undefined) {
 	        sql += "AND `os_ver` NOT IN (?) ";
-	        array.push(filter.nos);
+	        select.push(filter.nos);
 	    }
 	    if (filter.nactivity_name != undefined) {
 	        sql += "AND `activity_name` NOT IN (?) ";
-	        array.push(filter.nactivity_name);
+	        select.push(filter.nactivity_name);
 	    }
 	}
 }
 
-module.exports.addActivityOption = (filter, sql, array) => {
+module.exports.addActivityOption = (filter, sql, select) => {
 
     if (filter != undefined) {
         if (filter.activity_name != undefined) {
@@ -74,7 +74,7 @@ module.exports.addActivityOption = (filter, sql, array) => {
  * @param array (Array)
  * @param except (Array) 
  */
-module.exports.addExceptOption = (filter, sql, array, except) => {
+module.exports.addExceptOption = (filter, sql, select, except) => {
 
     if (filter != undefined) {
 
@@ -94,17 +94,17 @@ module.exports.addExceptOption = (filter, sql, array, except) => {
 
 	    if (filter.app != undefined) {
 	        sql += "AND app_ver = ? ";
-	        array.push(filter.app);
+	        select.push(filter.app);
 	    }
 	    
 	    if (filter.dateRange != undefined) {
 	        sql += "AND collect_time BETWEEN ? AND ? ";
-	        array.push(filter.dateRange.start, filter.dateRange.end);
+	        select.push(filter.dateRange.start, filter.dateRange.end);
 	    }
 
 	    if (filter.location != undefined) {
 	        sql += "AND `location_code` IN (?) ";
-	        array.push(filter.location);
+	        select.push(filter.location);
 	    }
         if (filter.device != undefined) {
             sql += "AND `device_name` IN (?) ";
@@ -112,16 +112,16 @@ module.exports.addExceptOption = (filter, sql, array, except) => {
         }
 	    if (filter.os != undefined) {
 	        sql += "AND `os_ver` IN (?) ";
-	        array.push(filter.os);
+	        select.push(filter.os);
 	    }
 	    if (filter.activity_name != undefined) {
 	        sql += "AND `activity_name` IN (?) ";
-	        array.push(filter.activity_name);
+	        select.push(filter.activity_name);
 	    }
 
 	    if (filter.nlocation != undefined) {
 	        sql += "AND `location_code` NOT IN (?) ";
-	        array.push(filter.nlocation);
+	        select.push(filter.nlocation);
 	    }
         if (filter.ndevice != undefined) {
             sql += "AND `device_name` NOT IN (?) ";
@@ -129,11 +129,11 @@ module.exports.addExceptOption = (filter, sql, array, except) => {
         }
 	    if (filter.nos != undefined) {
 	        sql += "AND `os_ver` NOT IN (?) ";
-	        array.push(filter.nos);
+	        select.push(filter.nos);
 	    }
 	    if (filter.nactivity_name != undefined) {
 	        sql += "AND `activity_name` NOT IN (?) ";
-	        array.push(filter.nactivity_name);
+	        select.push(filter.nactivity_name);
 	    }
 	}
 }
