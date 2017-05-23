@@ -16,7 +16,7 @@ var stackModel = {
 				LEFT JOIN callstack_name_table AS CNT 
 				ON call_clevel = call_id AND call_uplevel = call_id 
 				WHERE call_act_id IN (?) 
-				GROUP BY thread_name, call_clevel, call_uplevel`;
+				GROUP BY thread_name, call_clevel, call_uplevel, call_downlevel `;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
