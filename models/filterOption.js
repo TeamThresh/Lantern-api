@@ -89,10 +89,10 @@ module.exports.addExceptOption = (filter, select, except) => {
     	filterName = filterName.forEach((filterItem) => {
     		except.some((exceptItem) => {
     			if (filterItem == exceptItem) {
-					delete filter[filterItem];
+					filter[filterItem] = undefined;
 					return true;
 				} else if (filterItem == "n"+exceptItem) {
-					delete filter[filterItem] = undefined;
+					filter[filterItem] = undefined;
 					return true;
 				}
 				return false;

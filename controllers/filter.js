@@ -6,12 +6,12 @@ module.exports = {
 
         // 기간 필터
         let dateRange = {};
-        if (query.startRange != undefined) {
+        if (query.startRange != undefined && query.startRange != '') {
             //dateRange.start = query.startRange
             let temp_date = new Date(Number(query.startRange)).toISOString().split('T');
             dateRange.start = temp_date[0]+" "+temp_date[1].split('.')[0];
         }
-        if (query.endRange != undefined) {
+        if (query.endRange != undefined && query.endRange != '') {
             //dateRange.end = query.endRange
             let temp_date = new Date(Number(query.endRange)).toISOString().split('T');
             dateRange.end = temp_date[0]+" "+temp_date[1].split('.')[0];
@@ -22,10 +22,10 @@ module.exports = {
 
         // 사용량 필터
         let usageRange = {};
-        if (query.startUsage != undefined) {
+        if (query.startUsage != undefined && query.startUsage != '') {
             usageRange.start = query.startUsage;
         }
-        if (query.endUsage != undefined) {
+        if (query.endUsage != undefined && query.endUsage != '') {
             usageRange.end = query.endUsage;
         }
         if (usageRange.start != undefined && usageRange.end != undefined) {
