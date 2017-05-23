@@ -10,6 +10,7 @@ var stackModel = {
 				(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_clevel) AS clevel_name, 
 				call_uplevel, 
 				(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_uplevel) AS uplevel_name, 
+				call_downlevel,
 				SUM(call_count) AS call_count 
 				FROM callstack_table AS CT 
 				LEFT JOIN callstack_name_table AS CNT 
@@ -34,6 +35,7 @@ var stackModel = {
 	            	if (callstack[row.thread_name] == undefined) {
 	            		callstack[row.thread_name] = {}
 	            		if (row.call_uplevel == row.call_clevel) {
+	            			// 루트 노드 일경우
 	            			row.call_uplevel = 0;
 	            		}
 
@@ -41,10 +43,12 @@ var stackModel = {
             				id : row.call_clevel,
             				stackName : row.clevel_name,
             				parentId : row.call_uplevel,
+            				childId : row.call_downlevel,
             				count : row.call_count
             			}];
 	            	} else {
 	            		if (row.call_uplevel == row.call_clevel) {
+	            			// 루트 노드 일경우
 	            			row.call_uplevel = 0;
 	            		}
 
@@ -52,6 +56,7 @@ var stackModel = {
             				id : row.call_clevel,
             				stackName : row.clevel_name,
             				parentId : row.call_uplevel,
+            				childId : row.call_downlevel,
             				count : row.call_count
 	            		});
 	            	}
