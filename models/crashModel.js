@@ -86,7 +86,7 @@ var crashModel = {
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 WHERE package_name = ? `;
                 
-            filterOption.addFullOption(data.filter, sql, select);
+            sql += filterOption.addFullOption(data.filter, select);
 
             select.push(data.limit);
             sql += `GROUP BY crash_id, crash_name, crash_location 
@@ -122,7 +122,7 @@ var crashModel = {
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 WHERE package_name = ? `;
                 
-            filterOption.addFullOption(data.filter, sql, select);
+            sql += filterOption.addFullOption(data.filter, select);
 
             sql += `GROUP BY collect_time 
                 ORDER BY count`;

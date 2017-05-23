@@ -88,7 +88,7 @@ var networkModel = {
 				"LEFT JOIN crash_table ON activity_table.act_id = crash_table.crash_act_id " +
 				"WHERE version_table.package_name = ? ";
 
-            filterOption.addFullOption(data.filter, sql, select);
+            sql += filterOption.addFullOption(data.filter, select);
             
 			sql += "GROUP BY version_table.location_name, version_table.location_code ";
 

@@ -1,4 +1,5 @@
-module.exports.addFullOption = (filter, sql, select) => {
+module.exports.addFullOption = (filter, select) => {
+	let sql = "";
 
     if (filter != undefined) {
 	    if (filter.app != undefined) {
@@ -45,10 +46,12 @@ module.exports.addFullOption = (filter, sql, select) => {
 	        select.push(filter.nactivity_name);
 	    }
 	}
+
+	return sql;
 }
 
-module.exports.addActivityOption = (filter, sql, select) => {
-
+module.exports.addActivityOption = (filter, select) => {
+	let sql = "";
     if (filter != undefined) {
         if (filter.activity_name != undefined) {
             sql += "AND `activity_name` IN (?) ";
@@ -65,6 +68,8 @@ module.exports.addActivityOption = (filter, sql, select) => {
             select.push(filter.dateRange.start, filter.dateRange.end);
         }
     }
+
+    return sql;
 }
 
 /**
@@ -74,8 +79,9 @@ module.exports.addActivityOption = (filter, sql, select) => {
  * @param array (Array)
  * @param except (Array) 
  */
-module.exports.addExceptOption = (filter, sql, select, except) => {
+module.exports.addExceptOption = (filter, select, except) => {
 
+	let sql = "";
     if (filter != undefined) {
 
     	// 제외시킬 필터 undefined 로 변경
@@ -136,4 +142,6 @@ module.exports.addExceptOption = (filter, sql, select, except) => {
 	        select.push(filter.nactivity_name);
 	    }
 	}
+
+	return sql;
 }

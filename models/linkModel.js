@@ -62,7 +62,7 @@ var linkModel = {
             	"FROM activity_table " +
         		"WHERE `act_ver_id` IN (?) ";
             	
-            filterOption.addActivityOption(data.filter, sql, select);
+            sql += filterOption.addActivityOption(data.filter, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {

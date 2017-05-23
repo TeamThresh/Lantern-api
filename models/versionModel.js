@@ -137,7 +137,7 @@ var versionModel = {
                 "ON ver_id = act_ver_id " +
             	"WHERE `package_name` = ? ";
 
-            filterOption.addFullOption(data.filter, sql, select);
+            sql += filterOption.addFullOption(data.filter, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -169,7 +169,7 @@ var versionModel = {
         	sql += data.ver_key.toString();
             sql += ") ";
 
-            filterOption.addActivityOption(data.filter, sql, select);
+            sql += filterOption.addActivityOption(data.filter, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -200,7 +200,7 @@ var versionModel = {
             	"WHERE `activity_name` = ? "+
             	"AND `act_ver_id` IN (?) ";
 
-            filterOption.addActivityOption(data.filter, sql, select);
+            sql += filterOption.addActivityOption(data.filter, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -275,7 +275,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `act_ver_id` IN (?) ";
 
-            filterOption.addActivityOption(data.filter, sql, select);
+            sql += filterOption.addActivityOption(data.filter, select);
 
             sql += "GROUP BY `act_t`.`activity_name`";
 
@@ -319,7 +319,7 @@ var versionModel = {
                     "ON version_table.ver_id = activity_table.act_ver_id " +
                     "WHERE version_table.package_name = ? ";
                    
-            filterOption.addFullOption(data.filter, sql, select)
+            sql += filterOption.addFullOption(data.filter, select)
 
             sql += "GROUP BY version_table.os_ver, version_table.device_name " +
                     "ORDER BY user_count DESC ";
@@ -422,7 +422,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
-            filterOption.addExceptOption(data.selector, sql, select, ["location"]);
+            sql += filterOption.addExceptOption(data.selector, select, ["location"]);
 
             sql += "GROUP BY location_code " +
                 "ORDER BY usage_count ";
@@ -480,7 +480,7 @@ var versionModel = {
                 "WHERE `package_name` = ? ";
 
 
-            filterOption.addExceptOption(data.selector, sql, select, ["device"]);
+            sql += filterOption.addExceptOption(data.selector, select, ["device"]);
 
             sql += "GROUP BY device_name " +
                 "ORDER BY usage_count ";
@@ -537,7 +537,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
-            filterOption.addExceptOption(data.selector, sql, select, ["os"]);
+            sql += filterOption.addExceptOption(data.selector, select, ["os"]);
 
             sql += "GROUP BY os_ver " +
                 "ORDER BY usage_count ";
@@ -594,7 +594,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
                 
-            filterOption.addExceptOption(data.selector, sql, select, ["activity"]);
+            sql += filterOption.addExceptOption(data.selector, select, ["activity"]);
 
             sql += "GROUP BY activity_name " +
                 "ORDER BY usage_count ";
@@ -639,7 +639,7 @@ var versionModel = {
                 "ON act_ver_id = ver_id " +
                 "WHERE `package_name` = ? ";
 
-            filterOption.addFullOption(data.filter, sql, select);
+            sql += filterOption.addFullOption(data.filter, select);
 
             sql += "GROUP BY collect_time " +
                 "ORDER BY collect_time ASC";
@@ -712,7 +712,7 @@ var versionModel = {
                 WHERE package_name = ? 
                 AND ?? BETWEEN ? AND ? `;
 
-            filterOption.addFullOption(data.filter, sql, select);
+            sql += filterOption.addFullOption(data.filter, select);
 
             switch (data.resourceType) {
                 case 'cpu':
@@ -775,7 +775,7 @@ var versionModel = {
                 WHERE package_name = ? 
                 AND crash_id = ? `;
             
-            filterOption.addFullOption(data.filter, sql, select);
+            sql += filterOption.addFullOption(data.filter, select);
 
             select.push(data.field_name);
             sql += `GROUP BY ??
