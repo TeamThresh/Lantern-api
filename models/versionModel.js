@@ -128,6 +128,35 @@ var versionModel = {
         });
     },
 
+    getAppVersionList : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.package_name];
+            var sql = `SELECT app_ver
+                FROM package_table  
+                WHERE package_name = ? `;
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    return rejected({ context : context, error : error });
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 9404;
+                    return rejected({ context : context, error : error });
+                }
+                
+                context.appVersionList = [];
+                rows.forEach(function(row) {
+                    context.appVersionList.push(row.app_ver);
+                });
+                
+                return resolved(context);
+            });
+        });
+    },
+
     getVersionId : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [data.package_name];

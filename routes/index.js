@@ -28,6 +28,7 @@ module.exports = function(){
   router.post('/project/:packageName', auth.check, api.package.addProject);
   router.put('/project/:packageName', auth.check, auth.checkProject, api.package.editProject);
   router.delete('/project/:packageName', auth.check, auth.checkProject, api.package.rmProject);
+  router.get('/appVersion/:packageName', auth.check, auth.checkProject, api.package.getAppVersionList);
 
   // Filter
   router.get('/statusOfLocation/:packageName', auth.check, auth.checkProject, api.package.getStatusOfLocation); // TODO /location 과 똑같은데..?

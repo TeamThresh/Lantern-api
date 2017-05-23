@@ -236,6 +236,43 @@ module.exports = {
             })
     }, 
 
+    getAppVersionList : function (req, res, next) {
+        var data = {
+            user_id : req.token.user_id,
+            package_name : req.params.packageName
+        };
+
+        mysqlSetting.getPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return VersionModel.getAppVersionList(context, data);
+            })
+            .then(function(context) {
+                return new Promise(function(resolved) {
+                    context.result = context.appVersionList;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
+            })
+    }, 
+
     getDeviceByOS : function (req, res, next) {
         var data = {
             access_token: req.header('access-token'),
