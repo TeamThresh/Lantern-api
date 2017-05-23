@@ -131,7 +131,7 @@ var versionModel = {
     getAppVersionList : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
-            var sql = `SELECT app_ver
+            var sql = `SELECT DISTINCT app_ver
                 FROM version_table  
                 WHERE package_name = ? `;
 
