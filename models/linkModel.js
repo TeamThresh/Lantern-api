@@ -2,24 +2,18 @@
  * Created by YS on 2017-04-14.
  */
 
+const filterOption = require('./filterOption');
+
 var linkModel = {
 
     getLinkList : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [];
+            var select = [data.act_id_list];
             var sql = "SELECT (SELECT activity_name FROM activity_table WHERE act_id = link_act_id) AS target_id, " +
             	"(SELECT activity_name FROM activity_table WHERE act_id = before_act_id) AS source_id, " +
             	"link_count " +
             	"FROM link_table " +
-        		"WHERE `before_act_id` IN (";
-            	
-            data.act_id_list.forEach(function(act_id, index) {
-            	sql += act_id;
-            	if (index < data.act_id_list.length - 1) {
-            		sql += ",";
-            	}
-            });
-            sql += ")";
+        		"WHERE `before_act_id` IN (?) ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -68,17 +62,7 @@ var linkModel = {
             	"FROM activity_table " +
         		"WHERE `act_ver_id` IN (?) ";
             	
-            if (data.filter != undefined) {
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
+            filterOption.addActivityOption(data.filter, sql, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {

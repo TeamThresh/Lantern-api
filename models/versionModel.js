@@ -1,6 +1,7 @@
 /**
  * Created by YS on 2016-11-05.
  */
+const filterOption = require('./filterOption');
 
 var versionModel = {
     addPackage : function(context, data) {
@@ -136,38 +137,7 @@ var versionModel = {
                 "ON ver_id = act_ver_id " +
             	"WHERE `package_name` = ? ";
 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-            }
+            filterOption.addFullOption(data.filter, sql, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -198,22 +168,8 @@ var versionModel = {
             	"WHERE `act_ver_id` IN (";
         	sql += data.ver_key.toString();
             sql += ") ";
-            if (data.filter != undefined) {
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
 
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-            }
+            filterOption.addActivityOption(data.filter, sql, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -244,22 +200,7 @@ var versionModel = {
             	"WHERE `activity_name` = ? "+
             	"AND `act_ver_id` IN (?) ";
 
-            if (data.filter != undefined) {
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-            }
+            filterOption.addActivityOption(data.filter, sql, select);
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -334,22 +275,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `act_ver_id` IN (?) ";
 
-            if (data.filter != undefined) {
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-            }
+            filterOption.addActivityOption(data.filter, sql, select);
 
             sql += "GROUP BY `act_t`.`activity_name`";
 
@@ -392,47 +318,8 @@ var versionModel = {
                     "INNER JOIN activity_table " +
                     "ON version_table.ver_id = activity_table.act_ver_id " +
                     "WHERE version_table.package_name = ? ";
-                    
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
+                   
+            filterOption.addFullOption(data.filter, sql, select)
 
             sql += "GROUP BY version_table.os_ver, version_table.device_name " +
                     "ORDER BY user_count DESC ";
@@ -535,38 +422,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
-            if (data.selector != undefined) {
-                if (data.selector.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
-                }
-
-                if (data.selector.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.selector.device);
-                }
-                if (data.selector.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.selector.os);
-                }
-                if (data.selector.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.selector.activity_name);
-                }
-
-                if (data.selector.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.selector.ndevice);
-                }
-                if (data.selector.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.selector.nos);
-                }
-                if (data.selector.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.selector.nactivity_name);
-                }
-            }
+            filterOption.addExceptOption(data.selector, sql, select, ["location"]);
 
             sql += "GROUP BY location_code " +
                 "ORDER BY usage_count ";
@@ -623,38 +479,8 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
-            if (data.selector != undefined) {
-                if (data.selector.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
-                }
 
-                if (data.selector.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.selector.location);
-                }
-                if (data.selector.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.selector.os);
-                }
-                if (data.selector.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.selector.activity_name);
-                }
-
-                if (data.selector.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.selector.nlocation);
-                }
-                if (data.selector.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.selector.nos);
-                }
-                if (data.selector.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.selector.nactivity_name);
-                }
-            }
+            filterOption.addExceptOption(data.selector, sql, select, ["device"]);
 
             sql += "GROUP BY device_name " +
                 "ORDER BY usage_count ";
@@ -711,38 +537,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
 
-            if (data.selector != undefined) {
-                if (data.selector.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
-                }
-
-                if (data.selector.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.selector.location);
-                }
-                if (data.selector.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.selector.device);
-                }
-                if (data.selector.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.selector.activity_name);
-                }
-
-                if (data.selector.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.selector.nlocation);
-                }
-                if (data.selector.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.selector.ndevice);
-                }
-                if (data.selector.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.selector.nactivity_name);
-                }
-            }
+            filterOption.addExceptOption(data.selector, sql, select, ["os"]);
 
             sql += "GROUP BY os_ver " +
                 "ORDER BY usage_count ";
@@ -799,38 +594,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
                 
-            if (data.selector != undefined) {
-                if (data.selector.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.selector.dateRange.start, data.selector.dateRange.end);
-                }
-
-                if (data.selector.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.selector.location);
-                }
-                if (data.selector.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.selector.device);
-                }
-                if (data.selector.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.selector.os);
-                }
-
-                if (data.selector.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.selector.nlocation);
-                }
-                if (data.selector.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.selector.ndevice);
-                }
-                if (data.selector.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.selector.nos);
-                }
-            }
+            filterOption.addExceptOption(data.selector, sql, select, ["activity"]);
 
             sql += "GROUP BY activity_name " +
                 "ORDER BY usage_count ";
@@ -875,47 +639,7 @@ var versionModel = {
                 "ON act_ver_id = ver_id " +
                 "WHERE `package_name` = ? ";
 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-
-
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
+            filterOption.addFullOption(data.filter, sql, select);
 
             sql += "GROUP BY collect_time " +
                 "ORDER BY collect_time ASC";
@@ -988,47 +712,7 @@ var versionModel = {
                 WHERE package_name = ? 
                 AND ?? BETWEEN ? AND ? `;
 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-
-
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
+            filterOption.addFullOption(data.filter, sql, select);
 
             switch (data.resourceType) {
                 case 'cpu':
@@ -1090,48 +774,8 @@ var versionModel = {
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 WHERE package_name = ? 
                 AND crash_id = ? `;
-
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-
-
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
+            
+            filterOption.addFullOption(data.filter, sql, select);
 
             select.push(data.field_name);
             sql += `GROUP BY ??

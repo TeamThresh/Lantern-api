@@ -2,6 +2,8 @@
  * Created by YS on 2017-04-14.
  */
 
+const filterOption = require('./filterOption');
+
 var crashModel = {
     getCrashList : function(context, data) {
         return new Promise(function(resolved, rejected) {
@@ -84,46 +86,8 @@ var crashModel = {
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 WHERE package_name = ? `;
                 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
+            filterOption.addFullOption(data.filter, sql, select);
 
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
             select.push(data.limit);
             sql += `GROUP BY crash_id, crash_name, crash_location 
                 ORDER BY count 
@@ -158,46 +122,8 @@ var crashModel = {
                 INNER JOIN version_table ON act_ver_id = ver_id 
                 WHERE package_name = ? `;
                 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
+            filterOption.addFullOption(data.filter, sql, select);
 
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
             sql += `GROUP BY collect_time 
                 ORDER BY count`;
 

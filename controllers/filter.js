@@ -32,6 +32,9 @@ module.exports = {
             filter.usageRange = usageRange;
         }
 
+        if (query.app != undefined && query.app != '')
+            filter.app = query.app;
+
         // 지역, 기기, os, Activity 필터
         if (query.location != undefined && query.location != '')
             filter.location = query.location.split(',');

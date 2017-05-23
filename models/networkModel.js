@@ -2,6 +2,8 @@
  * Created by YS on 2017-04-14.
  */
 
+const filterOption = require('./filterOption');
+
 var networkModel = {
     getHostList : function(context, data) {
         return new Promise(function(resolved, rejected) {
@@ -86,46 +88,8 @@ var networkModel = {
 				"LEFT JOIN crash_table ON activity_table.act_id = crash_table.crash_act_id " +
 				"WHERE version_table.package_name = ? ";
 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
-                
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
+            filterOption.addFullOption(data.filter, sql, select);
+            
 			sql += "GROUP BY version_table.location_name, version_table.location_code ";
 
             context.connection.query(sql, select, function (err, rows) {

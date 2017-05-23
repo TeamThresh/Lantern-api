@@ -5,18 +5,10 @@
 var memoryModel = {
     getMemUsageList : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [];
+            var select = [data.act_id_list];
             var sql = "SELECT mem_raw_rate, mem_raw_count, mem_raw_time " +
             	"FROM memory_raw_table " +
-            	"WHERE `mraw_act_id` IN (";
-            	
-            data.act_id_list.forEach(function(act_id, index) {
-            	sql += act_id;
-            	if (index < data.act_id_list.length - 1) {
-            		sql += ",";
-            	}
-            });
-            sql += ")";
+            	"WHERE `mraw_act_id` IN (?)";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
