@@ -85,13 +85,14 @@ module.exports.addExceptOption = (filter, select, except) => {
     if (filter != undefined) {
 
     	// 제외시킬 필터 undefined 로 변경
-    	filter = filter.filter((filterItem) => {
-    		return !except.some((exceptItem) => {
+    	let filterName = Object.keys(filter);
+    	filterName = filterName.forEach((filterItem) => {
+    		except.some((exceptItem) => {
     			if (filterItem == exceptItem) {
-					filter[filterItem] = undefined;
+					delete filter[filterItem];
 					return true;
 				} else if (filterItem == "n"+exceptItem) {
-					filter[filterItem] = undefined;
+					delete filter[filterItem] = undefined;
 					return true;
 				}
 				return false;
