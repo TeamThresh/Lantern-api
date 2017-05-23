@@ -100,7 +100,7 @@ var auth = {
 	                            issuer: credentials.jwt.issuer,
 	                            subject: credentials.jwt.subject
 	                        }, (err, token) => {
-	                            if (err) return rejected(err);
+	                            if (err) return rejected({ context : context, error : err });
 	                        	context.result = token;
 	                            return resolved(context); 
 	                        });
@@ -141,6 +141,7 @@ var auth = {
 	check : function(req, res, next) {
 		// read the token from cookie
 	    const token = req.cookies[SESSION_NAME]
+		// token does not exist
 	    if( ! token ) {
 	    	var error = new Error('not logged in');
 	    	error.status = 401;
@@ -154,18 +155,12 @@ var auth = {
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
             	return new Promise(function(resolved, rejected) {
-            		// token does not exist
-				    if(!token) {
-				    	var error = new Error('not logged in');
-				    	error.status = 401;
-				    	return rejected(error);
-				    }
 
 				    jwt.verify(token, req.app.get('jwt-secret'), (err, decoded) => {
 		                if(err) {	
 					    	var error = new Error(err);
 					    	error.status = 401;
-					    	return rejected(err);
+					    	return rejected({ context : context, error : error });
 		                } 
 		                decodedToken = decoded;
 		                return resolved(context);
@@ -258,16 +253,16 @@ var auth = {
         			|| data.level != 'member') {
 	            		let err = new Error();
 						err.status = 403;
-						return rejected(err);
+						return rejected({ context : context, error : err });
 					} else if (data.user_level == 'owner'
 					|| data.level == 'owner') {
 						let err = new Error();
 						err.status = 403;
-						return rejected(err);
+						return rejected({ context : context, error : err });
             		} else if (data.user_level == 'member') {
 	            		let err = new Error();
 						err.status = 403;
-						return rejected(err);
+						return rejected({ context : context, error : err });
 	            	}
 
         			return resolved(context);
@@ -325,7 +320,7 @@ var auth = {
 					} else {
 						let err = new Error();
 						err.status = 403;
-						return rejected(err);
+						return rejected({ context : context, error : err });
             		}
             	});
             })
