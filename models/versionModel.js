@@ -623,7 +623,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
                 
-            sql += filterOption.addExceptOption(data.selector, select, ["activity"]);
+            sql += filterOption.addExceptOption(data.selector, select, ["activity_name"]);
 
             sql += "GROUP BY activity_name " +
                 "ORDER BY usage_count ";
