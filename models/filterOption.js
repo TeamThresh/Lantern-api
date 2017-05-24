@@ -151,37 +151,38 @@ module.exports.addMongoFullOption = (filter, query) => {
 
     if (filter != undefined) {
 	    if (filter.app != undefined) {
-	        query["app"] = filter.app;
+	        query["device_info.app"] = filter.app;
 	    }
 	    
 	    if (filter.dateRange != undefined) {
-	        query["dateRange"] = { $gt : filter.dateRange.start, $lt : filter.dateRange.end };
+	        query["data.duration_time.start"] : { $gt : filter.dateRange.start, $lt : filter.dateRange.end },
+	        query["data.duration_time.end"] : { $gt : filter.dateRange.start, $lt : filter.dateRange.end }
 	    }
 
 	    if (filter.location != undefined) {
-	        query["location"].$eq = filter.location;
+	        query["device_info.location"].$eq = filter.location;
 	    }
         if (filter.device != undefined) {
-            query["device"].$eq = filter.device;
+            query["device_info.device"].$eq = filter.device;
         }
 	    if (filter.os != undefined) {
-	        query["os"].$eq = filter.os;
+	        query["device_info.os"].$eq = filter.os;
 	    }
 	    if (filter.activity_name != undefined) {
-	        query["activity_name"].$eq = filter.activity_name;
+	        query["data.app.activity_stack"].$eq = filter.activity_name;
 	    }
 
 	    if (filter.nlocation != undefined) {
-	        query["location"].$ne = filter.nlocation;
+	        query["device_info.location"].$ne = filter.nlocation;
 	    }
         if (filter.ndevice != undefined) {
-            query["device"].$ne = filter.ndevice;
+            query["device_info.device"].$ne = filter.ndevice;
         }
 	    if (filter.nos != undefined) {
-	        query["os"].$ne = filter.nos;
+	        query["device_info.os"].$ne = filter.nos;
 	    }
 	    if (filter.nactivity_name != undefined) {
-	        query["activity_name"].$ne = filter.nactivity_name;
+	        query["data.app.activity_stack"].$ne = filter.nactivity_name;
 	    }
 	}
 }
