@@ -17,6 +17,7 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             activity_name : req.params.activityName,
+            filter : require('./filter').setFilter(req.query),
             startRange : Number(req.query.startRange),
             endRange : Number(req.query.endRange)
         };
@@ -36,6 +37,7 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             activity_name : req.params.activityName,
+            filter : require('./filter').setFilter(req.query),
             startRange : Number(req.query.startRange),
             endRange : Number(req.query.endRange)
         };
@@ -55,6 +57,7 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             activity_name : req.params.activityName,
+            filter : require('./filter').setFilter(req.query),
             startRange : Number(req.query.startRange),
             endRange : Number(req.query.endRange)
         };
@@ -74,8 +77,9 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             activity_name : req.params.activityName,
+            filter : require('./filter').setFilter(req.query),
             startRange : Number(req.query.startRange),
-            endRange : Number(req.query.endRange)
+            endRange : Number(req.query.endRange)	
         };
 
         ResourceMongoModel.resVmstatMongoModel(data)

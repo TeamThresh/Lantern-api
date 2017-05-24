@@ -3,6 +3,7 @@
  */
  var credentials = require('../credentials');
 
+var filterOption = require('./filterOption');
 // MongoDB module
 var mongoose = require('mongoose');
 
@@ -21,15 +22,20 @@ var resourceSchema = new Schema(SchemaSet.testSchema);
 
 module.exports.resAppMongoModel = function(data) {
 	return new Promise(function(resolved, rejected) {
+
+		var matchQuery = {
+	        "package_name" : data.package_name,
+			"data.app.activity_stack" : data.activity_name,
+	        "data.type" : "res",
+	        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+	        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+	    }
+
+	    filterOption.addMongoFullOption(data.filter, matchQuery);
+
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
-			    $match : {
-			        "package_name" : data.package_name,
-        			"data.app.activity_stack" : data.activity_name,
-			        "data.type" : "res",
-			        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
-			        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
-			    }
+			    $match : matchQuery
 			}, {
 			    $unwind : "$data"
 			    
@@ -119,15 +125,20 @@ module.exports.resAppMongoModel = function(data) {
 
 module.exports.resOSMongoModel = function(data) {
 	return new Promise(function(resolved, rejected) {
+
+		var matchQuery = {
+	        "package_name" : data.package_name,
+			"data.app.activity_stack" : data.activity_name,
+	        "data.type" : "res",
+	        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+	        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+	    }
+
+	    filterOption.addMongoFullOption(data.filter, matchQuery);
+	    
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
-			    $match : {
-			        "package_name" : data.package_name,
-        			"data.app.activity_stack" : data.activity_name,
-			        "data.type" : "res",
-			        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
-			        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
-			    }
+			    $match : matchQuery
 			}, {
 			    $unwind : "$data"
 			    
@@ -183,15 +194,20 @@ module.exports.resOSMongoModel = function(data) {
 
 module.exports.resVmstatMongoModel = function(data) {
 	return new Promise(function(resolved, rejected) {
+
+		var matchQuery = {
+	        "package_name" : data.package_name,
+			"data.app.activity_stack" : data.activity_name,
+	        "data.type" : "res",
+	        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+	        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+	    }
+
+	    filterOption.addMongoFullOption(data.filter, matchQuery);
+
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
-			    $match : {
-			        "package_name" : data.package_name,
-        			"data.app.activity_stack" : data.activity_name,
-			        "data.type" : "res",
-			        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
-			        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
-			    }
+			    $match : matchQuery
 			}, {
 			    $unwind : "$data"
 			    
@@ -251,15 +267,20 @@ module.exports.resVmstatMongoModel = function(data) {
 
 module.exports.resMemoryMongoModel = function(data) {
 	return new Promise(function(resolved, rejected) {
+
+		var matchQuery = {
+	        "package_name" : data.package_name,
+			"data.app.activity_stack" : data.activity_name,
+	        "data.type" : "res",
+	        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
+	        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+	    }
+
+	    filterOption.addMongoFullOption(data.filter, matchQuery);
+
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
-			    $match : {
-			        "package_name" : data.package_name,
-        			"data.app.activity_stack" : data.activity_name,
-			        "data.type" : "res",
-			        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
-			        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
-			    }
+			    $match : matchQuery
 			}, {
 			    $unwind : "$data"
 			    

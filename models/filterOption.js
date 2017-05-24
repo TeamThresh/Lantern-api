@@ -146,3 +146,42 @@ module.exports.addExceptOption = (filter, select, except) => {
 
 	return sql;
 }
+
+module.exports.addMongoFullOption = (filter, query) => {
+
+    if (filter != undefined) {
+	    if (filter.app != undefined) {
+	        query["app"] = filter.app;
+	    }
+	    
+	    if (filter.dateRange != undefined) {
+	        query["dateRange"] = { $gt : filter.dateRange.start, $lt : filter.dateRange.end };
+	    }
+
+	    if (filter.location != undefined) {
+	        query["location"].$eq = filter.location;
+	    }
+        if (filter.device != undefined) {
+            query["device"].$eq = filter.device;
+        }
+	    if (filter.os != undefined) {
+	        query["os"].$eq = filter.os;
+	    }
+	    if (filter.activity_name != undefined) {
+	        query["activity_name"].$eq = filter.activity_name;
+	    }
+
+	    if (filter.nlocation != undefined) {
+	        query["location"].$ne = filter.nlocation;
+	    }
+        if (filter.ndevice != undefined) {
+            query["device"].$ne = filter.ndevice;
+        }
+	    if (filter.nos != undefined) {
+	        query["os"].$ne = filter.nos;
+	    }
+	    if (filter.nactivity_name != undefined) {
+	        query["activity_name"].$ne = filter.nactivity_name;
+	    }
+	}
+}
