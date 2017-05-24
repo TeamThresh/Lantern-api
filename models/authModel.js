@@ -29,11 +29,11 @@ var authModel = {
 
     createUser : function(context, data) {
     	return new Promise(function(resolved, rejected) {
-    		var insert = [data.username, data.nickname, data.password];
-    		var sql = `INSERT INTO admin_table SET
-    			admin_username = ?,
-    			nickname = ?,
-    			admin_password = ? `;
+    		var temp = [];
+    		temp.push(data.username, data.nickname);
+    		var insert = [temp, data.password];
+    		var sql = `INSERT INTO admin_table (admin_username, nickname, admin_password) VALUES
+    			(?, ?) `;
 
 			context.connection.query(sql, insert, function (err, rows) {
                 if (err) {
