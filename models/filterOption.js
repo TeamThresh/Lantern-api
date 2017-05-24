@@ -155,8 +155,8 @@ module.exports.addMongoFullOption = (filter, query) => {
 	    }
 	    
 	    if (filter.dateRange != undefined) {
-	        query["data.duration_time.start"] = { $gt : filter.dateRange.start, $lt : filter.dateRange.end },
-	        query["data.duration_time.end"] = { $gt : filter.dateRange.start, $lt : filter.dateRange.end }
+	        query["data.duration_time.start"] = { $gt : new Date(filter.dateRange.start).getTime(), $lt : new Date(filter.dateRange.end).getTime() },
+	        query["data.duration_time.end"] = { $gt : new Date(filter.dateRange.start).getTime(), $lt : new Date(filter.dateRange.end).getTime() }
 	    }
 
 	    if (filter.location != undefined) {

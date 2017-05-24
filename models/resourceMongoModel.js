@@ -26,9 +26,7 @@ module.exports.resAppMongoModel = function(data) {
 		var matchQuery = {
 	        "package_name" : data.package_name,
 			"data.app.activity_stack" : data.activity_name,
-	        "data.type" : "res",
-	        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
-	        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+	        "data.type" : "res"
 	    }
 
 	    filterOption.addMongoFullOption(data.filter, matchQuery);
