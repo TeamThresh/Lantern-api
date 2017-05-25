@@ -104,6 +104,8 @@ var auth = {
 	                            if (err) return rejected({ context : context, error : err });
 	                        	data.token = token;
 	                        	data.expired = expired;
+                	
+                				context.result = data.token;
 	                            return resolved(context); 
 	                        });
 	                }
@@ -113,7 +115,7 @@ var auth = {
                 });
             })
 	    	.then(function(context) {
-	    		return AuthModel.login(context, data.user);
+	    		return AuthModel.login(context, data);
 	    	})
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
