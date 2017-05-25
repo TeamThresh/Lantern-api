@@ -7,7 +7,6 @@ var filterOption = require('./filterOption');
 // MongoDB module
 var mongoose = require('mongoose');
 
-mongoose.connect(credentials.mongodb.host);
 var Schema = mongoose.Schema;
 var SchemaSet = require(credentials.mongoSchemaSet.resourceSchemaSet);
 var resourceSchema = new Schema(SchemaSet.testSchema);
