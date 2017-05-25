@@ -161,7 +161,7 @@ var auth = {
 				    jwt.verify(token, req.app.get('jwt-secret'), (err, decoded) => {
 		                if(err) {	
 					    	var error = new Error(err);
-					    	error.status = 401;
+					    	error.status = 9401;
 					    	return rejected({ context : context, error : error });
 		                } 
 		                decodedToken = decoded;

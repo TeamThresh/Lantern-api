@@ -33,9 +33,11 @@ const mongooseOption = {
 
 mongoose.connect(credentials.mongodb.host, mongooseOption, function(err) {
 	if (err) throw err;
-	// Route Handlers
-	app.use('/api', routes());
+	console.log("MongoDB connect complete");
 });
+
+// Route Handlers
+app.use('/api', routes());
 
 // error handlers
 app.use(function(err, req, res, next) {

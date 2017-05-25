@@ -82,6 +82,14 @@ module.exports = {
     }
   },
 
+  "9401": {
+    "status": 401,
+    "msg": {
+      "내용" : "토큰이 유효하지 않거나 만료되었습니다.",
+      "description": "False token"
+    }
+  }
+
   "9404": {
     "status" : 200,
     "msg" : []
