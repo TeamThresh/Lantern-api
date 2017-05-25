@@ -74,6 +74,14 @@ module.exports = {
     }
   },
 
+  "8401": {
+    "status": 200,
+    "msg": {
+      "내용" : "아이디가 중복됩니다.",
+      "description": "Exist Email"
+    }
+  },
+
   "9400": {
     "status": 400,
     "msg": {
@@ -100,14 +108,6 @@ module.exports = {
     "msg": {
       "내용" : "해당 정보가 없습니다.",
       "description": "No have content"
-    }
-  },
-
-  "9401": {
-    "status": 200,
-    "msg": {
-      "내용" : "아이디가 중복됩니다.",
-      "description": "Exist Email"
     }
   }
 }

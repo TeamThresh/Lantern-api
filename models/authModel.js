@@ -18,7 +18,7 @@ var authModel = {
                 } else if (rows.length > 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("exist user");
-                    error.status = 9401;
+                    error.status = 8401;
                     return rejected({ context : context, error : error });
 	            }
 	            
