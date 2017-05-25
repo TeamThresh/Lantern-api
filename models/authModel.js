@@ -126,7 +126,7 @@ var authModel = {
                 }
 
                 if (rows[0].expired == null 
-                || new Date(rows[0].expired).getTime() < Date().now()) {
+                || new Date(rows[0].expired).getTime() < Date.now()) {
                 	data.isExpired = true;
                 } else {
                 	data.token = rows[0].admin_token;
