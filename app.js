@@ -27,11 +27,7 @@ app.set('jwt-secret', new Buffer(credentials.jwtsecret).toString('base64'));
 // MongoDB module
 var mongoose = require('mongoose');
 
-const mongooseOption = {
-	replset: { rs_name: credentials.replSet }
-};
-
-mongoose.connect(credentials.mongodb.host, mongooseOption, function(err) {
+mongoose.connect(credentials.replHosts, credentials.mongooseOption, function(err) {
 	if (err) throw err;
 	console.log("MongoDB connect complete");
 });
