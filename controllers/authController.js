@@ -108,10 +108,10 @@ var auth = {
                 				context.result = data.token;
 	                            return resolved(context); 
 	                        });
-	                }
-
-                	context.result = data.token;
-                	return resolved(context);
+	                } else {
+                		context.result = data.token;
+                		return resolved(context);
+                	}
                 });
             })
 	    	.then(function(context) {
