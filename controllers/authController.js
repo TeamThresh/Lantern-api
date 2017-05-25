@@ -91,11 +91,9 @@ var auth = {
 	                    jwt.sign(
 	                        {
 	                        	exp: Math.floor(expired / 1000),
-	                        	data: {
-		                            user_id: data.user.user_id,
-		                            username: data.user.username,
-		                            nickname: data.user.nickname
-		                        }
+	                            user_id: data.user.user_id,
+	                            username: data.user.username,
+	                            nickname: data.user.nickname
 	                        }, 
 	                        secret, 
 	                        {
