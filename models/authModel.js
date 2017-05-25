@@ -67,7 +67,7 @@ var authModel = {
                     return rejected({ context : context, error : error });
 	            }
 	            
-	            context.user = {
+	            data.user = {
 	            	user_id : rows[0].admin_user_id,
 	            	username : rows[0].admin_username,
 	            	nickname : rows[0].nickname,
@@ -82,10 +82,11 @@ var authModel = {
     login : function(context, data) {
     	return new Promise(function(resolved, rejected) {
     		var format = require('date-format');
-            var update = [format('yyyy-MM-dd hh:mm:00', new Date()), context.result, data.user_id];
+            var update = [format('yyyy-MM-dd hh:mm:00', new Date()), data.token, data.user_id, data.expired];
             var sql = `UPDATE admin_table SET 
             	last_login = ?,
-            	admin_token = ?
+            	admin_token = ?,
+            	expired = ?
             	WHERE admin_user_id = ? `;
 
             context.connection.query(sql, update, function (err, rows) {
@@ -108,7 +109,7 @@ var authModel = {
     getToken : function(context, data) {
     	return new Promise(function(resolved, rejected) {
     		var select = [data.user_id];
-    		var sql = `SELECT admin_token, last_login 
+    		var sql = `SELECT admin_token, last_login, expired 
     			FROM admin_table 
     			WHERE admin_user_id `;
 
@@ -123,11 +124,12 @@ var authModel = {
                     return rejected({ context : context, error : error });
                 }
 
-                if (new Date(rows[0].last_login).getTime() + 7 * 24 * 60 * 60 * 1000
-					< new Date().getTime()) {
+                if (rows[0] == null 
+                || new Date(rows[0].expired).getTime() + 7 * 24 * 60 * 60 * 1000 < new Date().getTime()) {
                 	data.isExpired = true;
                 } else {
                 	data.token = rows[0].admin_token;
+                	data.expired = rows[0].expired;
                 }
 
                 return resolved(context);

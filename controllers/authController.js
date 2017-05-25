@@ -77,7 +77,7 @@ var auth = {
 	    	})
 	    	.then(function(context) {
 	    		// user exists, check the password
-	    		return AuthModel.verify(context, context.user.password, data.password);
+	    		return AuthModel.verify(context, data.user.password, data.password);
 	    	})
 	    	.then(function(context) {
 	    		// get User access token
@@ -87,31 +87,33 @@ var auth = {
                 // create a promise that generates jwt asynchronously
                 return new Promise((resolved, rejected) => {
                 	if (data.isExpired) {
+                		let expired = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60); // 7days
 	                    jwt.sign(
 	                        {
-	                            user_id: context.user.user_id,
-	                            username: context.user.username,
-	                            nickname: context.user.nickname
+	                            user_id: data.user.user_id,
+	                            username: data.user.username,
+	                            nickname: data.user.nickname
 	                        }, 
 	                        secret, 
 	                        {
 	                        	// TODO 확인할것
-	                            expiresIn: '7d',
+	                            expiresIn: expired,
 	                            issuer: credentials.jwt.issuer,
 	                            subject: credentials.jwt.subject
 	                        }, (err, token) => {
 	                            if (err) return rejected({ context : context, error : err });
-	                        	context.result = token;
+	                        	data.token = token;
+	                        	data.expired = expired;
 	                            return resolved(context); 
 	                        });
-	                } else {
-	                	context.result = data.token;
-	                	return resolved(context);
 	                }
+
+                	context.result = data.token;
+                	return resolved(context);
                 });
             })
 	    	.then(function(context) {
-	    		return AuthModel.login(context, context.user);
+	    		return AuthModel.login(context, data.user);
 	    	})
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
