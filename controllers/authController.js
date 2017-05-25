@@ -90,14 +90,16 @@ var auth = {
                 		let expired = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60); // 7days
 	                    jwt.sign(
 	                        {
-	                            user_id: data.user.user_id,
-	                            username: data.user.username,
-	                            nickname: data.user.nickname
+	                        	exp: expired,
+	                        	data: {
+		                            user_id: data.user.user_id,
+		                            username: data.user.username,
+		                            nickname: data.user.nickname
+		                        }
 	                        }, 
 	                        secret, 
 	                        {
 	                        	// TODO 확인할것
-	                            expiresIn: expired,
 	                            issuer: credentials.jwt.issuer,
 	                            subject: credentials.jwt.subject
 	                        }, (err, token) => {
