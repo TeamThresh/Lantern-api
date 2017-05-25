@@ -87,10 +87,10 @@ var auth = {
                 // create a promise that generates jwt asynchronously
                 return new Promise((resolved, rejected) => {
                 	if (data.isExpired) {
-                		let expired = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60); // 7days
+                		let expired = Date.now() + (7 * 24 * 60 * 60); // 7days
 	                    jwt.sign(
 	                        {
-	                        	exp: expired,
+	                        	exp: Math.floor(expired / 1000),
 	                        	data: {
 		                            user_id: data.user.user_id,
 		                            username: data.user.username,

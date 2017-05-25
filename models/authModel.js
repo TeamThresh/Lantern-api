@@ -82,7 +82,8 @@ var authModel = {
     login : function(context, data) {
     	return new Promise(function(resolved, rejected) {
     		var format = require('date-format');
-            var update = [format('yyyy-MM-dd hh:mm:00', new Date()), data.token, format('yyyy-MM-dd hh:mm:00', new Date(data.expired * 1000)), data.user.user_id];
+            var update = [format('yyyy-MM-dd hh:mm:00', new Date()), data.token, 
+            	format('yyyy-MM-dd hh:mm:00', new Date(data.expired)), data.user.user_id];
             var sql = `UPDATE admin_table SET 
             	last_login = ?,
             	admin_token = ?,
@@ -125,7 +126,7 @@ var authModel = {
                 }
 
                 if (rows[0].expired == null 
-                || new Date(rows[0].expired).getTime() + 7 * 24 * 60 * 60 * 1000 < new Date().getTime()) {
+                || new Date(rows[0].expired).getTime() < Date().now()) {
                 	data.isExpired = true;
                 } else {
                 	data.token = rows[0].admin_token;
