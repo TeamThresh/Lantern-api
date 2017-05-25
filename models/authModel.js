@@ -124,7 +124,7 @@ var authModel = {
                     return rejected({ context : context, error : error });
                 }
 
-                if (rows[0] == null 
+                if (rows[0].expired == null 
                 || new Date(rows[0].expired).getTime() + 7 * 24 * 60 * 60 * 1000 < new Date().getTime()) {
                 	data.isExpired = true;
                 } else {
