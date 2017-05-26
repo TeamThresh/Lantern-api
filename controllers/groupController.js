@@ -20,7 +20,7 @@ module.exports = {
             group_set : req.body.filters
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -52,7 +52,7 @@ module.exports = {
             group_name : req.params.groupName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -85,7 +85,7 @@ module.exports = {
             package_name : req.params.packageName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -123,7 +123,7 @@ module.exports = {
             group_name : req.params.groupName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {

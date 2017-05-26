@@ -38,7 +38,7 @@ module.exports = {
         }
 
         // check username duplication
-        mysqlSetting.getPool()
+        mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
@@ -92,7 +92,7 @@ module.exports = {
         }
 
         // check username duplication
-        mysqlSetting.getPool()
+        mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
@@ -133,7 +133,7 @@ module.exports = {
         }
 
         // check username duplication
-        mysqlSetting.getPool()
+        mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
@@ -169,7 +169,7 @@ module.exports = {
             package_name : req.params.packageName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -205,7 +205,7 @@ module.exports = {
             user_id : req.token.user_id
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -242,7 +242,7 @@ module.exports = {
             package_name : req.params.packageName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -280,7 +280,7 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -322,7 +322,7 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -360,7 +360,7 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -398,7 +398,7 @@ module.exports = {
             selector : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -436,7 +436,7 @@ module.exports = {
             selector : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -474,7 +474,7 @@ module.exports = {
             selector : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -512,7 +512,7 @@ module.exports = {
             selector : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -550,7 +550,7 @@ module.exports = {
             group_name : req.params.groupName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -583,7 +583,7 @@ module.exports = {
             package_name : req.params.packageName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -621,7 +621,7 @@ module.exports = {
             group_name : req.params.groupName
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -660,7 +660,7 @@ module.exports = {
             group_set : req.body.filters
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -692,7 +692,7 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {

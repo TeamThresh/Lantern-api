@@ -23,7 +23,7 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -67,7 +67,7 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
-        mysqlSetting.getPool()
+        mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
