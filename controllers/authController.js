@@ -124,7 +124,7 @@ var auth = {
 	    		return AuthModel.login(context, data);
 	    	})
 	    	.then((context) => {
-	    		return Promise((resolved) => {
+	    		return new Promise((resolved) => {
 	    			context.result = data.token;
 	    			return resolved(context);
 	    		})
