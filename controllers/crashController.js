@@ -273,5 +273,74 @@ module.exports = {
                     throw err;
                 }
             })
+    },
+
+    markCrashRank : (req, res, next) => {
+        var data = {
+            package_name : req.params.packageName,
+            crash_id : req.params.crashId,
+            filter : require('./filter').setFilter(req.query)
+        };
+
+        mysqlSetting.getWritePool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return CrashModel.setMarkCrash(context, data);
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
+            })
+    },
+
+    getCrashRankRate : (req, res, next) => {
+        var data = {
+            package_name : req.params.packageName,
+            filter : require('./filter').setFilter(req.query)
+        };
+
+        mysqlSetting.getReadPool()
+            .then(mysqlSetting.getConnection)
+            .then(mysqlSetting.connBeginTransaction)
+            .then(function(context) {
+                return CrashModel.getRankRate(context, data);
+            })
+            .then((context) => {
+                return new Promise((resolved) => {
+                    context.result = data.crashRank;
+                    return resolved(context);
+                });
+            })
+            .then(mysqlSetting.commitTransaction)
+            .then(function(data) {
+                res.statusCode = 200;
+                return res.json(data);
+            })
+            .catch(function(err) {
+                if (err.context) {
+                    mysqlSetting.rollbackTransaction(err.context)
+                        .then(mysqlSetting.releaseConnection)
+                        .then(function() {
+                            return next(err.error);
+                        });
+                } else {
+                    next(err);
+                    throw err;
+                }
+            })
     }
 };

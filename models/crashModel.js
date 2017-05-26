@@ -8,7 +8,7 @@ var crashModel = {
     getCrashList : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [];
-            var sql = "SELECT crash_name, first_time, crash_location, crash_stacktrace " +
+            var sql = "SELECT crash_name, crash_rank, first_time, crash_location, crash_stacktrace " +
             	"FROM crash_table " +
                 "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
         		"WHERE `crash_act_id` IN (";
@@ -79,7 +79,7 @@ var crashModel = {
     getCrashNameWithCount : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name];
-            var sql = `SELECT crash_id, SUM(crash_count) AS count, crash_name, crash_location
+            var sql = `SELECT crash_id, crash_rank, SUM(crash_count) AS count, crash_name, crash_location
                 FROM crash_table 
                 INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
                 INNER JOIN activity_table ON crash_act_id = act_id 
@@ -89,7 +89,7 @@ var crashModel = {
             sql += filterOption.addFullOption(data.filter, select);
 
             select.push(data.limit);
-            sql += `GROUP BY crash_id, crash_name, crash_location 
+            sql += `GROUP BY crash_id, crash_rank, crash_name, crash_location 
                 ORDER BY count 
                 LIMIT ? `;
 
@@ -155,7 +155,7 @@ var crashModel = {
     getCrashInfo : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name, data.crash_id];
-            var sql = `SELECT crash_id, crash_name, first_time, last_time, 
+            var sql = `SELECT crash_id, crash_name, crash_rank, first_time, last_time, 
                 SUM(crash_wifi) AS crash_wifi, SUM(crash_mobile_net) AS crash_mobile_net, 
                 SUM(crash_gps) AS crash_gps, SUM(crash_count) AS crash_count,
                 crash_stacktrace
@@ -166,48 +166,9 @@ var crashModel = {
                 WHERE package_name = ? 
                 AND crash_id = ? `;
                 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
+            sql += filterOption.addFullOption(data.filter, select);
 
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
-
-            sql += "GROUP BY crash_id, crash_name, first_time, last_time, crash_stacktrace ";
+            sql += "GROUP BY crash_id, crash_name, crash_rank, first_time, last_time, crash_stacktrace ";
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -258,46 +219,9 @@ var crashModel = {
                 WHERE package_name = ?
                 AND crash_id = ? `;
                 
-            if (data.filter != undefined) {
-                if (data.filter.dateRange != undefined) {
-                    sql += "AND collect_time BETWEEN ? AND ? ";
-                    select.push(data.filter.dateRange.start, data.filter.dateRange.end);
-                }
+                
+            sql += filterOption.addFullOption(data.filter, select);
 
-                if (data.filter.location != undefined) {
-                    sql += "AND `location_code` IN (?) ";
-                    select.push(data.filter.location);
-                }
-                if (data.filter.device != undefined) {
-                    sql += "AND `device_name` IN (?) ";
-                    select.push(data.filter.device);
-                }
-                if (data.filter.os != undefined) {
-                    sql += "AND `os_ver` IN (?) ";
-                    select.push(data.filter.os);
-                }
-                if (data.filter.activity_name != undefined) {
-                    sql += "AND `activity_name` IN (?) ";
-                    select.push(data.filter.activity_name);
-                }
-
-                if (data.filter.nlocation != undefined) {
-                    sql += "AND `location_code` NOT IN (?) ";
-                    select.push(data.filter.nlocation);
-                }
-                if (data.filter.ndevice != undefined) {
-                    sql += "AND `device_name` NOT IN (?) ";
-                    select.push(data.filter.ndevice);
-                }
-                if (data.filter.nos != undefined) {
-                    sql += "AND `os_ver` NOT IN (?) ";
-                    select.push(data.filter.nos);
-                }
-                if (data.filter.nactivity_name != undefined) {
-                    sql += "AND `activity_name` NOT IN (?) ";
-                    select.push(data.filter.nactivity_name);
-                }
-            }
             sql += `GROUP BY class_name, method_name, line_num, ec_uplevel`;
 
             context.connection.query(sql, select, function (err, rows) {
@@ -341,6 +265,60 @@ var crashModel = {
             });
         });
     },
+
+    setMarkCrash : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var insert = [data.crash_rank, data.crash_id];
+            var sql = `UPDATE crash_raw_table SET
+                crash_rank = ? 
+                WHERE crash_id = ? `;
+
+            context.connection.query(sql, insert, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    return rejected({ context : context, error : error });
+                }
+    
+                return resolved(context);
+            });
+        });
+    },
+
+    getRankRate : (context, data) => {
+        return new Promise(function(resolved, rejected) {
+            var select = [data.crash_rank, data.crash_id];
+            var sql = `SELECT crash_rank, SUM(crash_count) AS crash_count
+                FROM crash_table 
+                INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
+                INNER JOIN activity_table ON crash_act_id = act_id 
+                INNER JOIN version_table ON act_ver_id = ver_id 
+                WHERE package_name = ? `;
+                
+            sql += filterOption.addFullOption(data.filter, select);
+
+            sql += "GROUP BY crash_rank ";
+
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    return rejected({ context : context, error : error });
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 9404;
+                    return rejected({ context : context, error : error });
+                }
+                
+                data.crashRank = {
+                    crash_rank : rows[0].crash_rank,
+                    count : rows[0].crash_count
+                };
+                
+                return resolved(context);
+        });
+    }
 };
 
 module.exports = crashModel;
