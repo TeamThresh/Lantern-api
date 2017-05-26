@@ -279,8 +279,21 @@ module.exports = {
         var data = {
             package_name : req.params.packageName,
             crash_id : req.params.crashId,
+            crash_rank : req.body.crash_rank,
             filter : require('./filter').setFilter(req.query)
         };
+
+        switch(req.body.crash_rank) {
+            case 'major' : 
+            case 'minor' :
+            case 'unhandle' :
+                data.crash_rank = req.body.crash_rank;
+                break;
+            default:
+                var error = new Error();
+                error.status = 400;
+                return next(error);
+        }
 
         mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
