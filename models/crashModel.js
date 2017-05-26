@@ -313,10 +313,7 @@ var crashModel = {
                     return rejected({ context : context, error : error });
                 }
                 
-                data.crashRank = {
-                    crash_rank : rows[0].crash_rank,
-                    count : rows[0].crash_count
-                };
+                data.crashRank = rows;
                 
                 return resolved(context);
             });
