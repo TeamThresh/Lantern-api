@@ -5,9 +5,8 @@ var credentials = require('../credentials');
 var mysql = require('mysql');
 
 var poolCluster = mysql.createPoolCluster();
-poolCluster.add(config);
-poolCluster.add('MASTER', credentials.masterConfig);
-poolCluster.add('SLAVE1', credentials.slave1Config);
+poolCluster.add('MASTER', credentials.mysql.masterConfig);
+poolCluster.add('SLAVE1', credentials.mysql.slave1Config);
 
 var readPool = poolCluster.of('SLAVE*', 'RR');
 var writePool = poolCluster.of('MASTER', 'RR');
