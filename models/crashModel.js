@@ -37,6 +37,7 @@ var crashModel = {
 	            rows.forEach(function(row) {
 	            	var crashData = {
 	            		name : row.crash_name,
+                        crash_rank : row.crash_rank,
 	            		timestamp : row.first_time,
 	            		topActivity : row.crash_location,
 	            		stacktrace : row.crash_stacktrace
@@ -185,6 +186,7 @@ var crashModel = {
                 data.crashInfo = {
                     crash_id : rows[0].crash_id,
                     count : rows[0].crash_count, 
+                    crash_rank : rows[0].crash_rank,
                     crash_wifi : rows[0].crash_wifi,
                     crash_mobile_net : rows[0].crash_mobile_net,
                     crash_gps : rows[0].crash_gps,
