@@ -289,7 +289,7 @@ var crashModel = {
 
     getRankRate : (context, data) => {
         return new Promise(function(resolved, rejected) {
-            var select = [data.crash_rank, data.crash_id];
+            var select = [data.package_name];
             var sql = `SELECT crash_rank, SUM(crash_count) AS crash_count
                 FROM crash_table 
                 INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
