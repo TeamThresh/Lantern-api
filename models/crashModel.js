@@ -317,7 +317,7 @@ var crashModel = {
                 };
                 
                 return resolved(context);
-            }
+            });
         });
     }
 };
