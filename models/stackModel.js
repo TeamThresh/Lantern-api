@@ -89,7 +89,7 @@
  		return new Promise(function(resolved, rejected) {
  			var select = [data.crash_id, data.package_name];
  			var sql = `SELECT cs_thread_name, cs_clevel, 
- 			callstack_name, 
+ 			callstack_name AS clevel_name, 
  			cs_uplevel, 
  			cs_downlevel, 
  			SUM(cs_count) AS cs_count 
