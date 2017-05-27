@@ -204,7 +204,7 @@ var crashModel = {
     getEventPath : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.package_name, data.crash_id];
-            var sql = `SELECT class_name, method_name, line_num, ec_event_id, ec_uplevel, SUM(ec_count) AS ec_count
+            var sql = `SELECT class_name, method_name, line_num, ec_event_id, ec_uplevel, ec_downlevel, SUM(ec_count) AS ec_count
                 FROM crash_raw_table
 
                 INNER JOIN crash_table
@@ -250,6 +250,7 @@ var crashModel = {
                         method_name : row.method_name, 
                         line_num : row.line_num, 
                         parentId : row.ec_uplevel,
+                        childId : row.ec_downlevel,
                         count : row.ec_count
                     });
                 });

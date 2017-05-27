@@ -304,7 +304,9 @@ module.exports = {
             .then(mysqlSetting.commitTransaction)
             .then(function(data) {
                 res.statusCode = 200;
-                return res.json(data);
+                return res.json({
+                    msg : 'Crash rank marked'
+                });
             })
             .catch(function(err) {
                 if (err.context) {
