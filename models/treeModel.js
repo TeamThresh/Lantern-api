@@ -34,7 +34,7 @@ module.exports.expendTreeModel = (arrayList, rootId) => {
 
 	var search = (item, array) => {
 		return array.some((compItem, index) => {
-			if (item.childId == item.id
+			if (item.childId.includes(''+item.id)
 			&& item.parentId == compItem.id) {
 				// 재귀 호출 일경우 자신을 재외 한 배열에 검사
 				array.slice(index, 1);
@@ -43,7 +43,7 @@ module.exports.expendTreeModel = (arrayList, rootId) => {
 
 			if ((item.id == 0 
 				&& item.id == compItem.parentId)
-			|| (item.childId == compItem.id
+			|| (item.childId.includes(''+compItem.id)
 				&& item.id == compItem.parentId)) {
 				// 마지막 일경우 (down level == current level)
 				if (item.id == compItem.id) 
