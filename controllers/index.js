@@ -12,6 +12,7 @@ var network = require('./networkController');
 var stack = require('./stackController');
 var detailRes = require('./detailController');
 var group = require('./groupController');
+var insight = require('./insightController');
 
 var api = {
 	package : package,
@@ -23,7 +24,8 @@ var api = {
 	network : network,
 	stack : stack,
 	detailRes : detailRes,
-	group : group
+	group : group,
+	insight : insight
 };
 
 module.exports = api;

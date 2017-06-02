@@ -8,6 +8,9 @@ var router = express.Router();
 
 module.exports = function(){
 
+  router.get('/insight/:packageName/:type/:p95', auth.check, auth.checkProject, api.insight.getInsight);
+  router.get('/histogram/:packageName/:type', auth.check, auth.checkProject, api.insight.getHistogramWithP95);
+
   // Authentication
   router.post('/user', auth.regist);
   router.post('/user/:username', auth.login);
