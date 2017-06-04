@@ -186,3 +186,39 @@ module.exports.addMongoFullOption = (filter, query) => {
 	    }
 	}
 }
+
+module.exports.addMongoInsightOption = (filter, query) => {
+    if (filter != undefined) {
+		switch(filter.type) {
+			case "cpu":
+				break;
+			case "memory":
+        		query["data.app.memory.alloc"] = { $gt : filter.p95 * 1000 };
+        		break;
+		}
+
+	    if (filter.app != undefined) {
+	        query["device_info.app"] = filter.app;
+	    }
+	    
+	    if (filter.start_date != undefined && filter.end_date != undefined) {
+	        query["data.duration_time.start"] = { $gt : new Date(filter.start_date).getTime(), $lt : new Date(filter.end_date).getTime() },
+	        query["data.duration_time.end"] = { $gt : new Date(filter.start_date).getTime(), $lt : new Date(filter.end_date).getTime() }
+	    }
+
+	}
+
+}
+
+module.exports.addUserOption = (filter, select) => {
+	let sql = "";
+
+    if (filter != undefined) {
+	    if (filter.app != undefined) {
+	        sql += "AND uuid = ? ";
+	        select.push(filter.uuid);
+	    }
+	}
+
+	return sql;
+}

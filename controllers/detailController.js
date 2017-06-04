@@ -22,7 +22,7 @@ module.exports = {
             endRange : Number(req.query.endRange)
         };
 
-        ResourceMongoModel.resAppMongoModel(data)
+        ResourceMongoModel.resAppRawMongoModel(data)
             .then(function(result) {
                 res.statusCode = 200;
                 return res.json(result);
@@ -42,7 +42,7 @@ module.exports = {
             endRange : Number(req.query.endRange)
         };
 
-        ResourceMongoModel.resOSMongoModel(data)
+        ResourceMongoModel.resOSRawMongoModel(data)
             .then(function(result) {
                 res.statusCode = 200;
                 return res.json(result);
@@ -62,7 +62,7 @@ module.exports = {
             endRange : Number(req.query.endRange)
         };
 
-        ResourceMongoModel.resMemoryMongoModel(data)
+        ResourceMongoModel.resMemoryRawMongoModel(data)
             .then(function(result) {
                 res.statusCode = 200;
                 return res.json(result);
@@ -82,7 +82,7 @@ module.exports = {
             endRange : Number(req.query.endRange)	
         };
 
-        ResourceMongoModel.resVmstatMongoModel(data)
+        ResourceMongoModel.resVmstatRawMongoModel(data)
             .then(function(result) {
                 res.statusCode = 200;
                 return res.json(result);
@@ -90,5 +90,52 @@ module.exports = {
             .catch(function(err) {
                 return next(err);
             });
+    },
+
+    getResourceDetailByActivity : function(req, res, next) {
+        var data = {
+            access_token: req.header('access-token'),
+            package_name : req.params.packageName,
+            activity_name : req.params.activityName,
+            type : req.params.type,
+            filter : require('./filter').setFilter(req.query),
+            startRange : Number(req.query.startRange),
+            endRange : Number(req.query.endRange)
+        };
+
+
+        return new Promise((resolved, rejected) => {
+            switch (data.type) {
+                case "stat":
+                    return ResourceMongoModel.resOSDetailMongoModel(data)
+                        .then(resolved);
+                    break;
+                case "pstat":
+                    return ResourceMongoModel.resAppDetailMongoModel(data)
+                        .then(resolved);
+                    break;
+                case "vmstat":
+                    return ResourceMongoModel.resvmstatDetailMongoModel(data)
+                        .then(resolved);
+                    break;
+                case "memory":
+                    return ResourceMongoModel.resMemoryDetailMongoModel(data)
+                        .then(resolved);
+                    break;
+                default:
+                    var error = new Error("no route");
+                    error.status = 404;
+                    return rejected(error);
+
+            }
+        })
+        .then(function(result) {
+            res.statusCode = 200;
+            return res.json(result);
+        })
+        .catch(function(err) {
+            return next(err);
+        });
+            
     },
 };

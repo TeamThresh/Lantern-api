@@ -16,10 +16,16 @@ var StackModel = require('../models/stackModel');
 module.exports = {
 
     getCallstack : function (req, res, next) {
+        if (req.params.activityName) {
+            if (req.query.activity)
+                req.query.activity = req.params.activityName + "," + req.query.activity;
+            else 
+                req.query.activity = req.params.activityName + ",";
+        }
+
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
-            activity_name : req.params.activityName,
             filter : require('./filter').setFilter(req.query)
         };
 

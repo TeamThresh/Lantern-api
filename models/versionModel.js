@@ -223,14 +223,13 @@ var versionModel = {
 
     getActivityIdByVersionWithName : function(context, data) {
     	return new Promise(function(resolved, rejected) {
-            var select = [data.activity_name, data.ver_key];
+            var select = [data.ver_key];
             var sql = "SELECT DISTINCT act_id " +
             	"FROM activity_table " +
-            	"WHERE `activity_name` = ? "+
-            	"AND `act_ver_id` IN (?) ";
+            	"WHERE `act_ver_id` IN (?) ";
 
             sql += filterOption.addActivityOption(data.filter, select);
-
+            
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
                     var error = new Error(err);
@@ -733,7 +732,7 @@ var versionModel = {
                 field.table_name, field.field_name[3],
                 data.package_name,
                 field.field_name[0], data.filter.dateRange.start, data.filter.dateRange.end);
-            sql += `SUM(??) AS ??, collect_time, device_name, os_ver, location_code 
+            sql += `SUM(??) AS ??, collect_time, device_name, os_ver, location_code, uuid 
                 FROM ??
                 INNER JOIN activity_table ON ?? = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
@@ -747,7 +746,7 @@ var versionModel = {
                 case 'cpu':
                 case 'memory':
                     sql += `AND ?? BETWEEN ? AND ? 
-                        GROUP BY collect_time, device_name, os_ver, location_code, ??, ??
+                        GROUP BY collect_time, device_name, os_ver, location_code, uuid, ??, ??
                         ORDER BY ?? ASC`;
                     select.push(field.field_name[1], 
                         data.filter.usageRange.start, data.filter.usageRange.end,
@@ -755,7 +754,7 @@ var versionModel = {
                     break;
                 case 'ui':
                     sql += `AND ?? / ?? BETWEEN ? AND ? 
-                        GROUP BY collect_time, device_name, os_ver, location_code, ??
+                        GROUP BY collect_time, device_name, os_ver, location_code, uuid, ??
                         ORDER BY ?? ASC`;
                     select.push(field.field_name[1], field.field_name[2], 
                         data.filter.usageRange.start, data.filter.usageRange.end,
@@ -779,6 +778,7 @@ var versionModel = {
                 data.user_list = [];
                 rows.forEach(function(row) {
                     data.user_list.push({
+                        uuid : row.uuid,
                         device : row.device_name,
                         os : row.os_ver,
                         location : row.location_code,

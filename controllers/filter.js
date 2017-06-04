@@ -62,6 +62,10 @@ module.exports = {
         	filter.activity_name = undefined;
         }
 
+        if (query.uuid != undefined && query.uuid != '') {
+            filter.uuidList = query.uuid.split(',');
+        }
+
         return filter;
 	}
 }

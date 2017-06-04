@@ -2,22 +2,31 @@
  * Created by YS on 2017-04-14.
  */
 
- var stackModel = {
+const filterOption = require('./filterOption');
+
+var stackModel = {
  	getCallstack : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.act_id_list];
+ 			var select = [data.package_name];
  			var sql = `SELECT thread_name, call_clevel, 
- 			(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_clevel) AS clevel_name, 
- 			call_uplevel, 
- 			(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_uplevel) AS uplevel_name, 
- 			GROUP_CONCAT(DISTINCT call_downlevel) AS 
-            call_downlevel,
- 			SUM(call_count) AS call_count 
- 			FROM callstack_table AS CT 
- 			LEFT JOIN callstack_name_table AS CNT 
- 			ON call_clevel = call_id AND call_uplevel = call_id AND call_downlevel = call_id 
- 			WHERE call_act_id IN (?) 
- 			GROUP BY thread_name, call_clevel, call_uplevel `;
+     			(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_clevel) AS clevel_name, 
+     			call_uplevel, 
+     			(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_uplevel) AS uplevel_name, 
+     			GROUP_CONCAT(DISTINCT call_downlevel) AS 
+                call_downlevel,
+     			SUM(call_count) AS call_count 
+     			FROM callstack_table AS CT 
+                INNER JOIN activity_table ON call_act_id = act_id 
+                INNER JOIN version_table ON act_ver_id = ver_id 
+                INNER JOIN user_table ON user_ver_id = ver_id
+                LEFT JOIN callstack_name_table AS CNT 
+                ON call_clevel = call_id AND call_uplevel = call_id AND call_downlevel = call_id 
+                WHERE package_name = ? `;
+
+            sql += filterOption.addFullOption(data.filter, select);
+            sql += filterOption.addUserOption(data.filter, select);
+
+            sql += `GROUP BY thread_name, call_clevel, call_uplevel `;
 
  			context.connection.query(sql, select, function (err, rows) {
  				if (err) {
@@ -55,8 +64,6 @@
 	            			count : row.call_count
 	            		});
 	            	} else {
-                        if (row.call_clevel == 199)
-                            console.log(row);
 
 	            		if (row.call_uplevel == row.call_clevel) {
 	            			// 루트 노드 일경우

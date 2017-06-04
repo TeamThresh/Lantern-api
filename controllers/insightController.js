@@ -5,6 +5,7 @@
 var credentials = require('../credentials');
 var mysqlSetting = require('../models/mysqlSetting');
 var InsightModel = require('../models/insightModel');
+var ResourceMongoModel = require('../models/resourceMongoModel');
 
 /**
  *
@@ -35,9 +36,31 @@ module.exports = {
             .then(function(context) {
             	switch(data.type) {
             		case 'cpu':
-            			return InsightModel.getCPUInsight(context, data);
+            			return ResourceMongoModel.getCPUInsight(data)
+            				.then(() => {
+            					return new Promise((resolved) => {
+            						return resolved(context);
+            					});
+            				})
+            				.catch((err) => {
+            					return new Promise((resolved, rejected)=> {
+            						return rejected({ context : context, error, err });
+            					});
+            				});
+            			//return InsightModel.getCPUInsight(context, data);
             		case 'memory':
-            			return InsightModel.getMemInsight(context, data);
+            			return ResourceMongoModel.getMemInsight(data)
+            				.then(() => {
+            					return new Promise((resolved) => {
+            						return resolved(context);
+            					});
+            				})
+            				.catch((err) => {
+            					return new Promise((resolved, rejected)=> {
+            						return rejected({ context : context, error, err });
+            					});
+            				});
+            			//return InsightModel.getMemInsight(context, data);
             		case 'network':
             			return InsightModel.getOBCInsight(context, data);
             		case 'ui':
@@ -125,9 +148,23 @@ module.exports = {
             .then(function(context) {
             	switch(data.type) {
             		case 'cpu':
-            			return InsightModel.getCPUHistogramWithP95(context, data);
+            			// MongoDB 에서 Raw 데이터 가져옴
+            			return ResourceMongoModel.getCPUHistogram(data)
+            				.then((resData) => {
+            					return new Promise((resolved) => {
+            						return resolved(context);
+            					});
+            				});
+            			//return InsightModel.getCPUHistogramWithP95(context, data);
             		case 'memory':
-            			return InsightModel.getMemHistogramWithP95(context, data);
+            			// MongoDB 에서 Raw 데이터 가져옴
+            			return ResourceMongoModel.getMemHistogram(data)
+            				.then((resData) => {
+            					return new Promise((resolved) => {
+            						return resolved(context);
+            					});
+            				});
+            			//return InsightModel.getMemHistogramWithP95(context, data);
             		case 'network':
             			return InsightModel.getHostHistogramWithP95(context, data);
             		case 'ui':
@@ -146,7 +183,7 @@ module.exports = {
             			histogram: data.histogram,
 						p95: data.p95,
 						p50: data.p50,
-						p0 : data.p0
+						p10 : data.p10
             		};
             		return resolved(context);
             	});
