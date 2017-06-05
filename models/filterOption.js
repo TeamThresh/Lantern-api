@@ -189,12 +189,14 @@ module.exports.addMongoFullOption = (filter, query) => {
 
 module.exports.addMongoInsightOption = (filter, query) => {
     if (filter != undefined) {
-		switch(filter.type) {
-			case "cpu":
-				break;
-			case "memory":
-        		query["data.app.memory.alloc"] = { $gt : filter.p95 * 1000 };
-        		break;
+    	if (filter.p95) {
+			switch(filter.type) {
+				case "cpu":
+					break;
+				case "memory":
+	        		query["data.app.memory.alloc"] = { $gt : filter.p95 * 1000 };
+	        		break;
+			}
 		}
 
 	    if (filter.app != undefined) {
@@ -214,7 +216,7 @@ module.exports.addUserOption = (filter, select) => {
 	let sql = "";
 
     if (filter != undefined) {
-	    if (filter.app != undefined) {
+	    if (filter.uuid != undefined) {
 	        sql += "AND uuid = ? ";
 	        select.push(filter.uuid);
 	    }
