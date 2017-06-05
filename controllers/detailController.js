@@ -115,7 +115,7 @@ module.exports = {
                         .then(resolved);
                     break;
                 case "vmstat":
-                    return ResourceMongoModel.resvmstatDetailMongoModel(data)
+                    return ResourceMongoModel.resVmstatDetailMongoModel(data)
                         .then(resolved);
                     break;
                 case "memory":
