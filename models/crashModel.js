@@ -7,19 +7,11 @@ const filterOption = require('./filterOption');
 var crashModel = {
     getCrashList : function(context, data) {
         return new Promise(function(resolved, rejected) {
-            var select = [];
-            var sql = "SELECT crash_name, crash_rank, first_time, crash_location, crash_stacktrace " +
-            	"FROM crash_table " +
-                "INNER JOIN crash_raw_table ON crash_raw_id = crash_id " +
-        		"WHERE `crash_act_id` IN (";
-            	
-            data.act_id_list.forEach(function(act_id, index) {
-            	sql += act_id;
-            	if (index < data.act_id_list.length - 1) {
-            		sql += ",";
-            	}
-            });
-            sql += ")";
+            var select = [data.act_id_list];
+            var sql = `SELECT crash_name, crash_rank, first_time, crash_location, crash_stacktrace 
+            	FROM crash_table 
+                INNER JOIN crash_raw_table ON crash_raw_id = crash_id 
+        		WHERE crash_act_id IN (?)`;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {

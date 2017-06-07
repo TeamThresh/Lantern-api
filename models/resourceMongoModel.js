@@ -71,7 +71,9 @@ module.exports.resAppRawMongoModel = function(data) {
 						}
 					}
 				}
-			}], function(err, resRawData){
+			}])
+			.allowDiskUse(true)
+			.exec(function(err, resRawData){
 		        if(err) {
 		        	var error = new Error(err);
 		        	error.status = 500;
@@ -136,7 +138,9 @@ module.exports.resOSRawMongoModel = function(data) {
 		                }
 		            }
 			    }
-			}], function(err, resRawData){
+			}])
+			.allowDiskUse(true)
+			.exec(function(err, resRawData){
 		        if(err) {
 		        	var error = new Error(err);
 		        	error.status = 500;
@@ -207,7 +211,9 @@ module.exports.resVmstatRawMongoModel = function(data) {
 		                }
 		            }
 			    }
-			}], function(err, resRawData){
+			}])
+			.allowDiskUse(true)
+			.exec(function(err, resRawData){
 		        if(err) {
 		        	var error = new Error(err);
 		        	error.status = 500;
@@ -266,7 +272,9 @@ module.exports.resMemoryRawMongoModel = function(data) {
 		                }
 		            }
 			    }
-			}, function(err, resRawData){
+			})
+			.allowDiskUse(true)
+			.exec(function(err, resRawData){
 		        if(err) {
 		        	var error = new Error(err);
 		        	error.status = 500;
@@ -591,11 +599,9 @@ module.exports.getMemHistogram = function(data) {
 		var matchQuery = {
 	        "package_name" : data.package_name,
             "data.type" : "res",
-            "data.duration_time.start" : { $gt : Date.now()-30 * 24 * 60 * 60 * 1000, $lt : Date.now() },
-            "data.duration_time.end" : { $gt : Date.now()-30 * 24 * 60 * 60 * 1000, $lt : Date.now() }
 	    }
 
-	    filterOption.addMongoFullOption(data.filter, matchQuery);
+	    filterOption.addMongoFullOption(data, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
@@ -637,7 +643,7 @@ module.exports.getMemHistogram = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -671,11 +677,9 @@ module.exports.getCPUHistogram = function(data) {
 		var matchQuery = {
 	        "package_name" : data.package_name,
             "data.type" : "res",
-            "data.duration_time.start" : { $gt : Date.now()-30 * 24 * 60 * 60 * 1000, $lt : Date.now() },
-            "data.duration_time.end" : { $gt : Date.now()-30 * 24 * 60 * 60 * 1000, $lt : Date.now() }
 	    }
 
-	    filterOption.addMongoFullOption(data.filter, matchQuery);
+	    filterOption.addMongoFullOption(data, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
@@ -722,7 +726,7 @@ module.exports.getCPUHistogram = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -758,7 +762,7 @@ module.exports.getMemInsight = function(data) {
             "data.type" : "res"
 	    }
 
-	    filterOption.addMongoInsightOption(data, matchQuery);
+	    filterOption.addMongoFullOption(data, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
@@ -770,7 +774,8 @@ module.exports.getMemInsight = function(data) {
             }, {
 	            $match : {
 	                "data.app.activity_stack" : { $ne : null },
-                	"data.app.activity_stack.0" : { $exists : true }
+                	"data.app.activity_stack.0" : { $exists : true },
+                	"data.app.memory.alloc": { $gt : data.p95 * 1000 }
 	            }
 		    }, {
 	            $sort : { "data.duration_time.start" : -1 }
@@ -823,7 +828,7 @@ module.exports.getCPUInsight = function(data) {
             "data.type" : "res"
 	    }
 
-	    filterOption.addMongoInsightOption(data, matchQuery);
+	    filterOption.addMongoFullOption(data, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({

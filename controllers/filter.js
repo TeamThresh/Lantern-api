@@ -43,7 +43,7 @@ module.exports = {
         if (query.os != undefined && query.os != '')
             filter.os = query.os.split(',');
         if (query.activity != undefined && query.activity != '')
-            filter.activity_name = query.activity.split(',');
+            filter.activity = query.activity.split(',');
 
         if (query.nlocation != undefined && query.nlocation != '') {
         	filter.nlocation = query.nlocation.split(',');
@@ -58,8 +58,8 @@ module.exports = {
         	filter.os = undefined;
         }
         if (query.nactivity != undefined && query.nactivity != '') {
-        	filter.nactivity_name = query.nactivity.split(',');
-        	filter.activity_name = undefined;
+        	filter.nactivity = query.nactivity.split(',');
+        	filter.activity = undefined;
         }
 
         if (query.uuid != undefined && query.uuid != '') {

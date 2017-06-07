@@ -25,10 +25,12 @@ module.exports = {
         };
 
 
-        let temp_date = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString().split('T');
-        data.start_date = temp_date[0]+" "+temp_date[1].split('.')[0];
-        temp_date = new Date().toISOString().split('T');
-        data.end_date = temp_date[0]+" "+temp_date[1].split('.')[0];
+        let start_date = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T');
+        let end_date = new Date().toISOString().split('T');
+        data.dateRange = {
+            start : start_date[0]+" "+start_date[1].split('.')[0],
+            end : end_date[0]+" "+end_date[1].split('.')[0]
+        };
 
         mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
@@ -44,7 +46,7 @@ module.exports = {
             				})
             				.catch((err) => {
             					return new Promise((resolved, rejected)=> {
-            						return rejected({ context : context, error, err });
+            						return rejected({ context : context, error: err });
             					});
             				});
             			//return InsightModel.getCPUInsight(context, data);
@@ -57,7 +59,7 @@ module.exports = {
             				})
             				.catch((err) => {
             					return new Promise((resolved, rejected)=> {
-            						return rejected({ context : context, error, err });
+            						return rejected({ context : context, error: err });
             					});
             				});
             			//return InsightModel.getMemInsight(context, data);
@@ -137,10 +139,12 @@ module.exports = {
         };
 
 
-        let temp_date = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString().split('T');
-        data.start_date = temp_date[0]+" "+temp_date[1].split('.')[0];
-        temp_date = new Date().toISOString().split('T');
-        data.end_date = temp_date[0]+" "+temp_date[1].split('.')[0];
+        let start_date = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T');
+        let end_date = new Date().toISOString().split('T');
+        data.dateRange = {
+            start : start_date[0]+" "+start_date[1].split('.')[0],
+            end : end_date[0]+" "+end_date[1].split('.')[0]
+        };
 
         mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)

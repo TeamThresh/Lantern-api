@@ -16,10 +16,15 @@ var CrashModel = require('../models/crashModel');
 module.exports = {
 
     getCrash : function (req, res, next) {
+        if (req.query.activity == undefined
+        || req.query.activity == "") 
+            req.query.activity = req.params.activityName;
+        else 
+            req.query.activity = req.params.activityName + "," + req.query.activity;
+
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
-            activity_name : req.params.activityName,
             limit : Number(req.query.limit) || 10,
             filter : require('./filter').setFilter(req.query)
         };

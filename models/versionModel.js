@@ -325,8 +325,8 @@ var versionModel = {
                         name : row.activity_name,
                         usageCount : row.user_count,
                         crashCount : row.crash_count != null ? row.crash_count : 0,
-                        cpuUsage : row.cpu_count,
-                        memoryUsage : row.mem_count,
+                        cpuUsage : row.cpu_count != null ? row.cpu_count : 0,
+                        memoryUsage : row.mem_count != null ? row.mem_count : 0,
                         networkCount : row.status_count != null ? row.status_count : 0,
                     };
 
@@ -473,8 +473,8 @@ var versionModel = {
                         locationCode : row.location_code,
                         usageCount : row.usage_count,
                         crashCount : row.crash_count != null ? row.crash_count : 0,
-                        cpuCount : row.cpu_count,
-                        memoryCount : row.mem_count,
+                        cpuUsage : row.cpu_count != null ? row.cpu_count : 0,
+                        memoryUsage : row.mem_count != null ? row.mem_count : 0,
                         networkCount : row.status_count != null ? row.status_count : 0
                     }
 
@@ -531,8 +531,8 @@ var versionModel = {
                         deviceName : row.device_name,
                         usageCount : row.usage_count,
                         crashCount : row.crash_count != null ? row.crash_count : 0,
-                        cpuCount : row.cpu_count,
-                        memoryCount : row.mem_count,
+                        cpuUsage : row.cpu_count != null ? row.cpu_count : 0,
+                        memoryUsage : row.mem_count != null ? row.mem_count : 0,
                         networkCount : row.status_count != null ? row.status_count : 0
                     }
 
@@ -588,8 +588,8 @@ var versionModel = {
                         osVersion : row.os_ver,
                         usageCount : row.usage_count,
                         crashCount : row.crash_count != null ? row.crash_count : 0,
-                        cpuCount : row.cpu_count,
-                        memoryCount : row.mem_count,
+                        cpuUsage : row.cpu_count != null ? row.cpu_count : 0,
+                        memoryUsage : row.mem_count != null ? row.mem_count : 0,
                         networkCount : row.status_count != null ? row.status_count : 0
                     }
 
@@ -645,8 +645,8 @@ var versionModel = {
                         activityName : row.activity_name,
                         usageCount : row.usage_count,
                         crashCount : row.crash_count != null ? row.crash_count : 0,
-                        cpuCount : row.cpu_count,
-                        memoryCount : row.mem_count,
+                        cpuUsage : row.cpu_count != null ? row.cpu_count : 0,
+                        memoryUsage : row.mem_count != null ? row.mem_count : 0,
                         networkCount : row.status_count != null ? row.status_count : 0
                     }
 

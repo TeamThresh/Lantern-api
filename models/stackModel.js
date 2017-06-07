@@ -27,7 +27,7 @@ var stackModel = {
             sql += filterOption.addUserOption(data.filter, select);
 
             sql += `GROUP BY thread_name, call_clevel, call_uplevel `;
-
+            
  			context.connection.query(sql, select, function (err, rows) {
  				if (err) {
  					var error = new Error(err);

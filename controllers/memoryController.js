@@ -16,10 +16,15 @@ var MemoryModel = require('../models/memoryModel');
 module.exports = {
 
     getMemory : function (req, res, next) {
+        if (req.query.activity == undefined
+        || req.query.activity == "") 
+            req.query.activity = req.params.activityName;
+        else 
+            req.query.activity = req.params.activityName + "," + req.query.activity;
+
         var data = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
-            activity_name : req.params.activityName,
             filter : require('./filter').setFilter(req.query)
         };
 

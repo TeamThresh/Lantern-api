@@ -24,9 +24,9 @@ module.exports.addFullOption = (filter, select) => {
 	        sql += "AND `os_ver` IN (?) ";
 	        select.push(filter.os);
 	    }
-	    if (filter.activity_name != undefined) {
+	    if (filter.activity != undefined) {
 	        sql += "AND `activity_name` IN (?) ";
-	        select.push(filter.activity_name);
+	        select.push(filter.activity);
 	    }
 
 	    if (filter.nlocation != undefined) {
@@ -41,9 +41,9 @@ module.exports.addFullOption = (filter, select) => {
 	        sql += "AND `os_ver` NOT IN (?) ";
 	        select.push(filter.nos);
 	    }
-	    if (filter.nactivity_name != undefined) {
+	    if (filter.nactivity != undefined) {
 	        sql += "AND `activity_name` NOT IN (?) ";
-	        select.push(filter.nactivity_name);
+	        select.push(filter.nactivity);
 	    }
 	}
 
@@ -53,14 +53,14 @@ module.exports.addFullOption = (filter, select) => {
 module.exports.addActivityOption = (filter, select) => {
 	let sql = "";
     if (filter != undefined) {
-        if (filter.activity_name != undefined) {
+        if (filter.activity != undefined) {
             sql += "AND `activity_name` IN (?) ";
-            select.push(filter.activity_name);
+            select.push(filter.activity);
         }
 
-        if (filter.nactivity_name != undefined) {
+        if (filter.nactivity != undefined) {
             sql += "AND `activity_name` NOT IN (?) ";
-            select.push(filter.nactivity_name);
+            select.push(filter.nactivity);
         }
 
         if (filter.dateRange != undefined) {
@@ -121,9 +121,9 @@ module.exports.addExceptOption = (filter, select, except) => {
 	        sql += "AND `os_ver` IN (?) ";
 	        select.push(filter.os);
 	    }
-	    if (filter.activity_name != undefined) {
+	    if (filter.activity != undefined) {
 	        sql += "AND `activity_name` IN (?) ";
-	        select.push(filter.activity_name);
+	        select.push(filter.activity);
 	    }
 
 	    if (filter.nlocation != undefined) {
@@ -138,9 +138,9 @@ module.exports.addExceptOption = (filter, select, except) => {
 	        sql += "AND `os_ver` NOT IN (?) ";
 	        select.push(filter.nos);
 	    }
-	    if (filter.nactivity_name != undefined) {
+	    if (filter.nactivity != undefined) {
 	        sql += "AND `activity_name` NOT IN (?) ";
-	        select.push(filter.nactivity_name);
+	        select.push(filter.nactivity);
 	    }
 	}
 
@@ -168,8 +168,8 @@ module.exports.addMongoFullOption = (filter, query) => {
 	    if (filter.os != undefined) {
 	        query["device_info.os"].$eq = filter.os;
 	    }
-	    if (filter.activity_name != undefined) {
-	        query["data.app.activity_stack"].$eq = filter.activity_name;
+	    if (filter.activity != undefined) {
+	        query["data.app.activity_stack"].$eq = filter.activity;
 	    }
 
 	    if (filter.nlocation != undefined) {
@@ -181,8 +181,8 @@ module.exports.addMongoFullOption = (filter, query) => {
 	    if (filter.nos != undefined) {
 	        query["device_info.os"].$ne = filter.nos;
 	    }
-	    if (filter.nactivity_name != undefined) {
-	        query["data.app.activity_stack"].$ne = filter.nactivity_name;
+	    if (filter.nactivity != undefined) {
+	        query["data.app.activity_stack"].$ne = filter.nactivity;
 	    }
 	}
 }
@@ -198,15 +198,6 @@ module.exports.addMongoInsightOption = (filter, query) => {
 	        		break;
 			}
 		}
-
-	    if (filter.app != undefined) {
-	        query["device_info.app"] = filter.app;
-	    }
-	    
-	    if (filter.start_date != undefined && filter.end_date != undefined) {
-	        query["data.duration_time.start"] = { $gt : new Date(filter.start_date).getTime(), $lt : new Date(filter.end_date).getTime() },
-	        query["data.duration_time.end"] = { $gt : new Date(filter.start_date).getTime(), $lt : new Date(filter.end_date).getTime() }
-	    }
 
 	}
 
