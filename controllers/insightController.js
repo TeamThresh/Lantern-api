@@ -25,7 +25,7 @@ module.exports = {
         };
 
 
-        let start_date = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T');
+        let start_date = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString().split('T');
         let end_date = new Date().toISOString().split('T');
         data.dateRange = {
             start : start_date[0]+" "+start_date[1].split('.')[0],
@@ -139,7 +139,7 @@ module.exports = {
         };
 
 
-        let start_date = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T');
+        let start_date = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString().split('T');
         let end_date = new Date().toISOString().split('T');
         data.dateRange = {
             start : start_date[0]+" "+start_date[1].split('.')[0],

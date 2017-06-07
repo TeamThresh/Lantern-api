@@ -5,7 +5,7 @@
  var insightModel = {
  	getUserCount : (context, data) => {
  		return new Promise((resolved, rejected) => {
- 			let select = [data.package_name, data.start_date, data.end_date];
+ 			let select = [data.package_name, data.dateRange.start, data.dateRange.end];
  			let sql = `SELECT COUNT(ver_id) AS user_count
 				FROM cpu_raw_table
 				INNER JOIN activity_table
@@ -36,7 +36,7 @@
 
  	getCPUInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date, data.p95];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
  			var sql = `SELECT cpu_raw_rate, SUM(cpu_raw_count), activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM cpu_raw_table
 				INNER JOIN activity_table
@@ -70,7 +70,7 @@
 
 	getCPUHistogramWithP95 : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
  			var sql = `SELECT IF (cpu_raw_rate < 0, 0, cpu_raw_rate) AS rate, SUM(cpu_raw_count), COUNT(ver_id) AS user_count
 				FROM cpu_raw_table
 				INNER JOIN activity_table
@@ -119,7 +119,7 @@
 
  	getMemInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date, data.p95];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
  			var sql = `SELECT mem_raw_rate, SUM(mem_raw_count), activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM memory_raw_table
 				INNER JOIN activity_table
@@ -153,7 +153,7 @@
 
  	getMemHistogramWithP95 : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
  			var sql = `SELECT mem_raw_rate AS rate, SUM(mem_raw_count), COUNT(ver_id) AS user_count
 				FROM memory_raw_table
 				INNER JOIN activity_table
@@ -201,7 +201,7 @@
 
  	getRenderInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date, data.p95];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
  			var sql = `SELECT FLOOR(FLOOR((ui_speed/ui_count)*10)*10) AS ui_rate, 
  				activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM ui_table
@@ -235,7 +235,7 @@
 
  	getRenderHistogramWithP95 : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
  			var sql = `SELECT FLOOR(FLOOR((ui_speed/ui_count)*10)*10) AS rate, COUNT(ver_id) AS user_count
 				FROM ui_table
 				INNER JOIN activity_table
@@ -284,7 +284,7 @@
 
  	getOBCInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date, data.p95];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
  			var sql = `SELECT (FLOOR(host_speed/100)*100) AS host_rate, SUM(host_count) AS host_count, 
  				activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM obc_table
@@ -319,7 +319,7 @@
 
  	getHostHistogramWithP95 : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.start_date, data.end_date];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
  			var sql = `SELECT (FLOOR(host_speed/host_count/100)*100) AS rate, COUNT(ver_id) AS user_count
 				FROM obc_table
 				INNER JOIN activity_table
