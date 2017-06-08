@@ -45,7 +45,7 @@ module.exports = function(){
 
   // Summary View
   router.get('/one-depth-userflow/:packageName/:activityName', auth.check, auth.checkProject, api.link.getUserflow);
-  router.get('/crash/:packageName/:activityName', auth.check, auth.checkProject, api.crash.getCrash);
+  router.get('/crashCount/:packageName/:activityName', auth.check, auth.checkProject, api.crash.getTopCrash);
   router.get('/rendering/:packageName/:activityName', auth.check, auth.checkProject, api.render.getRendering);
   router.get('/cpu/:packageName/:activityName', auth.check, auth.checkProject, api.cpu.getCPU);
   router.get('/memory/:packageName/:activityName', auth.check, auth.checkProject, api.memory.getMemory);
