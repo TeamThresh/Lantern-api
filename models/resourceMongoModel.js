@@ -79,7 +79,7 @@ module.exports.resAppRawMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -146,7 +146,7 @@ module.exports.resOSRawMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -219,7 +219,7 @@ module.exports.resVmstatRawMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -280,7 +280,7 @@ module.exports.resMemoryRawMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -389,7 +389,7 @@ module.exports.resAppDetailMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -453,7 +453,7 @@ module.exports.resOSDetailMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -519,7 +519,7 @@ module.exports.resVmstatDetailMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -577,7 +577,7 @@ module.exports.resMemoryDetailMongoModel = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -796,7 +796,7 @@ module.exports.getMemInsight = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);
@@ -873,7 +873,7 @@ module.exports.getCPUInsight = function(data) {
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
-		        if(!resRawData) {
+		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
 		        	return rejected(error);

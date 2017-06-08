@@ -108,19 +108,23 @@ module.exports = {
             switch (data.type) {
                 case "stat":
                     return ResourceMongoModel.resOSDetailMongoModel(data)
-                        .then(resolved);
+                        .then(resolved)
+                        .catch(rejected);
                     break;
                 case "pstat":
                     return ResourceMongoModel.resAppDetailMongoModel(data)
-                        .then(resolved);
+                        .then(resolved)
+                        .catch(rejected);
                     break;
                 case "vmstat":
                     return ResourceMongoModel.resVmstatDetailMongoModel(data)
-                        .then(resolved);
+                        .then(resolved)
+                        .catch(rejected);
                     break;
                 case "memory":
                     return ResourceMongoModel.resMemoryDetailMongoModel(data)
-                        .then(resolved);
+                        .then(resolved)
+                        .catch(rejected);
                     break;
                 default:
                     var error = new Error("no route");
