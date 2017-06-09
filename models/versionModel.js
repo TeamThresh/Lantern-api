@@ -223,12 +223,14 @@ var versionModel = {
 
     getActivityIdByVersionWithName : function(context, data) {
     	return new Promise(function(resolved, rejected) {
-            var select = [data.ver_key];
-            var sql = "SELECT DISTINCT act_id " +
-            	"FROM activity_table " +
-            	"WHERE `act_ver_id` IN (?) ";
+            var select = [data.package_name];
 
-            sql += filterOption.addActivityOption(data.filter, select);
+            var sql = `SELECT DISTINCT act_id 
+                FROM activity_table 
+                INNER JOIN version_table ON ver_id = act_ver_id 
+                WHERE package_name = ? `;
+
+            sql += filterOption.addFullOption(data.filter, select);
             
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -241,12 +243,102 @@ var versionModel = {
                     error.status = 9404;
                     return rejected({ context : context, error : error });
 	            }
-	            
+console.log(rows);
 	            data.act_id_list = []
 	            rows.forEach(function(row) {
 	            	data.act_id_list.push(row.act_id);
 	            });
             	return resolved(context);
+            });
+        });
+    },
+
+    getActivityIdByType : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var select = [];
+            var field = {};
+            switch (data.resourceType) {
+                case 'cpu':
+                    field = {
+                        table_name : 'cpu_raw_table',
+                        res_date : 'cpu_raw_time',
+                        res_usage : 'cpu_raw_rate',
+                        res_count : 'cpu_raw_count',
+                        res_act_id : 'craw_act_id'
+                    }
+                    break;
+                case 'memory':
+                    field = {
+                        table_name : 'memory_raw_table',
+                        res_date : 'mem_raw_time',
+                        res_usage : 'mem_raw_rate',
+                        res_count : 'mem_raw_count',
+                        res_act_id : 'mraw_act_id'
+                    }
+                    break;
+                case 'ui':
+                    field = {
+                        table_name : 'ui_table',
+                        res_date : 'ui_time',
+                        res_usage : 'ui_speed',
+                        res_count : 'ui_count',
+                        res_act_id : 'ui_act_id'
+                    }
+                    break;
+            }
+
+            var sql = `SELECT DISTINCT act_id 
+                FROM ??
+                INNER JOIN activity_table ON ?? = act_id 
+                INNER JOIN version_table ON act_ver_id = ver_id 
+                LEFT JOIN user_table ON ver_id = user_ver_id 
+                WHERE package_name = ? 
+                AND ?? BETWEEN ? AND ? `;
+
+            select.push(field.table_name, field.res_act_id,
+                data.package_name,
+                field.res_date, data.filter.dateRange.start, data.filter.dateRange.end);
+
+            switch(data.resourceType) {
+                case 'cpu':
+                case 'memory':
+                    sql += `AND ?? BETWEEN ? AND ? `;
+                    select.push(field.res_usage, data.filter.usageRange.start, data.filter.usageRange.end);
+                    break;
+
+                case 'ui':
+                    if (data.filter.usageRange.end < 100) {
+                        sql += `AND ??/?? BETWEEN ? AND ? `;
+                        select.push(field.res_usage, field.res_count, data.filter.usageRange.start, data.filter.usageRange.end);
+                    } else {
+                        sql += `AND ??/?? > ? `;
+                        select.push(field.res_usage, field.res_count, data.filter.usageRange.start);
+                    }
+                    break;
+            }
+            
+            sql += filterOption.addFullOption(data.filter, select);    
+            sql += filterOption.addActivityOption(data.filter, select);
+            sql += `ORDER BY act_id ASC`;
+
+            
+            context.connection.query(sql, select, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    return rejected({ context : context, error : error });
+                } else if (rows.length == 0) {
+                    // TODO 아무것도 없는 경우
+                    var error = new Error("No data");
+                    error.status = 9404;
+                    return rejected({ context : context, error : error });
+                }
+                
+                data.act_id_list = []
+                rows.forEach(function(row) {
+                    data.act_id_list.push(row.act_id);
+                });
+                return resolved(context);
             });
         });
     },
@@ -702,28 +794,28 @@ var versionModel = {
         return new Promise(function(resolved, rejected) {
 
             var select = [];
-            var sql = `SELECT ??, `;
+            var sql = `SELECT `;
             var field = {};
             switch (data.resourceType) {
                 case 'cpu':
                     field.field_name = ['cpu_raw_time', 'cpu_raw_rate', 'cpu_raw_count', 'craw_act_id'];
                     field.table_name = 'cpu_raw_table';
 
-                    select.push(field.field_name[0], field.field_name[1]);
+                    select.push(field.field_name[1]);
                     sql += `??, `; 
                     break;
                 case 'memory':
                     field.field_name = ['mem_raw_time', 'mem_raw_rate', 'mem_raw_count', 'mraw_act_id'];
                     field.table_name = 'memory_raw_table';
 
-                    select.push(field.field_name[0], field.field_name[1]);
+                    select.push(field.field_name[1]);
                     sql += `??, `; 
                     break;
                 case 'ui':
                     field.field_name = ['ui_time', 'ui_speed', 'ui_count', 'ui_act_id'];
                     field.table_name = 'ui_table';
 
-                    select.push(field.field_name[0], field.field_name[1], field.field_name[1]);
+                    select.push(field.field_name[1], field.field_name[1]);
                     sql += `SUM(??) AS ??, `; 
                     break;
             }
@@ -732,7 +824,7 @@ var versionModel = {
                 field.table_name, field.field_name[3],
                 data.package_name,
                 field.field_name[0], data.filter.dateRange.start, data.filter.dateRange.end);
-            sql += `SUM(??) AS ??, collect_time, device_name, os_ver, location_code, uuid 
+            sql += `SUM(??) AS ??, device_name, os_ver, location_code, uuid 
                 FROM ??
                 INNER JOIN activity_table ON ?? = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
@@ -746,22 +838,21 @@ var versionModel = {
                 case 'cpu':
                 case 'memory':
                     sql += `AND ?? BETWEEN ? AND ? 
-                        GROUP BY collect_time, device_name, os_ver, location_code, uuid, ??, ??
+                        GROUP BY device_name, os_ver, location_code, uuid, ??
                         ORDER BY ?? ASC`;
                     select.push(field.field_name[1], 
                         data.filter.usageRange.start, data.filter.usageRange.end,
-                        field.field_name[0], field.field_name[1], field.field_name[0]);
+                        field.field_name[1], field.field_name[1]);
                     break;
                 case 'ui':
                     sql += `AND ?? / ?? BETWEEN ? AND ? 
-                        GROUP BY collect_time, device_name, os_ver, location_code, uuid, ??
+                        GROUP BY device_name, os_ver, location_code, uuid
                         ORDER BY ?? ASC`;
                     select.push(field.field_name[1], field.field_name[2], 
                         data.filter.usageRange.start, data.filter.usageRange.end,
-                        field.field_name[0], field.field_name[0]);
+                        field.field_name[1]);
                     break;
             }
-
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -783,8 +874,7 @@ var versionModel = {
                         os : row.os_ver,
                         location : row.location_code,
                         usage_rate : row[field.field_name[1]],
-                        usage_count : row[field.field_name[2]],
-                        time : new Date(row[field.field_name[0]]).getTime()
+                        usage_count : row[field.field_name[2]]
                     })
                 });
 

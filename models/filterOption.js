@@ -160,29 +160,29 @@ module.exports.addMongoFullOption = (filter, query) => {
 	    }
 
 	    if (filter.location != undefined) {
-	        query["device_info.location"].$eq = filter.location;
+	        query["device_info.location"] = { $in : filter.location };
 	    }
         if (filter.device != undefined) {
-            query["device_info.device"].$eq = filter.device;
+            query["device_info.device"] = { $in : filter.device };
         }
 	    if (filter.os != undefined) {
-	        query["device_info.os"].$eq = filter.os;
+	        query["device_info.os"] = { $in : filter.os };
 	    }
 	    if (filter.activity != undefined) {
-	        query["data.app.activity_stack"].$eq = filter.activity;
+	        query["data.app.activity_stack"] = { $in : filter.activity };
 	    }
 
 	    if (filter.nlocation != undefined) {
-	        query["device_info.location"].$ne = filter.nlocation;
+	        query["device_info.location"] = { $ne : filter.nlocation };
 	    }
         if (filter.ndevice != undefined) {
-            query["device_info.device"].$ne = filter.ndevice;
+            query["device_info.device"] = { $ne : filter.ndevice };
         }
 	    if (filter.nos != undefined) {
-	        query["device_info.os"].$ne = filter.nos;
+	        query["device_info.os"] = { $ne : filter.nos };
 	    }
 	    if (filter.nactivity != undefined) {
-	        query["data.app.activity_stack"].$ne = filter.nactivity;
+	        query["data.app.activity_stack"] = { $ne : filter.nactivity };
 	    }
 	}
 }
@@ -207,11 +207,19 @@ module.exports.addUserOption = (filter, select) => {
 	let sql = "";
 
     if (filter != undefined) {
-	    if (filter.uuid != undefined) {
-	        sql += "AND uuid = ? ";
-	        select.push(filter.uuid);
+	    if (filter.uuidList != undefined) {
+	        sql += "AND uuid IN (?) ";
+	        select.push(filter.uuidList);
 	    }
 	}
 
 	return sql;
+}
+
+module.exports.addMongoUserOption = (filter, query) => {
+    if (filter != undefined) {
+	    if (filter.uuidList != undefined) {
+	        query["device_info.uuid"] = { $in : filter.uuidList };
+	    }
+	}
 }

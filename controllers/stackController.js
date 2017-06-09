@@ -16,18 +16,29 @@ var StackModel = require('../models/stackModel');
 module.exports = {
 
     getCallstack : function (req, res, next) {
-        if (req.params.activityName) {
-            if (req.query.activity)
-                req.query.activity = req.params.activityName + "," + req.query.activity;
-            else 
-                req.query.activity = req.params.activityName + ",";
-        }
 
         var data = {
             access_token: req.header('access-token'),
-            package_name : req.params.packageName,
-            filter : require('./filter').setFilter(req.query)
+            package_name : req.params.packageName
         };
+
+        var old = false;
+        if (req.params.activityName) {
+            if (req.query.activity && req.query.activity != '')
+                req.query.activity = req.params.activityName + "," + req.query.activity;
+            else 
+                req.query.activity = req.params.activityName;
+
+            data.resourceType = req.params.resourceType;
+        } else {
+            old = true;
+            if (req.query.activity && req.query.activity != '')
+                req.query.activity = req.params.resourceType + "," + req.query.activity;
+            else 
+                req.query.activity = req.params.resourceType;
+        }
+
+        data.filter = require('./filter').setFilter(req.query);
 
         mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
@@ -36,7 +47,10 @@ module.exports = {
             	return VersionModel.getVersionId(context, data);
             })
             .then(function(context) {
-            	return VersionModel.getActivityIdByVersionWithName(context, data);
+                if (old) 
+                    return VersionModel.getActivityIdByVersionWithName(context, data);
+                
+                return VersionModel.getActivityIdByType(context, data);
             })
             .then(function(context) {
             	return StackModel.getCallstack(context, data);

@@ -345,6 +345,7 @@ module.exports.resAppDetailMongoModel = function(data) {
 	    }
 
 	    filterOption.addMongoFullOption(data.filter, matchQuery);
+	    filterOption.addMongoUserOption(data.filter, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate([{
@@ -415,6 +416,7 @@ module.exports.resOSDetailMongoModel = function(data) {
 	    }
 
 	    filterOption.addMongoFullOption(data.filter, matchQuery);
+	    filterOption.addMongoUserOption(data.filter, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate([{
@@ -479,6 +481,7 @@ module.exports.resVmstatDetailMongoModel = function(data) {
 	    }
 
 	    filterOption.addMongoFullOption(data.filter, matchQuery);
+	    filterOption.addMongoUserOption(data.filter, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate([{
@@ -545,6 +548,7 @@ module.exports.resMemoryDetailMongoModel = function(data) {
 	    }
 
 	    filterOption.addMongoFullOption(data.filter, matchQuery);
+	    filterOption.addMongoUserOption(data.filter, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate([{

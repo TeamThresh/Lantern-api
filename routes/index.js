@@ -52,8 +52,8 @@ module.exports = function(){
   router.get('/network/:packageName/:activityName', auth.check, auth.checkProject, api.network.getNetwork);
 
   // Detail View
-  router.get('/reverseStack/:packageName', auth.check, auth.checkProject, api.stack.getCallstack);
-  router.get('/reverseStack/:packageName/:activityName', auth.check, auth.checkProject, api.stack.getCallstack);
+  router.get('/reverseStack/:packageName/:resourceType', auth.check, auth.checkProject, api.stack.getCallstack);
+  router.get('/reverseStack/:packageName/:activityName/:resourceType', auth.check, auth.checkProject, api.stack.getCallstack);
   router.get('/userList/:packageName/:activityName/:resourceType', auth.check, auth.checkProject, api.package.getSelectVersionList);
 
   router.get('/detail/:packageName/:activityName/:type', auth.check, auth.checkProject, api.detailRes.getResourceDetailByActivity);
