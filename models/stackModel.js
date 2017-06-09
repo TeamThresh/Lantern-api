@@ -7,7 +7,8 @@ const filterOption = require('./filterOption');
 var stackModel = {
  	getCallstack : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name];
+ 			var select = [data.package_name, data.act_id_list];
+
  			var sql = `SELECT thread_name, call_clevel, 
      			(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_clevel) AS clevel_name, 
      			call_uplevel, 
@@ -21,7 +22,8 @@ var stackModel = {
                 INNER JOIN user_table ON user_ver_id = ver_id
                 LEFT JOIN callstack_name_table AS CNT 
                 ON call_clevel = call_id AND call_uplevel = call_id AND call_downlevel = call_id 
-                WHERE package_name = ? `;
+                WHERE package_name = ? 
+                AND act_id IN (?) `;
 
             sql += filterOption.addFullOption(data.filter, select);
             sql += filterOption.addUserOption(data.filter, select);
