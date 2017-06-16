@@ -36,7 +36,7 @@
 
  	getCPUInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
  			var sql = `SELECT cpu_raw_rate, SUM(cpu_raw_count), activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM cpu_raw_table
 				INNER JOIN activity_table
@@ -44,9 +44,18 @@
 				INNER JOIN version_table
 					ON ver_id = act_ver_id
 				WHERE package_name = ?
-				AND collect_time BETWEEN ? AND ?
-				AND cpu_raw_rate >= ?
-				GROUP BY cpu_raw_rate, activity_name, device_name, os_ver, location_code 
+				AND collect_time BETWEEN ? AND ? `;
+            
+            // 하위 호환
+            if (data.p95) { 
+                select.push(data.p95);
+                sql += `AND cpu_raw_rate >= ? `;
+            } else {
+                select.push(data.filter.usageRange.start, data.filter.usageRange.end);
+                sql += `AND cpu_raw_rate BETWEEN ? AND ? `;
+            }
+				
+			sql += `GROUP BY cpu_raw_rate, activity_name, device_name, os_ver, location_code 
 				ORDER BY cpu_raw_rate ASC `;
 
  			context.connection.query(sql, select, function (err, rows) {
@@ -119,7 +128,7 @@
 
  	getMemInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
  			var sql = `SELECT mem_raw_rate, SUM(mem_raw_count), activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM memory_raw_table
 				INNER JOIN activity_table
@@ -127,9 +136,18 @@
 				INNER JOIN version_table
 					ON ver_id = act_ver_id
 				WHERE package_name = ?
-				AND collect_time BETWEEN ? AND ?
-				AND mem_raw_rate >= ?
-				GROUP BY mem_raw_rate, activity_name, device_name, os_ver, location_code 
+				AND collect_time BETWEEN ? AND ? `;
+
+            // 하위 호환
+            if (data.p95) { 
+                select.push(data.p95);
+                sql += `AND mem_raw_rate >= ? `;
+    		} else {
+                select.push(data.filter.usageRange.start, data.filter.usageRange.end);
+                sql += `AND mem_raw_rate BETWEEN ? AND ? `;
+            }
+
+			sql += `GROUP BY mem_raw_rate, activity_name, device_name, os_ver, location_code 
 				ORDER BY mem_raw_rate ASC `;
 
  			context.connection.query(sql, select, function (err, rows) {
@@ -201,8 +219,8 @@
 
  	getRenderInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
- 			var sql = `SELECT FLOOR(FLOOR((ui_speed/ui_count)*10)*10) AS ui_rate, 
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
+ 			var sql = `SELECT FLOOR(ui_speed/ui_count) AS ui_rate, 
  				activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM ui_table
 				INNER JOIN activity_table
@@ -210,9 +228,18 @@
 				INNER JOIN version_table
 					ON ver_id = act_ver_id
 				WHERE package_name = ?
-				AND collect_time BETWEEN ? AND ?
-				AND (ui_speed/ui_count) * 100 >= ?
-				GROUP BY ui_rate, activity_name, device_name, os_ver, location_code
+				AND collect_time BETWEEN ? AND ? `;
+
+            // 하위 호환
+            if (data.p95) { 
+                select.push(data.p95);
+                sql += `AND (ui_speed/ui_count) >= ? `;
+            } else {
+                select.push(data.filter.usageRange.start, data.filter.usageRange.end);
+                sql += `AND (ui_speed/ui_count) BETWEEN ? AND ? `;
+            }
+                
+            sql += `GROUP BY ui_rate, activity_name, device_name, os_ver, location_code
 				ORDER BY ui_rate ASC `;
 
  			context.connection.query(sql, select, function (err, rows) {
@@ -236,7 +263,7 @@
  	getRenderHistogramWithP95 : function(context, data) {
  		return new Promise(function(resolved, rejected) {
  			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
- 			var sql = `SELECT FLOOR(FLOOR((ui_speed/ui_count)*10)*10) AS rate, COUNT(ver_id) AS user_count
+ 			var sql = `SELECT FLOOR(ui_speed/ui_count) AS rate, COUNT(ver_id) AS user_count
 				FROM ui_table
 				INNER JOIN activity_table
 					ON act_id = ui_act_id
@@ -284,7 +311,8 @@
 
  	getOBCInsight : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, data.p95];
+ 			var select = [data.package_name, data.dateRange.start, data.dateRange.end, 
+                data.filter.usageRange.start, data.filter.usageRange.end];
  			var sql = `SELECT (FLOOR(host_speed/100)*100) AS host_rate, SUM(host_count) AS host_count, 
  				activity_name, device_name, os_ver, location_code, COUNT(ver_id) AS user_count
 				FROM obc_table
@@ -293,9 +321,18 @@
 				INNER JOIN version_table
 					ON ver_id = act_ver_id
 				WHERE package_name = ?
-				AND collect_time BETWEEN ? AND ? 
-				AND host_speed/host_count >= ?
-				GROUP BY host_rate, activity_name, device_name, os_ver, location_code 
+				AND collect_time BETWEEN ? AND ? `;
+
+            // 하위 호환
+            if (data.p95) { 
+                select.push(data.p95);
+                sql += `AND host_speed/host_count >= ? `;
+            } else {
+                select.push(data.filter.usageRange.start, data.filter.usageRange.end);
+                sql += `AND host_speed/host_count BETWEEN ? AND ? `;
+            }
+                
+            sql += `GROUP BY host_rate, activity_name, device_name, os_ver, location_code 
 				ORDER BY host_rate ASC `;
 
  			context.connection.query(sql, select, function (err, rows) {

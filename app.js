@@ -23,15 +23,6 @@ app.use(logger('dev'));
 // set the secret key variable for jwt
 app.set('jwt-secret', new Buffer(credentials.jwtsecret).toString('base64'));
 
-
-// MongoDB module
-var mongoose = require('mongoose');
-
-mongoose.connect(credentials.replHosts, credentials.mongooseOption, function(err) {
-	if (err) throw err;
-	console.log("MongoDB connect complete");
-});
-
 // Route Handlers
 app.use('/api', routes());
 

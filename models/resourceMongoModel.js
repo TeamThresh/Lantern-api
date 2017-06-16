@@ -5,7 +5,7 @@
 
 var filterOption = require('./filterOption');
 // MongoDB module
-var mongoose = require('mongoose');
+var mongoose = require('./baseMongoose');
 
 var Schema = mongoose.Schema;
 var SchemaSet = require(credentials.mongoSchemaSet.resourceSchemaSet);
@@ -16,7 +16,6 @@ module.exports.resAppRawMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
 	        "data.type" : "res"
 	    }
 
@@ -103,7 +102,6 @@ module.exports.resOSRawMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
 	        "data.type" : "res"
 	    }
 
@@ -171,7 +169,6 @@ module.exports.resVmstatRawMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
 	        "data.type" : "res"
 	    }
 
@@ -243,10 +240,7 @@ module.exports.resMemoryRawMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
-	        "data.type" : "res",
-	        "data.duration_time.start" : { $gt : data.startRange, $lt : data.endRange },
-	        "data.duration_time.end" : { $gt : data.startRange, $lt : data.endRange }
+	        "data.type" : "res"
 	    }
 
 	    filterOption.addMongoFullOption(data.filter, matchQuery);
@@ -340,7 +334,6 @@ module.exports.resAppDetailMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
 	        "data.type" : "res"
 	    }
 
@@ -411,7 +404,6 @@ module.exports.resOSDetailMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
 	        "data.type" : "res"
 	    }
 
@@ -476,7 +468,6 @@ module.exports.resVmstatDetailMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
 	        "data.type" : "res"
 	    }
 
@@ -543,7 +534,6 @@ module.exports.resMemoryDetailMongoModel = function(data) {
 
 		var matchQuery = {
 	        "package_name" : data.package_name,
-			"data.app.activity_stack" : data.activity_name,
 	        "data.type" : "res"
 	    }
 
@@ -551,7 +541,7 @@ module.exports.resMemoryDetailMongoModel = function(data) {
 	    filterOption.addMongoUserOption(data.filter, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
-		Res.aggregate([{
+		var temp = [{
 	    		$match : matchQuery
 			}, {
 				$limit : 100
@@ -575,7 +565,8 @@ module.exports.resMemoryDetailMongoModel = function(data) {
                     "free" : {
                         $push : { data: "$data.app.memory.free", timestamp : "$data.duration_time.start" } }
                 }
-			}], function(err, resRawData){
+			}];
+		Res.aggregate(temp, function(err, resRawData){
 		        if(err) {
 		        	var error = new Error(err);
 		        	error.status = 500;
@@ -619,11 +610,11 @@ module.exports.getMemHistogram = function(data) {
 		    }, {
 		        $group : {
 		            _id : {
-		                $multiply : [
-		                    {$floor : {
-		                        $divide : ["$data.app.memory.alloc", 10000]
-		                    }}, 10
-		                ]
+		            	$divide : [ {
+			                $floor : {
+		                        $divide : ["$data.app.memory.alloc", 100000]
+		                    }
+		                }, 10]
 		            },
 		            group : {
 		                $sum: 1 
@@ -768,6 +759,9 @@ module.exports.getMemInsight = function(data) {
 
 	    filterOption.addMongoFullOption(data, matchQuery);
 
+	    if (data.p95) var usageFilter = { $gt : data.p95 * 1000000};
+	    else var usageFilter = { $gt : data.filter.usageRange.start * 1000000, $lt : data.filter.usageRange.end * 1000000 };
+
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
 		        $match : matchQuery
@@ -779,7 +773,8 @@ module.exports.getMemInsight = function(data) {
 	            $match : {
 	                "data.app.activity_stack" : { $ne : null },
                 	"data.app.activity_stack.0" : { $exists : true },
-                	"data.app.memory.alloc": { $gt : data.p95 * 1000 }
+                	// MB 로 계산
+                	"data.app.memory.alloc": usageFilter
 	            }
 		    }, {
 	            $sort : { "data.duration_time.start" : -1 }
@@ -834,6 +829,10 @@ module.exports.getCPUInsight = function(data) {
 
 	    filterOption.addMongoFullOption(data, matchQuery);
 
+	    // 하위 호황
+	    if (data.p95) var usageFilter = { $gt : Number(data.p95) };
+    	else var usageFilter = { $gt : Number(data.filter.usageRange.start), $lt : Number(data.filter.usageRange.end) };
+
 		var Res = mongoose.model('resourceModels', resourceSchema);
 		Res.aggregate({
 		        '$match' : matchQuery
@@ -869,7 +868,7 @@ module.exports.getCPUInsight = function(data) {
 	            }
 		    }, {
 		    	$match : {
-		            "_id.usage" : { $gt : Number(data.p95) }
+		            "_id.usage" : usageFilter
 		        }
 			}, function(err, resRawData){
 		        if(err) {

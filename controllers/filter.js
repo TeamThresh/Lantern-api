@@ -72,5 +72,27 @@ module.exports = {
         }
 
         return filter;
-	}
+	},
+
+    setUsageFilter : function(query) {
+        let filter = {};
+
+        if (query.app != undefined && query.app != '')
+            filter.app = query.app;
+
+        // 사용량 필터
+        let usageRange = {};
+        if (query.startUsage != undefined && query.startUsage != '') {
+            usageRange.start = query.startUsage;
+        }
+        if (query.endUsage != undefined && query.endUsage != '') {
+            usageRange.end = query.endUsage;
+        }
+        if (usageRange.start != undefined && usageRange.end != undefined) {
+            filter.usageRange = usageRange;
+        }
+
+
+        return filter;
+    }
 }

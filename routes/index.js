@@ -8,6 +8,8 @@ var router = express.Router();
 
 module.exports = function(){
 
+  // Insight
+  router.get('/insight/:packageName/:type', auth.check, auth.checkProject, api.insight.getInsight);
   router.get('/insight/:packageName/:type/:p95', auth.check, auth.checkProject, api.insight.getInsight);
   router.get('/histogram/:packageName/:type', auth.check, auth.checkProject, api.insight.getHistogramWithP95);
 

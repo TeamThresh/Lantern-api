@@ -20,8 +20,8 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             type : req.params.type,
-            p95 : req.params.p95,
-            //filter : require('./filter').setFilter(req.query)
+            p95 : req.params.p95,   // 하위 호환성
+            filter : require('./filter').setUsageFilter(req.query)
         };
 
 
