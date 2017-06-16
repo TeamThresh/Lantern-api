@@ -4,6 +4,11 @@ module.exports = {
 	setFilter : function(query) {
 		let filter = {};
 
+        // 크래시 필터
+        if (query.crashId != undefined && query.crashId != '') {
+            filter.crashId = Number(query.crashId);
+        }
+
         // 기간 필터
         let dateRange = {};
         if (query.startRange != undefined && query.startRange != '') {

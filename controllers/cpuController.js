@@ -16,8 +16,11 @@ var CpuModel = require('../models/cpuModel');
 module.exports = {
 
     getCPU : function (req, res, next) {
-        if (req.query.activity == undefined
-        || req.query.activity == "") 
+        if (!isNaN(req.params.activityName)) {
+            req.query.crashId = req.params.activityName;
+            req.params.activityName = undefined;
+        } else if (req.query.activity == undefined
+                || req.query.activity == "") 
             req.query.activity = req.params.activityName;
         else 
             req.query.activity = req.params.activityName + "," + req.query.activity;

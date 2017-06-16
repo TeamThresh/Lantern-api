@@ -227,10 +227,15 @@ var versionModel = {
 
             var sql = `SELECT DISTINCT act_id 
                 FROM activity_table 
-                INNER JOIN version_table ON ver_id = act_ver_id 
-                WHERE package_name = ? `;
+                INNER JOIN version_table ON ver_id = act_ver_id `;
+
+            if (data.filter.crashId) {
+                sql += `INNER JOIN crash_table ON crash_act_id = act_id `;
+            }
+            sql += `WHERE package_name = ? `;
 
             sql += filterOption.addFullOption(data.filter, select);
+            sql += filterOption.addCrashOption(data.filter, select);
             
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
@@ -243,7 +248,7 @@ var versionModel = {
                     error.status = 9404;
                     return rejected({ context : context, error : error });
 	            }
-console.log(rows);
+
 	            data.act_id_list = []
 	            rows.forEach(function(row) {
 	            	data.act_id_list.push(row.act_id);
@@ -291,8 +296,12 @@ console.log(rows);
                 FROM ??
                 INNER JOIN activity_table ON ?? = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
-                LEFT JOIN user_table ON ver_id = user_ver_id 
-                WHERE package_name = ? 
+                LEFT JOIN user_table ON ver_id = user_ver_id `;
+
+            if (data.filter.crashId) {
+                sql += `INNER JOIN crash_table ON crash_act_id = act_id `;
+            }
+            sql += `WHERE package_name = ? 
                 AND ?? BETWEEN ? AND ? `;
 
             select.push(field.table_name, field.res_act_id,
@@ -316,12 +325,12 @@ console.log(rows);
                     }
                     break;
             }
-            
+
+            sql += filterOption.addCrashOption(data.filter, select);
             sql += filterOption.addFullOption(data.filter, select);    
             sql += filterOption.addActivityOption(data.filter, select);
             sql += `ORDER BY act_id ASC`;
 
-            
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
                     var error = new Error(err);
@@ -828,9 +837,19 @@ console.log(rows);
                 FROM ??
                 INNER JOIN activity_table ON ?? = act_id 
                 INNER JOIN version_table ON act_ver_id = ver_id 
-                LEFT JOIN user_table ON ver_id = user_ver_id 
-                WHERE package_name = ? 
+                LEFT JOIN user_table ON ver_id = user_ver_id `;
+            
+            if (data.filter.crashId) {
+                sql += `crash_table ON crash_act_id = act_id `;
+            }
+
+            sql += `WHERE package_name = ? 
                 AND ?? BETWEEN ? AND ? `;
+
+            if (data.filter.crashId) {
+                select.push(data.filter.crashId);
+                sql += `AND crash_raw_id = ? `;
+            }
 
             sql += filterOption.addFullOption(data.filter, select);
 

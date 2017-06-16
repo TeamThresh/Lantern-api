@@ -72,6 +72,18 @@ module.exports.addActivityOption = (filter, select) => {
     return sql;
 }
 
+module.exports.addCrashOption = (filter, select) => {
+	let sql = "";
+    if (filter != undefined) {
+        if (filter.crashId) {
+            select.push(filter.crashId);
+            sql += `AND crash_raw_id = ? `;
+        }
+    }
+
+    return sql;
+}
+
 /**
  * 
  * @param filter (Array)
@@ -183,6 +195,11 @@ module.exports.addMongoFullOption = (filter, query) => {
 	    }
 	    if (filter.nactivity != undefined) {
 	        query["data.app.activity_stack"] = { $ne : filter.nactivity };
+	    }
+
+	    if (filter.crashId != undefined) {
+	    	query["data.type"] = 'crash';
+	    	query["data.stacktrace"] = filter.crash_stacktrace;
 	    }
 	}
 }

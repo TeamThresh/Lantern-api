@@ -322,6 +322,10 @@ module.exports = {
             filter : require('./filter').setFilter(req.query)
         };
 
+        if (!isNaN(req.params.activityName)) {
+            req.query.crashId = req.params.activityName;
+        } 
+            
         mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)

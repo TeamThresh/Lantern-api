@@ -24,7 +24,10 @@ module.exports = {
 
         var old = false;
         if (req.params.activityName) {
-            if (req.query.activity && req.query.activity != '')
+            if (!isNaN(req.params.activityName)) {
+                req.query.crashId = req.params.activityName;
+                req.params.activityName = undefined;
+            } else if (req.query.activity && req.query.activity != '')
                 req.query.activity = req.params.activityName + "," + req.query.activity;
             else 
                 req.query.activity = req.params.activityName;
