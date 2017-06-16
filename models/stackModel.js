@@ -9,7 +9,7 @@ var stackModel = {
  		return new Promise(function(resolved, rejected) {
  			var select = [data.package_name, data.act_id_list];
 
- 			var sql = `SELECT thread_name, call_clevel, 
+ 			var sql = `SELECT IF(thread_name = 'main', 'main', 'reverse_stack') AS thread_name, call_clevel, 
      			(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_clevel) AS clevel_name, 
      			call_uplevel, 
      			(SELECT callstack_name FROM callstack_name_table WHERE call_id = call_uplevel) AS uplevel_name, 
@@ -44,43 +44,34 @@ var stackModel = {
 
                 let callstack = {};
                 rows.forEach(function(row) {
-                	if (callstack[row.thread_name] == undefined) {
-                		callstack[row.thread_name] = {
+                    if (callstack[row.thread_name] == undefined) {
+                        callstack[row.thread_name] = {
                             stack: [{
-                                id : 0,
+                                id : [0],
                                 stackName : 'root',
                                 childId : []
                             }]
                         };
-                		if (row.call_uplevel == row.call_clevel) {
-	            			// 루트 노드 일경우
-	            			row.call_uplevel = 0;
-                            callstack[row.thread_name].stack[0].childId.push(row.call_clevel);
-	            		}
+                    }
 
-	            		callstack[row.thread_name].stack.push({
-	            			id : row.call_clevel,
-	            			stackName : row.clevel_name,
-	            			parentId : row.call_uplevel,
-	            			childId : row.call_downlevel.split(','),
-	            			count : row.call_count
-	            		});
-	            	} else {
+                    if (row.call_uplevel == row.call_clevel) {
+                        // 루트 노드 일경우
+                        row.call_uplevel = 0;
+                    }
 
-	            		if (row.call_uplevel == row.call_clevel) {
-	            			// 루트 노드 일경우
-	            			row.call_uplevel = 0;
-                            callstack[row.thread_name].stack[0].childId.push(row.call_clevel);
-	            		}
+                    // Number 로 변환
+                    let downlevel = row.call_downlevel.split(',');
+                    downlevel.forEach((each, index) => {
+                        downlevel[index] = Number(each);
+                    });
 
-	            		callstack[row.thread_name].stack.push({
-	            			id : row.call_clevel,
-	            			stackName : row.clevel_name,
-	            			parentId : row.call_uplevel,
-	            			childId : row.call_downlevel.split(','),
-	            			count : row.call_count
-	            		});
-	            	}
+                    callstack[row.thread_name].stack.push({
+                        id : [row.call_clevel],
+                        stackName : row.clevel_name,
+                        parentId : row.call_uplevel,
+                        childId : downlevel,
+                        count : row.call_count
+                    });
 	            });
 
                 const TreeModel = require('./treeModel');
@@ -88,8 +79,10 @@ var stackModel = {
                 data.callstack = [];
                 let thread_name = Object.keys(callstack);
                 thread_name.forEach(function(name) {
+                    let reverse_stack = TreeModel.expendTreeModel(callstack[name].stack, 0);
+                    reverse_stack.children = TreeModel.sort(reverse_stack.children);
                 	let orderd = [];
-                	orderd.push(TreeModel.expendTreeModel(callstack[name].stack, 0));
+                	orderd.push(reverse_stack);
                 	data.callstack.push({
                 		threadName : name,
                 		stack : orderd
@@ -104,7 +97,7 @@ var stackModel = {
  	getCrashstack : function(context, data) {
  		return new Promise(function(resolved, rejected) {
  			var select = [data.crash_id, data.package_name];
- 			var sql = `SELECT cs_thread_name, cs_clevel, 
+ 			var sql = `SELECT IF(cs_thread_name = 'main', 'main', 'reverse_stack') AS cs_thread_name, cs_clevel, 
  			(SELECT callstack_name FROM callstack_name_table WHERE call_id = cs_clevel) AS clevel_name, 
  			cs_uplevel, 
  			GROUP_CONCAT(cs_downlevel) AS cs_downlevel, 
@@ -132,43 +125,37 @@ var stackModel = {
                 	return rejected({ context : context, error : error });
                 }
                 
-                let rootChild = [];
                 let callstack = {};
                 rows.forEach(function(row) {
-                	if (callstack[row.cs_thread_name] == undefined) {
-                		callstack[row.cs_thread_name] = {
+                    if (callstack[row.cs_thread_name] == undefined) {
+                        callstack[row.cs_thread_name] = {
                             stack: [{
-                                id : 0,
+                                id : [0],
                                 stackName : 'root',
                                 childId : []
                             }]
                         };
-                		if (row.cs_uplevel == row.cs_clevel) {
-                			row.cs_uplevel = 0;
-                            callstack[row.cs_thread_name].stack[0].childId.push(row.cs_clevel);
-                		}
+                    }
 
-                		callstack[row.cs_thread_name].stack.push({
-                			id : row.cs_clevel,
-                			stackName : row.clevel_name,
-                			parentId : row.cs_uplevel,
-                			childId : row.cs_downlevel.split(','),
-                			count : row.cs_count
-                		});
-                	} else {
-                		if (row.cs_uplevel == row.cs_clevel) {
-                			row.cs_uplevel = 0;
-                            callstack[row.cs_thread_name].stack[0].childId.push(row.cs_clevel);
-                		}
+                    if (row.cs_uplevel == row.cs_clevel) {
+                        // 루트 노드 일경우
+                        row.cs_uplevel = 0;
+                    }
 
-                		callstack[row.cs_thread_name].stack.push({
-                			id : row.cs_clevel,
-                			stackName : row.clevel_name,
-                			parentId : row.cs_uplevel,
-                			childId : row.cs_downlevel.split(','),
-                			count : row.cs_count
-                		});
-                	}
+                    // Number 로 변환
+                    let downlevel = row.cs_downlevel.split(',');
+                    downlevel.forEach((each, index) => {
+                        downlevel[index] = Number(each);
+                    });
+
+                    callstack[row.cs_thread_name].stack.push({
+                        id : [row.cs_clevel],
+                        stackName : row.clevel_name,
+                        parentId : row.cs_uplevel,
+                        childId : downlevel,
+                        count : row.cs_count
+                    });
+
                 });
 
                 const TreeModel = require('./treeModel');
@@ -176,8 +163,10 @@ var stackModel = {
                 data.callstack = [];
                 let thread_name = Object.keys(callstack);
                 thread_name.forEach(function(name) {
-                	let orderd = []
-                	orderd.push(TreeModel.expendTreeModel(callstack[name].stack, 0));
+                    let reverse_stack = TreeModel.expendTreeModel(callstack[name].stack, 0);
+                    reverse_stack.children = TreeModel.sort(reverse_stack.children);
+                    let orderd = [];
+                    orderd.push(reverse_stack);
                 	data.callstack.push({
                 		threadName : name,
                 		stack : orderd

@@ -241,7 +241,7 @@ var crashModel = {
                     }
 
                     eventpath.push({
-                        id : row.ec_event_id,
+                        id : [row.ec_event_id],
                         class_name : row.class_name, 
                         method_name : row.method_name, 
                         line_num : row.line_num, 
@@ -252,7 +252,7 @@ var crashModel = {
                 });
 
                 eventpath.push({
-                    id : 0,
+                    id : [0],
                     root : 'root',
                     childId : rootChild
                 });

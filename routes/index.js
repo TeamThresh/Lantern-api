@@ -63,13 +63,15 @@ module.exports = function(){
   router.get('/memory/vmstat/:packageName/:activityName', auth.check, auth.checkProject, api.detailRes.getResourceVmstatByActivity);
 
   // Crash Dashboard
+  router.get('/crashRank/:packageName', auth.check, auth.checkProject, api.crash.getCrashRankRate);
   router.get('/crashUsage/:packageName', auth.check, auth.checkProject, api.crash.getCrashUsage);
+
+  // Crash Detail
   router.get('/crashDetail/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getCrashInfo);
   router.get('/crashVersion/:packageName/:crashId/:mode', auth.check, auth.checkProject, api.crash.getVersionsByCrash);
   router.get('/crashReverseStack/:packageName/:crashId', auth.check, auth.checkProject, api.stack.getCrashStack);
   router.get('/crashEventPath/:packageName/:crashId', auth.check, auth.checkProject, api.crash.getCrashEventPath);
   router.post('/markCrashRank/:packageName/:crashId', auth.check, auth.checkProject, api.crash.markCrashRank);
-  router.get('/crashRank/:packageName', auth.check, auth.checkProject, api.crash.getCrashRankRate);
 
   // catch 404 and forward to error handler
   router.all('/*', function(req, res, next) {
