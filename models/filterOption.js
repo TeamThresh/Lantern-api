@@ -172,7 +172,7 @@ module.exports.addMongoFullOption = (filter, query) => {
 	    }
 
 	    if (filter.location != undefined) {
-	        query["device_info.location"] = { $in : filter.location };
+	        query["device_info.location.code"] = { $in : filter.location };
 	    }
         if (filter.device != undefined) {
             query["device_info.device"] = { $in : filter.device };

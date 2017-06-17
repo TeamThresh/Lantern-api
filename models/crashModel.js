@@ -83,7 +83,7 @@ var crashModel = {
 
             select.push(data.limit);
             sql += `GROUP BY crash_id, crash_rank, crash_name, crash_location 
-                ORDER BY count DESC 
+                ORDER BY count, crash_rank, crash_id DESC 
                 LIMIT ? `;
 
             context.connection.query(sql, select, function (err, rows) {
@@ -118,7 +118,7 @@ var crashModel = {
             sql += filterOption.addFullOption(data.filter, select);
 
             sql += `GROUP BY collect_time 
-                ORDER BY count`;
+                ORDER BY count, collect_time DESC`;
 
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {

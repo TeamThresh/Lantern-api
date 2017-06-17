@@ -341,7 +341,7 @@ module.exports.resAppDetailMongoModel = function(data) {
 	    filterOption.addMongoUserOption(data.filter, matchQuery);
 
 		var Res = mongoose.model('resourceModels', resourceSchema);
-		Res.aggregate([{
+		var query = [{
 	    		$match : matchQuery
 			}, {
 				$limit : 100
@@ -377,12 +377,15 @@ module.exports.resAppDetailMongoModel = function(data) {
                     "nswap" : {
                         $push : { data: "$data.app.cpu_app.nswap", timestamp : "$data.duration_time.start" } }
                 }
-			}], function(err, resRawData){
+			}];
+		Res.aggregate(query, function(err, resRawData){
 		        if(err) {
 		        	var error = new Error(err);
 		        	error.status = 500;
 		        	return rejected(error);
 		        }
+
+		        console.log(resRawData);
 		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;
