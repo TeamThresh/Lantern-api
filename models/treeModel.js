@@ -108,7 +108,15 @@ function arrayConcat(array1, array2) {
 	return array1
 }
 
-module.exports.sort = (unsortArray) => {
+module.exports.count = (array) => {
+	let sum = 0;
+	array.forEach((row) => {
+		sum += row.count;
+	});
+	return sum;
+}
+
+module.exports.sort = (unsortArray, parentPer) => {
 	unsortArray.sort(function(a, b) { 
 		// 내림차순
 		return b.count - a.count;
@@ -121,10 +129,17 @@ module.exports.sort = (unsortArray) => {
 	});
 
 	unsortArray.forEach((row, index) => {
-		unsortArray[index].count = Math.floor((row.count/sum) * 100);
-		if (unsortArray[index].children) {
+
+		if (parentPer) {
+			var per = parentPer * (row.count / sum);
+		} else {
+			var per = row.count / sum;
+		}
+		row.count = Math.floor(per * 100);
+
+		if (row.children) {
 			//console.log()
-			unsortArray[index].children = require('./treeModel').sort(unsortArray[index].children);
+			row.children = require('./treeModel').sort(row.children, per);
 		}
 	})
 	

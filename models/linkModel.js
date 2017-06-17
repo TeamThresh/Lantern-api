@@ -20,12 +20,14 @@ var linkModel = {
                     var error = new Error(err);
                     error.status = 500;
                     return rejected({ context : context, error : error });
-                } else if (rows.length == 0) {
+                }
+                // Link만 없는 경우도 안나옴
+                /* else if (rows.length == 0) {
                 	// TODO 아무것도 없는 경우
                     var error = new Error("No data");
                     error.status = 9404;
                     return rejected({ context : context, error : error });
-	            }
+	            }*/
 	            
 	            data.linkList = [];
 	            rows.forEach(function(row) {

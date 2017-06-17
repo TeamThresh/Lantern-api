@@ -80,7 +80,10 @@ var stackModel = {
                 let thread_name = Object.keys(callstack);
                 thread_name.forEach(function(name) {
                     let reverse_stack = TreeModel.expendTreeModel(callstack[name].stack, 0);
-                    reverse_stack.children = TreeModel.sort(reverse_stack.children);
+
+                    let count = TreeModel.count(reverse_stack.children);
+
+                    reverse_stack.children = TreeModel.sort(reverse_stack.children, null, count);
                 	let orderd = [];
                 	orderd.push(reverse_stack);
                 	data.callstack.push({

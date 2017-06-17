@@ -389,20 +389,20 @@ var versionModel = {
     getActNameCrashByVersion : function(context, data) {
         return new Promise(function(resolved, rejected) {
             var select = [data.ver_key];
-            var sql = "SELECT act_t.activity_name, SUM(user_count) as user_count, " + 
-                "SUM(crash_count) as crash_count, SUM(obc_t.host_status > 300) as status_count, " +
-                "SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, " +
-                "SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count " +
-                "FROM activity_table as act_t " +
-                "LEFT JOIN cpu_table as c_t " +
-                "ON act_t.act_id = c_t.cpu_act_id " +
-                "LEFT JOIN memory_table as m_t " +
-                "ON act_t.act_id = m_t.mem_act_id " +
-                "LEFT JOIN crash_table as crash_t " +
-                "ON `act_t`.`act_id` = `crash_t`.`crash_act_id` " +
-                "LEFT JOIN obc_table as obc_t " +
-                "ON act_t.act_id = obc_t.host_act_id " +
-                "WHERE `act_ver_id` IN (?) ";
+            var sql = `SELECT act_t.activity_name, SUM(user_count) as user_count, 
+                SUM(crash_count) as crash_count, SUM(obc_t.host_status > 300) as status_count, 
+                SUM(c_t.cpu_sum) / SUM(c_t.cpu_count) as cpu_count, 
+                SUM(m_t.mem_sum) / SUM(m_t.mem_count) as mem_count 
+                FROM activity_table as act_t 
+                LEFT JOIN cpu_table as c_t 
+                ON act_t.act_id = c_t.cpu_act_id 
+                LEFT JOIN memory_table as m_t 
+                ON act_t.act_id = m_t.mem_act_id 
+                LEFT JOIN crash_table as crash_t 
+                ON act_t.act_id = crash_t.crash_act_id
+                LEFT JOIN obc_table as obc_t 
+                ON act_t.act_id = obc_t.host_act_id 
+                WHERE act_ver_id IN (?) `;
 
             sql += filterOption.addActivityOption(data.filter, select);
 
@@ -723,7 +723,7 @@ var versionModel = {
                 "ON act_t.act_id = obc_t.host_act_id " +
                 "WHERE `package_name` = ? ";
                 
-            sql += filterOption.addExceptOption(data.selector, select, ["activity_name"]);
+            sql += filterOption.addExceptOption(data.selector, select, ["activity"]);
 
             sql += "GROUP BY activity_name " +
                 "ORDER BY usage_count ";
