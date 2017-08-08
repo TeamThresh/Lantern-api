@@ -5,7 +5,7 @@
 
 var filterOption = require('./filterOption');
 // MongoDB module
-var mongoose = require('./baseMongoose');
+var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 var SchemaSet = require(credentials.mongoSchemaSet.resourceSchemaSet);
@@ -385,7 +385,6 @@ module.exports.resAppDetailMongoModel = function(data) {
 		        	return rejected(error);
 		        }
 
-		        console.log(resRawData);
 		        if(!resRawData || resRawData.length == 0) {
 		        	var error = new Error("No data");
                     error.status = 9404;

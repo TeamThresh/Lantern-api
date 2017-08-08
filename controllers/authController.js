@@ -24,16 +24,12 @@ var auth = {
 		}
 
 		// check username duplication
-		mysqlSetting.getReadPool()
+		mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
             	return AuthModel.checkUserName(context, data);
 	    	})
-            .then(mysqlSetting.commitTransaction)
-	    	.then(mysqlSetting.getWritePool)
-            .then(mysqlSetting.getConnection)
-            .then(mysqlSetting.connBeginTransaction)
 		    .then((context) => {
     		    // create a new user if does not exist
 	            return AuthModel.createUser(context, data);
@@ -72,7 +68,7 @@ var auth = {
 	    const secret = req.app.get('jwt-secret');
 
 	    // check the user info & generate the jwt
-		mysqlSetting.getReadPool()
+		mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then(function(context) {
@@ -116,10 +112,6 @@ var auth = {
                 	}
                 });
             })
-            .then(mysqlSetting.commitTransaction)
-	    	.then(mysqlSetting.getWritePool)
-            .then(mysqlSetting.getConnection)
-            .then(mysqlSetting.connBeginTransaction)
 	    	.then(function(context) {
 	    		return AuthModel.login(context, data);
 	    	})
@@ -260,7 +252,7 @@ var auth = {
 		}
 
 		// check username duplication
-		mysqlSetting.getReadPool()
+		mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
@@ -287,10 +279,6 @@ var auth = {
             .then((context) => {
             	return AuthModel.checkLevel(context, data);
             })
-            .then(mysqlSetting.commitTransaction)
-	    	.then(mysqlSetting.getWritePool)
-            .then(mysqlSetting.getConnection)
-            .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
             	data.checked_user.package_name = data.package_name;
             	return AuthModel.addAuthToProject(context, data.checked_user);
@@ -325,7 +313,7 @@ var auth = {
 		}
 
 		// check username duplication
-		mysqlSetting.getReadPool()
+		mysqlSetting.getWritePool()
             .then(mysqlSetting.getConnection)
             .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
@@ -344,10 +332,6 @@ var auth = {
             		}
             	});
             })
-            .then(mysqlSetting.commitTransaction)
-	    	.then(mysqlSetting.getWritePool)
-            .then(mysqlSetting.getConnection)
-            .then(mysqlSetting.connBeginTransaction)
             .then((context) => {
             	return AuthModel.removeMember(context, data.checked_user);
 	    	})
