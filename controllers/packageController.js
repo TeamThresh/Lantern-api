@@ -334,7 +334,36 @@ module.exports = {
             })
             .then(function(context) {
                 return new Promise(function(resolved) {
-                    context.result = data.user_list;
+                    let parsed_data = [];
+                    data.user_list.forEach((beforeData) => {
+                        let parsing_data = {
+                            'UUID' : [beforeData.uuid],
+                            'Device' : beforeData.device,
+                            'OS' : beforeData.os,
+                            'Location' : beforeData.location,
+                            'Usage Rate' : parseInt(beforeData.usage_rate / beforeData.usage_count),
+                            'User' : 1
+                        }
+                        let find_data = parsed_data.find((data) => {
+                            if (data.Device == parsing_data.Device
+                                && data.OS == parsing_data.OS
+                                && data.Location == parsing_data.Location
+                                && data['Usage Rate'] == parsing_data['Usage Rate']) {
+                                data.UUID.push(beforeData.uuid);
+                                data.User++;
+                                return true;
+                            }
+                            return false;
+
+                        });
+                        if (!find_data) 
+                            parsed_data.push(parsing_data);
+                    });
+
+                    context.result = parsed_data.filter((user) => {
+                        user.UUID = undefined;
+                        return true;
+                    });
                     return resolved(context);
                 });
             })
