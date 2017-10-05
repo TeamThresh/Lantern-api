@@ -29,8 +29,6 @@ module.exports.resAppRawMongoModel = function(data) {
 			}, {
 				$unwind : "$data"
 			}, {
-				$sort : { "data.duration_time.start" : -1 }
-			}, {
 				$group : {
 					_id : "app",
 					data : {
@@ -115,8 +113,6 @@ module.exports.resOSRawMongoModel = function(data) {
 			}, {
 				$unwind : "$data"
 			}, {
-				$sort : { "data.duration_time.start" : -1 }
-			}, {
 				$group : {
 					_id : "os",
 					data : {
@@ -181,8 +177,6 @@ module.exports.resVmstatRawMongoModel = function(data) {
 				$limit : 100
 			}, {
 				$unwind : "$data"
-			}, {
-				$sort : { "data.duration_time.start" : -1 }
 			}, {
 				$group : {
 					_id : "vmstat",
@@ -252,8 +246,6 @@ module.exports.resMemoryRawMongoModel = function(data) {
 				$limit : 100
 			}, {
 				$unwind : "$data"
-			}, {
-				$sort : { "data.duration_time.start" : -1 }
 			}, {
 				$group : {
 					_id : "memory",
@@ -352,8 +344,6 @@ module.exports.resAppDetailMongoModel = function(data) {
 	                "data.app.cpu_app" : { $ne : null }
 	            }
 		    }, {
-				$sort : { "data.duration_time.start" : -1 }
-			}, {
 				$group : {
 					_id : "app_cpu",
 					"utime" : {
@@ -424,8 +414,6 @@ module.exports.resOSDetailMongoModel = function(data) {
 	                "data.os.cpu" : { $ne : null }
 	            }
 		    }, {
-				$sort : { "data.duration_time.start" : -1 }
-			}, {
 				$group : {
 					_id : "os_cpu",
 					"user" : {
@@ -488,8 +476,6 @@ module.exports.resVmstatDetailMongoModel = function(data) {
 	                "data.os.vmstat" : { $ne : null }
 	            }
 		    }, {
-				$sort : { "data.duration_time.start" : -1 }
-			}, {
 				$group : {
 					_id : "vmstat",
 					"ready" : {
@@ -554,8 +540,6 @@ module.exports.resMemoryDetailMongoModel = function(data) {
 	                "data.app.memory" : { $ne : null }
 	            }
 		    }, {
-				$sort : { "data.duration_time.start" : -1 }
-			}, {
 				$group : {
 					_id : "memory",
 					"max" : {
@@ -622,8 +606,6 @@ module.exports.getMemHistogram = function(data) {
 		                $sum: 1 
 		            }
 		        }
-		    }, {
-		        $sort : { "_id" : 1 }
 		    }, {
 		        $group : {
 		            _id : "memory",
@@ -706,8 +688,6 @@ module.exports.getCPUHistogram = function(data) {
 		            }
 		        }
 		    }, {
-		        $sort : { "_id" : 1 }
-		    }, {
 		        $group : {
 		            _id : "cpu",
 		            histogram : {
@@ -778,8 +758,6 @@ module.exports.getMemInsight = function(data) {
                 	// MB 로 계산
                 	"data.app.memory.alloc": usageFilter
 	            }
-		    }, {
-	            $sort : { "data.duration_time.start" : -1 }
 		    }, {
 	            $group : {
                     _id : {
