@@ -24,13 +24,14 @@ module.exports = {
             filter : require('./filter').setUsageFilter(req.query)
         };
 
-
+        /*
         let start_date = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString().split('T');
         let end_date = new Date().toISOString().split('T');
         data.dateRange = {
             start : start_date[0]+" "+start_date[1].split('.')[0],
             end : end_date[0]+" "+end_date[1].split('.')[0]
         };
+        */
 
         mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
@@ -135,16 +136,18 @@ module.exports = {
             access_token: req.header('access-token'),
             package_name : req.params.packageName,
             type : req.params.type,
-            //filter : require('./filter').setFilter(req.query)
+            filter : require('./filter').setFilter(req.query)
         };
 
-
+        /*
         let start_date = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString().split('T');
         let end_date = new Date().toISOString().split('T');
         data.dateRange = {
             start : start_date[0]+" "+start_date[1].split('.')[0],
             end : end_date[0]+" "+end_date[1].split('.')[0]
         };
+        */
+        
 
         mysqlSetting.getReadPool()
             .then(mysqlSetting.getConnection)
