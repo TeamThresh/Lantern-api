@@ -86,6 +86,7 @@ var auth = {
 	    	.then(function(context) {
                 // create a promise that generates jwt asynchronously
                 return new Promise((resolved, rejected) => {
+                	console.log(data);
                 	if (data.isExpired) {
                 		let expired = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7days
 	                    jwt.sign(
@@ -144,6 +145,52 @@ var auth = {
                     throw err;
                 }
             })
+	},
+
+	resetPassword : function(req, res, next) {
+		const data = {
+			username : req.params.username
+		}
+		var randomstring = require("randomstring");
+
+		data.new_password = randomstring.generate(10);
+		data.password = crypto.createHmac('sha256', 
+					new Buffer(credentials.jwtsecret))
+				.update(data.new_password)
+				.digest('base64')
+
+		mysqlSetting.getReadPool()
+            .then(mysqlSetting.getConnection)
+			.then((context) => {
+				return AuthModel.checkUser(context, data);
+			})
+			.then((context) => {
+				return AuthModel.resetUserPassword(context, data);
+			})
+			.then((context) => {
+				return new Promise((resolved, rejected) => {
+					require('../libs/mailing')
+						.sendMail(
+							data.username,
+							"Lantern 비밀번호 초기화 이메일 입니다.", 
+							data.new_password)
+						.then(() => {
+							return resolved(context);
+						})
+						.catch((err) => {
+							return rejected(err);
+						});
+				});
+			})
+			.then(mysqlSetting.releaseConnection)
+			.then((result) => {
+                res.statusCode = 200;
+                return res.json({});
+			})
+			.catch((err) => {
+                next(err);
+                throw err;
+			});
 	},
 
 	check : function(req, res, next) {

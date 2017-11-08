@@ -23,6 +23,13 @@ module.exports = {
         }
         if (dateRange.start != undefined && dateRange.end != undefined) {
             filter.dateRange = dateRange;
+            /* // 고정 기간 지정
+            let start_date = new Date('2017-03-01 00:00:00').toISOString().split('T');
+            let end_date = new Date('2017-06-30 00:00:00').toISOString().split('T');
+
+            filter.dateRange.start = start_date[0]+" "+start_date[1].split('.')[0];
+            filter.dateRange.end = end_date[0]+" "+end_date[1].split('.')[0];
+            */
         }
 
         // 사용량 필터

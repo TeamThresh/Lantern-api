@@ -633,7 +633,13 @@ module.exports.getMemHistogram = function(data) {
                 let problem_set = [];
                 let count = 0;
 
+
+                resRawData[0].histogram.sort((a,b) => {
+                	return a.rate < b.rate ? -1 : a.rate > b.rate ? 1 : 0;
+                });
+
                 data.histogram = resRawData[0].histogram;
+
                 resRawData[0].histogram.forEach((row) => {
                 	count += row.user_count;
                 });
@@ -714,7 +720,12 @@ module.exports.getCPUHistogram = function(data) {
                 let problem_set = [];
                 let count = 0;
 
+                resRawData[0].histogram.sort((a,b) => {
+                	return a.rate < b.rate ? -1 : a.rate > b.rate ? 1 : 0;
+                });
+                
                 data.histogram = resRawData[0].histogram;
+
                 resRawData[0].histogram.forEach((row) => {
                 	count += row.user_count;
                 });
@@ -748,7 +759,7 @@ module.exports.getMemInsight = function(data) {
 		Res.aggregate({
 		        $match : matchQuery
 	    	}, {
-        		$limit : 300
+        		$limit : 1000
 		    }, {
 	            $unwind : "$data"
             }, {
@@ -817,7 +828,7 @@ module.exports.getCPUInsight = function(data) {
 		Res.aggregate({
 		        '$match' : matchQuery
 		    }, {
-		        '$limit' : 300
+		        '$limit' : 1000
 		    }, {
 		        '$unwind' : "$data"
 		    }, {

@@ -48,13 +48,31 @@ var authModel = {
     	})
     },
 
+    resetUserPassword : function(context, data) {
+        return new Promise(function(resolved, rejected) {
+            var update = [data.password, data.username];
+            var sql = `UPDATE admin_table SET
+                admin_password = ?
+                WHERE admin_username = ?`;
+
+            context.connection.query(sql, update, function (err, rows) {
+                if (err) {
+                    var error = new Error(err);
+                    error.status = 500;
+                    return rejected({ context : context, error : error });
+                }
+
+                return resolved(context);
+            });
+        });
+    },
+
     checkUser : function(context, data) {
     	return new Promise(function(resolved, rejected) {
             var select = [data.username];
             var sql = `SELECT admin_user_id, admin_username, nickname, admin_password
             	FROM admin_table 
             	WHERE admin_username = ? `;
-
             context.connection.query(sql, select, function (err, rows) {
                 if (err) {
                     var error = new Error(err);
@@ -66,13 +84,13 @@ var authModel = {
                     error.status = 403;
                     return rejected({ context : context, error : error });
 	            }
-	            
 	            data.user = {
 	            	user_id : rows[0].admin_user_id,
 	            	username : rows[0].admin_username,
 	            	nickname : rows[0].nickname,
 	            	password : rows[0].admin_password
 	            };
+                data.user_id = data.user.user_id;
 
             	return resolved(context);
             });
@@ -112,7 +130,7 @@ var authModel = {
     		var select = [data.user_id];
     		var sql = `SELECT admin_token, last_login, expired 
     			FROM admin_table 
-    			WHERE admin_user_id `;
+    			WHERE admin_user_id = ?`;
 
 			context.connection.query(sql, select, function (err, rows) {
                 if (err) {

@@ -16,6 +16,7 @@ module.exports = function(){
   // Authentication
   router.post('/user', auth.regist);
   router.post('/user/:username', auth.login);
+  router.put('/user/:username/password', auth.resetPassword);
   router.put('/project/:packageName/:membername', auth.check, auth.checkProject, auth.editMember);
   router.delete('/project/:packageName/:membername', auth.check, auth.checkProject, auth.rmMember);
 

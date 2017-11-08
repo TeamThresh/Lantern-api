@@ -262,7 +262,7 @@
 
  	getRenderHistogramWithP95 : function(context, data) {
  		return new Promise(function(resolved, rejected) {
- 			var select = [data.package_name, data.dateRange.start, data.dateRange.end];
+ 			var select = [data.package_name, data.filter.dateRange.start, data.filter.dateRange.end];
  			var sql = `SELECT FLOOR(ui_speed/ui_count) AS rate, COUNT(ver_id) AS user_count
 				FROM ui_table
 				INNER JOIN activity_table
